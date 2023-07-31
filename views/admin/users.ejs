@@ -1,0 +1,199 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+
+
+
+
+
+            <section class="content-main">
+                <div class="content-header">
+                    <h2 class="content-title">Users list</h2>
+                    <!-- <div>
+                        <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
+                    </div> -->
+                </div>
+                <div class="card mb-4">
+                    <header class="card-header">
+                        <!-- <div class="row gx-3"> -->
+                            <!-- <div class="col-lg-4 col-md-6 me-auto">
+                                <input type="text" placeholder="Search..." class="form-control" />
+                            </div> -->
+                            <!-- <div class="col-lg-2 col-md-3 col-6">
+                                <select class="form-select">
+                                    <option>Status</option>
+                                    <option>Active</option>
+                                    <option>Disabled</option>
+                                    <option>Show all</option>
+                                </select>
+                            </div> -->
+                            <!-- <div class="col-lg-2 col-md-3 col-6">
+                                <select class="form-select"
+                                    <option>Show 20</option>
+                                    <option>Show 30</option>
+                                    <option>Show 40</option>
+                                </select>
+                            </div> -->
+                            <!-- </div> -->
+                    </header>
+                    <!-- card-header end// -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover text-center">
+
+                                <thead>
+                                    <tr>
+                                        <th>Users</th>
+                                        <th>Email</th>
+                                        <th>Verified Status</th>
+                                        <th>Mobile Number</th>
+                                        <th class="text-nd">Action</th>
+                                    </tr>
+                                </thead>
+
+                                <!-- <tbody>
+                                    <% if (users && users.length > 0) {
+                                        for (let i = 0; i < users.length; i++) { %>
+                                            <tr>
+                                                <td width="25%">
+                                                    <div class="info pl-3">
+                                                        <h6 class="mb-0 title">
+                                                            <%= users[i].first_name %>
+                                                        </h6>
+                                                    </div>
+                                                </td>
+                                
+                                                <td>
+                                                    <%= users[i].email %>
+                                                </td>
+                                
+                                                <td>
+                                                    <span class="badge rounded-pill alert-success">
+                                                        <%= users[i].is_verified %>
+                                                    </span>
+                                                </td>
+                                
+                                                <td>
+                                                    <%= users[i].mobile %>
+                                                </td>
+                                
+                                                <td id="block">
+                                                    <button id="prodId<%=users[i]._id%>"
+                                                        class="btn btn-sm btn-danger rounded font-sm mt-15"
+                                                        onclick="userBlock('<%= users[i]._id %>')">
+                                                        <% if (users[i].blocked === false) { %>
+                                                            Block
+                                                        <% } else { %>
+                                                            Unblock
+                                                        <% } %>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <% } %>
+                                    <% } %>
+                                </tbody>
+                                 -->
+
+                                <tbody>
+                                    <% if (users && users.length> 0) {
+                                        for (let i = 0; i <users.length; i++) { %>
+                                            <tr>
+                                                <td width="25%">
+                                                    <div class="info pl-3">
+                                                        <h6 class="mb-0 title">
+                                                            <%= users[i].name %>
+                                                        </h6>
+                                                    </div>
+                                                </td>
+
+                                                <td>
+                                                    <%= users[i].email %>
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge rounded-pill alert-success">
+                                                        <%= users[i].is_verified %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <%= users[i].mobile %>
+                                                </td>
+
+                                                <td id="block">
+                                                    <button id="prodId<%=users[i]._id%>"
+                                                        class="btn btn-sm btn-danger rounded font-sm mt-15"
+                                                        onclick="userBlock('<%= users[i]._id %>')">
+                                                        <%if(users[i].is_blocked===false){%> Block <%}else{%> Unblock <%
+                                                                    }%>
+                                                    </button>
+                                                </td>
+
+                                            </tr>
+
+                                            <% } } else { %>
+
+                                                <tr>
+                                                    <td colspan="5">Users Not Found</td>
+                                                </tr>
+
+                                                <% } %>
+
+
+
+
+
+                                </tbody>
+                            </table>
+                            <!-- table-responsive.// -->
+                        </div>
+                    </div>
+                    <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+            <!-- content-main end// -->
+
+            <%- include('./layouts/footer.ejs') -%>
+
+                <script>
+                    const userBlock = async (userId) => {
+                        console.log(userId);
+                        try {
+                            const userBlock = await axios.patch("/admin/userBlocked", { userId });
+
+                            if (userBlock.data.message === true) {
+
+                                document.getElementById(`prodId${userId}`).textContent = 'Unblock'
+
+                            } else if (userBlock.data.message === false) {
+
+                                document.getElementById(`prodId${userId}`).textContent = 'Block'
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+
+                    $(document).ready(function () {
+                        $("#myTable").DataTable();
+                    })
+
+                </script>

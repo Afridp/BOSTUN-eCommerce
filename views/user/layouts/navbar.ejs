@@ -1,0 +1,51 @@
+<!-- Page Preloder -->
+<div id="preloder">
+    <div class="loader"></div>
+</div>
+
+<!-- <header class="header" style="background-color: rgb(35, 124, 94);">
+    <div class="header__top"> -->
+        <div class="container">
+            <div class="row mt-3">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo">
+                        <a href="/views/user/index.ejs">
+                            <!-- <img src="/user/img/logo.png" alt="" style="width: 80px; height:auto; border: 1px solid; height: 70px;"> -->
+                            <h2
+                                style="color: rgb(0, 100, 100); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;">
+                                <b>BOSTON</b></h2>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li class="active"><a href="/index.ejs">Home</a></li>
+                            <li><a href="/shop">Shop</a></li>
+                            <li><a href="/contact">Contact Us</a></li>
+                            
+                           <% if (session) { %>
+                            <li><a href="/login"><%= user.name %></a></li>
+                           <% } else { %> 
+                            <li><a href="/login">Login</a></li>
+                           <% } %> 
+                        </ul>
+                    </nav>
+                </div>
+
+
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        <a href="#" class="search-switch"><img src="/user/img/icon/search.png" alt=""></a>
+                        <a href="#"><img src="/user/img/icon/heart.png" alt=""></a>
+                        <a href="#"><img src="/user/img/icon/cart.png" alt=""> <span>0</span></a>
+                        <div class="price">₹0.00</div>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars"></i></div>
+        </div>
+    <!-- </div> -->
+</header>
+<!-- Header Section End -->

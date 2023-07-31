@@ -1,0 +1,71 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Edit Category</h2>
+                    </div>
+                    <div>
+                        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                           
+                            <div class="col-md-4">
+
+                                <form action="/admin/editCategory" method="post">
+                                   
+                                    <input type="hidden" name="id" value="<%= category._id %>" />
+
+                                    <div class="mb-4">
+                                        <label for="category_name" class="form-label">Name</label>
+
+                                        <input type="text" id="category_name" 
+                                            class="form-control" value="<%=category.name  %>" name="category_name" />
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Description</label>
+                                        <textarea  class="form-control"
+                                            name="category_description">
+                                                <%=category.description %></textarea>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-primary">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                                
+                            </div>
+                            <div class="col-md-4"></div>
+
+                            <!-- .col// -->
+                        </div>
+                        <!-- .row // -->
+                    </div>
+                    <!-- card body .// -->
+                </div>
+                <!-- card .// -->
+            </section>
+            <!-- content-main end// -->
+            <%- include('./layouts/footer.ejs') -%>
+            
+                <script>
+                    let category_name = document.getElementById("category_name");
+                    category_name.addEventListener("input", () => {
+                        if (category_name.value.trim() == "") {
+                            category_name.setCustomValidity("Field must be filled out");
+                        } else {
+                            category_name.setCustomValidity("");
+                        }
+                    });
+                </script>

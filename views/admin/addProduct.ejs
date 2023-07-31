@@ -1,0 +1,173 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+
+            <section class="content-main">
+                <div class="row">
+
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Add New Product</h2>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Basic</h4>
+                            </div>
+
+                            <div class="card-body">
+
+                                <form action="/admin/addProduct" enctype="multipart/form-data" method="post">
+                                    <div class="mb-4">
+                                        <label for="product_name" class="form-label">Product Name</label>
+
+                                        <input type="text" placeholder="Product Name" class="form-control"
+                                            id="product_name" name="product_name" required />
+                                    </div>
+
+                                    <!-- <div class="mb-4">
+                                        <label for="product_brand" class="form-label">Product Brand</label>
+
+                                        <input type="text" placeholder="Product Brand" class="form-control"
+                                            id="product_brand" name="product_brand" required />
+                                    </div> -->
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Description</label>
+                                        <textarea placeholder="Description" class="form-control" rows="4"
+                                            id="product_description" name="product_description" required></textarea>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Price</label>
+                                                <div class="row gx-2">
+
+                                                    <input placeholder="Price" min="1" type="text" class="form-control"
+                                                        id="product_price" name="product_price" required />
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Quantity</label>
+                                                <div class="row gx-2">
+                                                    <input placeholder="Quantity" min="1" type="number"
+                                                        id="product_quantity" class="form-control"
+                                                        name="product_quantity" required />
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <div class="row gx-2">
+                                                <div class="col-sm-6 mb-3">
+                                                    <label class="form-label">Category</label>
+                                                    <select class="form-select" name="product_category" required>
+
+                                                        <% for( let category of categories) { %>
+
+                                                            <option value="<%=category._id %>">
+                                                                <%= category.name %>
+                                                            </option>
+
+                                                            <% } %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="card mb-4">
+                                            <div class="card-header">
+                                                <h4>Product Image</h4>
+                                            </div>
+                                            <div class="card-body">
+
+                                                <div class="input-upload">
+                                                    <input id="product_img" name="product_img" accept="image/*"
+                                                        class="form-control" type="file" multiple />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <%if(typeof message!==undefined){%>
+                                            <div>
+                                                <p class="text-center text-danger">
+                                                    <%= message %>
+                                                </p>
+                                            </div>
+                                            <%}%>
+
+                                                <div>
+                                                    <button class="btn btn-md rounded font-sm hover-up">Submit</button>
+                                                </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- card end// -->
+                    </div>
+
+                    <!-- card end// -->
+
+                    <!-- card end// -->
+                </div>
+                </div>
+            </section>
+            <!-- content-main end// -->
+
+            <%- include('./layouts/footer.ejs') -%>
+
+
+                <script>
+                    let product_name = document.getElementById("product_name");
+                    let product_price = document.getElementById("product_price");
+                    let product_quantity = document.getElementById("product_quantity");
+
+                    product_name.addEventListener("input", () => {
+                        if (product_name.value.trim() == "") {
+                            product_name.setCustomValidity("Field must be filled out");
+                        } else {
+                            product_name.setCustomValidity("");
+                        }
+                    });
+
+                    product_price.addEventListener("input", () => {
+                        if (product_price.value.trim() == "") {
+                            product_price.setCustomValidity("Field must be filled out");
+                        } else if (isNaN(product_price.value)) {
+                            product_price.setCustomValidity("Field must be containing only digits");
+                        } else {
+                            product_price.setCustomValidity("");
+                        }
+                    });
+
+                    product_quantity.addEventListener("input", () => {
+                        if (product_quantity.value.trim() == "") {
+                            product_quantity.setCustomValidity("Field must be filled out");
+                        } else if (isNaN(product_quantity.value)) {
+                            product_quantity.setCustomValidity("Field must be containing only digits");
+                        }
+                        else {
+                            product_quantity.setCustomValidity("");
+                        }
+                    });
+
+                    // Function to handle the file input change event
+                    document.getElementById('product_img').addEventListener('change', handleFileSelect);
+
+                </script>

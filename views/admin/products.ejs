@@ -1,0 +1,127 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Products List</h2>
+                    </div>
+
+                    <div>
+                        <a href="/admin/addProduct" class="btn btn-primary btn-sm rounded">Add Products</a>
+                    </div>
+
+                </div>
+
+                <div class="row gx-3">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                        <th>Description</th>
+                                        <th>Quantity/Stock</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (product && product.length> 0) { for (let i = 0; i < product.length; i++) { %>
+                                            <tr>
+                                                <td width="25%">
+
+                                                    <div class="left">
+                                                        <img src="/images/<%= product[i].image[0] %>"
+                                                            class="img-sm img-thumbnail" alt="Item" />
+                                                    </div>
+
+                                                    <div class="info pl-3">
+                                                        <h6 class="mb-0 title">
+                                                            <%= product[i].name %>
+                                                        </h6>
+                                                    </div>
+                                                </td>
+
+
+                                                <td>
+                                                    <span>₹<%= product[i].price %></span>
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                        <%= product[i].category.name %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                        <%= product[i].description %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge rounded-pill alert-success">
+                                                        <%= product[i].quantity %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <a href="/admin/productEdit?id=<%= product[i]._id %>"
+                                                        class="btn btn-sm btn-danger rounded font-sm mt-15">Edit</a>
+
+
+                                                    <button id="block-<%= product[i]._id %>"
+                                                        onclick="productList('<%= product[i]._id %>')"
+                                                        class="btn btn-sm btn-danger rounded font-sm mt-15">
+                                                        <% if (product[i].list===true) { %>
+                                                            Unlist
+                                                            <% } else { %>
+                                                                List
+                                                                <% } %>
+                                                    </button>
+
+                                                </td>
+
+                                            </tr>
+                                            <% } } else { %>
+                                                <tr>
+                                                    <td colspan="5">Products Not Found</td>
+                                                </tr>
+                                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <%- include('./layouts/footer.ejs') -%>
+
+                <script>
+                    const productList = async (productId) => {
+                        try {
+                            const button = document.getElementById(`block-${productId}`);
+                            const responses = await axios.patch("/admin/listProduct", { productId });
+
+                            if (responses.data.unlistSuccess) {
+                                button.textContent = "List";
+                            } else if (responses.data.listSuccess) {
+                                button.textContent = "Unlist";
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+
+                    
+                    $(document).ready(function () {
+                        $("#myTable").DataTable();
+                    })
+                </script>
