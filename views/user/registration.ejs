@@ -95,46 +95,50 @@
                 </div>
                 <% } %> -->
             </div>
-                    <form action="/register" method="post" id="">
-                        
-                        <% if (typeof message !== 'undefined') { %>
-                            <div class="error-container">
-                                <div class="error-message" style="background-color: rgb(251, 140, 140); border-radius: 5px; ">
-                                    <p class="px-3"><%= message %></p>
-                                </div>
-                            </div>
-                        <% } %>
-                        
-                        
+            <form action="/register" method="post" id="registrationForm">
+
+                <% if (typeof message !=='undefined' ) { %>
+                    <div class="error-container">
+                        <div class="error-message" style="background-color: rgb(251, 140, 140); border-radius: 5px; ">
+                            <p class="px-3">
+                                <%= message %>
+                            </p>
+                        </div>
+                    </div>
+                    <% } %>
+
+
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Enter username" name="name" id="name">
-                            <p id="para4" style="color: rgb(211, 116, 7);"></p>
+                            <input type="text" class="form-control" placeholder="Enter username" name="name" id="name"
+                                required>
+                            <p id="para4" style="color: rgb(255, 2, 2);"></p>
                         </div>
 
                         <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Enter Email" name="email" id="email">
-                            <p id="para1" style="color: rgb(211, 116, 7);"></p>
+                            <input type="email" class="form-control" placeholder="Enter Email" name="email" id="email"
+                                required>
+                            <p id="para1" style="color: rgb(255, 2, 2);"></p>
                         </div>
 
 
                         <div class="form-group">
                             <input type="number" class="form-control" placeholder="Enter Mobile" name="mobile"
-                                id="number">
-                            <p id="para3" style="color: rgb(211, 116, 7);"></p>
+                                id="number" required>
+                            <p id="para3" style="color: rgb(255, 2, 2);"></p>
                         </div>
 
                         <div class="form-group">
                             <input type="password" class="form-control" placeholder="Enter Password" name="password"
-                                id="password">
-                            <p id="para2" style="color: rgb(211, 116, 7);"></p>
+                                id="password" required>
+                            <p id="para2" style="color: rgb(255, 2, 2);"></p>
                         </div>
 
-                        <input type="submit" class="btn btn-primary" value="Register">
+                        <input class="btn btn-primary" value="Register" onclick="validateForm()">
 
-                    </form>
-                    <div class=" text-center pt-3">
-                        <span style="font-size:medium; color: #000000;">Already have an account? </span>
-                        <a href="/login" style="color: #4705d7;"">Login Here</a>
+            </form>
+            <div class=" text-center pt-3">
+                <span style="font-size:medium; color: #000000;">Already have an account? </span>
+                <a href="/login" style="color: #4705d7;"">Login Here</a>
         </div>
     </div>
 </div>
@@ -143,142 +147,136 @@
 
 <!-- Footer Section Begin -->
 <footer class=" footer">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-lg-3 col-md-6 col-sm-6">
-                                        <div class="footer__about">
-                                            <div class="footer__logo">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-6 col-sm-6">
+                                <div class="footer__about">
+                                    <div class="footer__logo">
 
-                                                <h2
-                                                    style="color: rgb(0, 100, 100); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif  ;">
-                                                    <b>BOSTON</b>
-                                                </h2>
-                                            </div>
-                                            <p>The customer is at the heart of our unique business model, which
-                                                includes
-                                                design.
-                                            </p>
-                                            <a href="#"><img src="img/payment.png" alt=""></a>
-                                        </div>
+                                        <h2
+                                            style="color: rgb(0, 100, 100); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif  ;">
+                                            <b>BOSTON</b>
+                                        </h2>
                                     </div>
-                                    <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
-                                        <div class="footer__widget">
-                                            <h6>Shopping</h6>
-                                            <ul>
-                                                <li><a href="#">Clothing Store</a></li>
-                                                <li><a href="#">Trending Shoes</a></li>
-                                                <li><a href="#">Accessories</a></li>
-                                                <li><a href="#">Sale</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-2 col-md-3 col-sm-6">
-                                        <div class="footer__widget">
-                                            <h6>Shopping</h6>
-                                            <ul>
-                                                <li><a href="#">Contact Us</a></li>
-                                                <li><a href="#">Payment Methods</a></li>
-                                                <li><a href="#">Delivary</a></li>
-                                                <li><a href="#">Return & Exchanges</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
-                                        <div class="footer__widget">
-                                            <h6>NewLetter</h6>
-                                            <div class="footer__newslatter">
-                                                <p>Be the first to know about new arrivals, look books, sales &
-                                                    promos!</p>
-                                                <form action="#">
-                                                    <input type="text" placeholder="Your email">
-                                                    <button type="submit"><span class="icon_mail_alt"></span></button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <p>The customer is at the heart of our unique business model, which
+                                        includes
+                                        design.
+                                    </p>
+                                    <a href="#"><img src="img/payment.png" alt=""></a>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-12 text-center">
-                                        <div class="footer__copyright__text">
-                                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                            <p>Copyright ©
-                                                <script>
-                                                    document.write(new Date().getFullYear());
-                                                </script>2020
-                                                All rights reserved | This template is made with <i
-                                                    class="fa fa-heart-o" aria-hidden="true"></i> by <a
-                                                    href="https://colorlib.com" target="_blank">Colorlib</a>
-                                            </p>
-                                            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                                        </div>
+                            </div>
+                            <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                                <div class="footer__widget">
+                                    <h6>Shopping</h6>
+                                    <ul>
+                                        <li><a href="#">Clothing Store</a></li>
+                                        <li><a href="#">Trending Shoes</a></li>
+                                        <li><a href="#">Accessories</a></li>
+                                        <li><a href="#">Sale</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-6">
+                                <div class="footer__widget">
+                                    <h6>Shopping</h6>
+                                    <ul>
+                                        <li><a href="#">Contact Us</a></li>
+                                        <li><a href="#">Payment Methods</a></li>
+                                        <li><a href="#">Delivary</a></li>
+                                        <li><a href="#">Return & Exchanges</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                                <div class="footer__widget">
+                                    <h6>NewLetter</h6>
+                                    <div class="footer__newslatter">
+                                        <p>Be the first to know about new arrivals, look books, sales &
+                                            promos!</p>
+                                        <form action="#">
+                                            <input type="text" placeholder="Your email">
+                                            <button type="submit"><span class="icon_mail_alt"></span></button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                            </footer>
-                            <!-- Footer Section End -->
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 text-center">
+                                <div class="footer__copyright__text">
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                    <p>Copyright ©
+                                        <script>
+                                            document.write(new Date().getFullYear());
+                                        </script>2020
+                                        All rights reserved | This template is made with <i class="fa fa-heart-o"
+                                            aria-hidden="true"></i> by <a href="https://colorlib.com"
+                                            target="_blank">Colorlib</a>
+                                    </p>
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </footer>
+                    <!-- Footer Section End -->
 
 
-                            <script>
-                                function validateform() {
-                                    const email = document.myform.email.value;
-                                    const password = document.myform.password.value;
+                    <script>
 
-                                    if (email == null || email == "") {
-                                        document.getElementById('form-error').innerHTML = "Email can't be blank";
-                                        return false;
-                                    } else if (password == null || password == "") {
-                                        document.getElementById('form-error').innerHTML = "Password can't be blank";
-                                        return false;
-                                    } else {
-                                        document.getElementById("myform").submit();
-                                    }
-                                }
+                        function validateForm(event) {
+                            // Get form input values
+                            const name = document.getElementById("name").value;
+                            const email = document.getElementById("email").value;
+                            const mobile = document.getElementById("number").value;
+                            const password = document.getElementById("password").value;
 
-                                function show() {
-                                    const email = document.getElementById("email").value;
-                                    const password = document.getElementById("password").value;
-                                    const name = document.getElementById("name").value;
-                                    const number = document.getElementById("number").value;
+                            // Regular expression patterns for validation
+                            const namePattern = /^[a-zA-Z\s]+$/;
+                            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            const mobilePattern = /^\d{10}$/;
 
-                                    const para1 = document.getElementById("para1");
-                                    const para2 = document.getElementById("para2");
-                                    const para3 = document.getElementById("para3");
-                                    const para4 = document.getElementById("para4");
+                            let isValid = true;
 
-                                    if (email == "") {
-                                        para1.innerText = "Enter your email"
-                                    } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) {
-                                        para1.innerText = "Enter a valid email"
-                                    }
+                            // Validate name
+                            if (!namePattern.test(name)) {
+                                document.getElementById("para4").textContent = "Please enter a valid name.";
+                                isValid = false;
+                            } else {
+                                document.getElementById("para4").textContent = "";
+                            }
 
-                                    if (name == "") {
-                                        para4.innerText = "Enter a valid name"
-                                    } else if (!/^[a-zA-Z]+$/.test(name)) {
-                                        para4.innerText = "Name can only contain letters"
-                                    }
+                            // Validate email
+                            if (!emailPattern.test(email)) {
+                                document.getElementById("para1").textContent = "Please enter a valid email address.";
+                                isValid = false;
+                            } else {
+                                document.getElementById("para1").textContent = "";
+                            }
 
-                                    if (number == "") {
-                                        para3.innerText = "Enter a valid number"
-                                    } else if (!/^\d{10}$/.test(number)) {
-                                        para3.innerText = "Mobile can only contain digits"
-                                    }
+                            // Validate mobile number
+                            if (!mobilePattern.test(mobile)) {
+                                document.getElementById("para3").textContent = "Please enter a valid 10-digit mobile number.";
+                                isValid = false;
+                            } else {
+                                document.getElementById("para3").textContent = "";
+                            }
 
-                                    if (password == "") {
-                                        para2.innerText = "Enter your password"
-                                    }
+                            // Validate password (assuming at least 6 characters required)
+                            if (password.length < 6) {
+                                document.getElementById("para2").textContent = "Password must be at least 6 characters long.";
+                                isValid = false;
+                            } else {
+                                document.getElementById("para2").textContent = "";
+                            }
+                            console.log(isValid);
+                            // Submit the form if all inputs are valid
+                            if (isValid) {
+                                document.getElementById("registrationForm").submit();
+                            }
+                        }
 
-                                }
-
-                        // document.getElementById('registration-form').addEventListener('submit', function (event) {
-
-                        //     event.preventDefault();
-
-                        //     alert('Registration successful!');
-
-
-                        //     event.target.submit();
-                        // });
-                            </script>
+                    </script>
 </body>
 
 </html>

@@ -1,0 +1,126 @@
+<%- include('./layouts/header.ejs') -%>
+
+
+    <%- include('./layouts/navbar.ejs') -%>
+
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4 class="mx-3">Edit Address</h4>
+                        <div class="breadcrumb__links">
+                            <a href="/">Home</a>
+                            <a href="/profile">Profile</a>
+                            <span>Edit Address</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+         
+                <form action="/postCheckEditAddress" method="POST">
+                    <div class="form-group">
+                      <input type="hidden" class="form-control" id="id" name="id"
+                        value="<%= userAddress.address[0]._id %>" />
+                      <label for="name" class="form-label">Name</label>
+                      <input type="text" class="form-control" id="name" name="name"
+                        value="<%= userAddress.address[0].name %>" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="housename" class="form-label">House Name</label>
+                      <input type="text" class="form-control" id="housename" name="housename"
+                        value="<%= userAddress.address[0].housename %>" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="city" class="form-label">City</label>
+                      <input type="text" class="form-control" id="city" name="city"
+                        value="<%= userAddress.address[0].city %>" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="state" class="form-label">State</label>
+                      <input type="text" class="form-control" id="state" name="state"
+                        value="<%= userAddress.address[0].state %>" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="phone" class="form-label">Phone</label>
+                      <input type="text" class="form-control" id="phone" name="phone"
+                        value="<%= userAddress.address[0].phone %>" required />
+                    </div>
+                    <div class="form-group">
+                      <label for="pincode" class="form-label">PIN Code</label>
+                      <input type="text" class="form-control" id="pincode" name="pincode"
+                        value="<%= userAddress.address[0].pincode %>" required />
+                    </div>
+    
+                    <div class="text-center mt-4">
+                      <button type="submit" class="btn btn-primary">
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
+            </div>
+        </div>
+    </div>
+
+
+    
+    <%- include('./layouts/footerNavbar.ejs') -%>
+
+    <%- include('./layouts/footer.ejs') -%>
+
+    <script>
+        let name = document.getElementById("name");
+        let housename = document.getElementById("housename");
+        let state = document.getElementById("state");
+        let phone = document.getElementById("phone");
+        let pincode = document.getElementById("pincode");
+        name.addEventListener("input", () => {
+          if (name.value.trim() == "") {
+            name.setCustomValidity("Name should not contain white spaces");
+          } else {
+            name.setCustomValidity("");
+          }
+        });
+        housename.addEventListener("input", () => {
+          if (housename.value.trim() == "") {
+            housename.setCustomValidity("House Name should not contain white spaces");
+          } else {
+            housename.setCustomValidity("");
+          }
+        });
+        state.addEventListener("input", () => {
+          if (state.value.trim() == "") {
+            state.setCustomValidity("State should not contain white spaces");
+          } else {
+            state.setCustomValidity("");
+          }
+        });
+        phone.addEventListener("input", () => {
+          if (phone.value.trim() == "") {
+            phone.setCustomValidity("Phone should not contain white spaces");
+          } else if (isNaN(phone.value)) {
+            phone.setCustomValidity("Phone should contain only digits from 0-9");
+          } else if (phone.value.length < 10 || phone.value.length > 10) {
+            phone.setCustomValidity("Phone should contain 10 digits only");
+          } else {
+            phone.setCustomValidity("");
+          }
+        });
+        pincode.addEventListener("input", () => {
+          if (pincode.value.trim() == "") {
+            pincode.setCustomValidity("PinCode should not contain white spaces");
+          } else if (isNaN(pincode.value)) {
+            pincode.setCustomValidity("pincode should contain only digits from 1-9");
+          } else if (pincode.value.length < 6 || pincode.value.length > 6) {
+            pincode.setCustomValidity("PinCode should contain 6 digits only");
+          } else {
+            pincode.setCustomValidity("");
+          }
+        });
+      </script>

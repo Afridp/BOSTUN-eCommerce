@@ -1,0 +1,166 @@
+<%- include('./layouts/header.ejs') -%>
+
+
+<%- include('./layouts/navbar.ejs') -%>
+
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Shop</h4>
+                    <div class="breadcrumb__links">
+                        <a href="/">Home</a>
+                        <a href="/">Profile</a>
+                        <span>Add Address</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+<section style="background-color: #f7f7f7">
+    <div class="container py-4">
+      <div class="row">
+        <div class="col-lg-6 mx-auto">
+          <div class="card border-0 shadow-sm rounded-lg">
+            <div class="card-body">
+              <h5 class="card-title text-center mb-3">Add Addresses</h5>
+              <hr />
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="address-list">
+                    <div class="address-item mb-2">
+                      <p class="mb-0"><strong>Fill out this field</strong></p>
+                    </div>
+                  </div>
+                  <form id="addAddressForm" action="/addAddress" method="POST">
+                    <div class="form-group">
+                      <label for="label">Name:</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        name="name"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="housename">House Name:</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="housename"
+                        name="housename"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="city">City:</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="city"
+                        name="city"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="state">State:</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="state"
+                        name="state"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="phone">Phone:</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="phone"
+                        name="phone"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="pincode">Pin Code:</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="pincode"
+                        name="pincode"
+                        required
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                      Add Address
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <%- include('./layouts/footerNavbar.ejs') -%>
+
+  <%- include('./layouts/footer.ejs') -%>  
+
+  <script>
+    let name = document.getElementById("name");
+    let housename = document.getElementById("housename");
+    let state = document.getElementById("state");
+    let phone = document.getElementById("phone");
+    let pincode = document.getElementById("pincode");
+    name.addEventListener("input", () => {
+      if (name.value.trim() == "") {
+        name.setCustomValidity("Name should not contain white spaces");
+      } else {
+        name.setCustomValidity("");
+      }
+    });
+    housename.addEventListener("input", () => {
+      if (housename.value.trim() == "") {
+        housename.setCustomValidity("House Name should not contain white spaces");
+      } else {
+        housename.setCustomValidity("");
+      }
+    });
+    state.addEventListener("input", () => {
+      if (state.value.trim() == "") {
+        state.setCustomValidity("State should not contain white spaces");
+      } else {
+        state.setCustomValidity("");
+      }
+    });
+    phone.addEventListener("input", () => {
+      if (phone.value.trim() == "") {
+        phone.setCustomValidity("Phone should not contain white spaces");
+      } else if (isNaN(phone.value)) {
+        phone.setCustomValidity("Phone should contain only digits from 0-9");
+      } else if (phone.value.length < 10 || phone.value.length > 10) {
+        phone.setCustomValidity("Phone should contain 10 digits only");
+      } else {
+        phone.setCustomValidity("");
+      }
+    });
+    pincode.addEventListener("input", () => {
+      if (pincode.value.trim() == "") {
+        pincode.setCustomValidity("PinCode should not contain white spaces");
+      } else if (isNaN(pincode.value)) {
+        pincode.setCustomValidity("pincode should contain only digits from 1-9");
+      } else if (pincode.value.length < 6 || pincode.value.length > 6) {
+        pincode.setCustomValidity("PinCode should contain 6 digits only");
+      } else {
+        pincode.setCustomValidity("");
+      }
+    });
+
+    </script>

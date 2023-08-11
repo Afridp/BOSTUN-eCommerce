@@ -1,10 +1,12 @@
 const userModel = require('../models/userModel')
 const catModel = require('../models/categoryModel')
 const productModel = require('../models/productModel')
-const dotenv =require('dotenv')
+const dotenv = require('dotenv')
 const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer")
 const userOtpVerification = require('../models/userOtpVerification')
+const { assign } = require('nodemailer/lib/shared')
+
 dotenv.config();
 
 const securePassword = async (password) => {
@@ -17,6 +19,8 @@ const securePassword = async (password) => {
 
     }
 }
+
+
 
 const loadRegister = async (req, res) => {
     try {
@@ -31,6 +35,7 @@ const loadRegister = async (req, res) => {
 }
 const postRegister = async (req, res) => {
     try {
+
         const existingUser = await userModel.findOne({
             $or: [{ email: req.body.email }, { mobile: req.body.number }]
         });
@@ -47,7 +52,7 @@ const postRegister = async (req, res) => {
                 password: spassword,
                 mobile: req.body.mobile,
                 is_verified: false,
-                is_blocked: false   
+                is_blocked: false
             })
             const savedata = await user.save();
             if (savedata) {
@@ -78,8 +83,8 @@ const sendOtpEmailVerification = async (email, user_id) => {
             port: 587,
             secure: true,
             auth: {
-                user: email_user,
-                pass: email_password
+                user: process.env.email_user,
+                pass: process.env.email_password
             }
         })
         const otp = `${Math.floor(1000 + Math.random() * 9000)}`
@@ -176,13 +181,19 @@ const emailVerification = async (req, res) => {
 
                     } else {
 
+
+                        // const user = await userModel.findOne({ _id: session })
+
                         req.session.userId = UserOTPVerificationRecords[0].userId.toString();
                         await userModel.updateOne(
                             { _id: UserOTPVerificationRecords[0].userId },
                             { $set: { is_verified: true } }
                         )
+                        const userDetails = await userModel.findOne({ _id: UserOTPVerificationRecords[0].userId.toString() })
+                        req.session.user_id = userDetails
 
                         await userOtpVerification.deleteMany({ _id: userId });
+
                         res.redirect("/");
                     }
                 }
@@ -199,11 +210,15 @@ const emailVerification = async (req, res) => {
 
 const loginLoad = async (req, res) => {
     try {
-        res.render('login')
+        let { message } = req.session
+        req.session.message = ""
+        res.render('login', { message })
     } catch (error) {
         console.log(error.message);
     }
 }
+
+
 const verifyLogin = async (req, res) => {
     try {
         const email = req.body.email;
@@ -212,6 +227,7 @@ const verifyLogin = async (req, res) => {
         // look single data doc that matches query
 
         const userData = await userModel.findOne({ email: email })
+
         if (userData) {
 
             const passwordMatch = await bcrypt.compare(password, userData.password)
@@ -219,10 +235,11 @@ const verifyLogin = async (req, res) => {
             if (passwordMatch) {
 
                 if (userData.is_verified === false) {
-                    res.render('login', { message: "email verification required" })
+                    res.redirect('/login', { message: "email verification required" })
                 } else {
                     // console.log("hello");
-                    req.session.user_id = userData._id
+                    req.session.userid = userData._id
+
                     res.redirect("/");
                 }
 
@@ -231,7 +248,7 @@ const verifyLogin = async (req, res) => {
             }
         } else {
             // console.log("hai");
-            res.render('login', { message: "Oops.. User Is Not Registerd" })
+            res.render('login', { message: "Oops.. User Is Not Registerd,Please register" })
         }
     } catch (error) {
         console.log(error.message)
@@ -241,51 +258,367 @@ const verifyLogin = async (req, res) => {
 
 const homeLoad = async (req, res) => {
     try {
-        const session = req.session.user_id
-        const user = await userModel.findOne({ _id: session })
+        const { userid } = req.session
+
+        const user = await userModel.findOne({ _id: userid })
         // console.log(user);
-        res.render('index', { session, user });
+        res.render('index', { user, userid });
     } catch (error) {
         console.log(error.message);
     }
 }
+
+
 const shopLoad = async (req, res) => {
     try {
-        const category = await catModel.find({list:true}) 
-        const product = await productModel.find({list:true})  
-        
-        
-        const session = req.session.user_id
+        const category = await catModel.find({ list: true })
+        const product = await productModel.find({ list: true })
 
-        const user = await userModel.findOne({ _id: session, })
+
+        const { userid } = req.session
+
+        const user = await userModel.findOne({ _id: userid, })
 
         res.render('shop',
-         {  session, user,  
-            category : category,
-            products : product})
-            console.log(product);
+            {
+                userid, user,
+                category: category,
+                products: product
+            })
+
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const showProductDetails = async(req,res)=>{
+const showProductDetails = async (req, res) => {
     try {
-        const session = req.session.user_id
+        const { userid } = req.session
+        const user = await userModel.findOne({ _id: userid })
 
-        const id = req.query.id
+        const { id } = req.query
 
-        console.log(id);
 
-        const product = await productModel.findById({_id:id})
-        console.log(product);
-       
-        res.render('productDetails',{session,product})
+        
+        const product = await productModel.findById({ _id: id }).populate("category")
+        
+        res.render('productDetails', { userid, product, user })
 
     } catch (error) {
-        console.log( error.message);    
+        console.log(error.message);
     }
 }
+
+const loadProfile = async (req, res) => {
+    try {
+        const { userid } = req.session
+
+        const user = await userModel.findOne({ _id: userid })
+        res.render('profile', { user, userid })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const manageAddress = async (req, res) => {
+    try {
+        const { userid } = req.session
+        const user = await userModel.findOne({ _id: userid })
+        res.render('address', { userid, user })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const addAddress = async (req, res) => {
+    try {
+        const { userid } = req.session
+        const user = await userModel.findOne({ _id: userid })
+        res.render('addAddress', { userid, user })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+const postAddress = async (req, res) => {
+    try {
+        const { userid } = req.session;
+        const { name, housename, city, state, phone, pincode } = req.body;
+        await userModel.updateOne(
+            { _id: userid },
+            {
+                $push: {
+                    address: {
+                        name: name,
+                        housename: housename,
+                        city: city,
+                        state: state,
+                        phone: phone,
+                        pincode: pincode,
+                    },
+                },
+            },
+        )
+        res.redirect("/manageAddress");
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const editaddress = async (req, res) => {
+    try {
+
+        const { userid } = req.session;
+        const { id } = req.query;
+        const user = await userModel.findOne({ _id: userid })
+        const userAddress = await userModel.findOne(
+            { _id: userid },
+            { address: { $elemMatch: { _id: id } } }
+        );
+        console.log(userAddress);
+        res.render("editAddress", { userid, userAddress: userAddress, user });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const updateAddress = async (req, res) => {
+    try {
+        const { userid } = req.session;
+        // const user = await userModel.findOne({ _id: userid })
+        const { id, name, housename, city, state, pincode, phone } = req.body;
+        await userModel.updateOne(
+            { _id: userid, "address._id": id },
+            {
+                $set: {
+                    "address.$.name": name,
+                    "address.$.housename": housename,
+                    "address.$.city": city,
+                    "address.$.state": state,
+                    "address.$.pincode": pincode,
+                    "address.$.phone": phone,
+                },
+            }
+        )
+        res.redirect("/manageAddress");
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const deleteAddress = async (req, res) => {
+    try {
+        const { userid } = req.session;
+        const { addId } = req.body;
+        await userModel.updateOne(
+            { _id: userid },
+            { $pull: { address: { _id: addId } } }
+        )
+        res.status(201).json({ message: "success deleted" });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const editProfile = async (req, res) => {
+    try {
+        const { userid } = req.session
+       
+        const user = await userModel.findById({ _id: userid })
+        res.render('editProfile', { user, userid })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+const updateProfile = async (req, res) => {
+    try {
+        const { userid } = req.session
+        const { name, mobile, email } = req.body
+        console.log(name);
+        await userModel.updateOne({ _id: userid },
+            {
+                $set: {
+                    name: name,
+                    email: email,
+                    mobile: mobile
+                },
+            })
+
+        res.redirect('/profile')
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const changePassword = async (req, res) => {
+    try {
+        const { userid } = req.session
+      
+        const user = await userModel.findById({ _id: userid })
+        res.render('changePassword', {  user, userid })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const updatePassword = async (req, res) => {
+    try {
+        const { userid } = req.session
+        const { currentPassword, newPassword, confirmNewPassword } = req.body
+        const user = await userModel.findById({ _id: userid })
+        const passwordMatch = await bcrypt.compare(currentPassword, user.password)
+
+        if (passwordMatch) {
+
+            if (newPassword === confirmNewPassword) {
+                const hashPassword = await bcrypt.hash(newPassword, 10)
+                await userModel.updateOne(
+                    { _id: userid },
+                    { $set: { password: hashPassword } }
+                )
+                // req.flash("success","password has changed")
+                res.redirect('/profile')
+            }else{
+                req.session.message = "new password and confirm password didin't match"
+                res.redirect('/changePassword')
+            }
+        }else{
+            req.session.message="currentPassword didin't match"
+            res.redirect('/changePassword')
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    }
+
+}
+
+const lostPassEmailPage = async (req,res)=>{
+    try {
+        const {message}=req.session
+        req.session.message=''
+        res.render('forgetPassEmail',{message})
+    }catch(error){
+        console.log(error.message);
+    }
+}
+
+const forgetPassSendOtp = async(req,res)=>{
+    try {
+        const {email} = req.body
+        const emailExist = await userModel.findOne({email:email})
+        // console.log(email);
+        
+        if(emailExist){
+           
+            req.session.user=emailExist._id
+           
+            const otps = `${Math.floor(1000 + Math.random() * 9000)}`
+            //send OTP to the mail
+            let transporter = nodemailer.createTransport({
+                service: 'gmail',
+                host: 'smtp.gmail.com',
+                port: 587,
+                secure: true,
+                auth: {
+                    user: process.env.email_user,
+                    pass: process.env.email_password
+                }
+            })
+            
+            console.log(otps)
+    
+            const mailOptions = {
+                from: 'afridp@gmail.com',
+                to: email,
+                subject: 'Otp For Seting New Password',
+                html: `${otps}`
+            }
+    
+           await transporter.sendMail(mailOptions);
+
+           let hashedOtp = await bcrypt.hash(otps,10)
+           req.session.otp=hashedOtp
+           
+           res.redirect('/forgPassOtpEnter')
+        }else{
+            req.session.message='This Email Is not registered with Us,plaease register'
+            res.redirect('/lostPassEmailPage');
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const forgetPassOtpEnterPage = async(req,res)=>{
+    try {
+        let {message,otp,user}=req.session
+        // console.log(email);
+        req.session.message=''
+        res.render('forgPassOtpEnter',{message,otp,user})
+       
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const postForgetPassOtpVerify = async(req,res)=>{
+    try {
+        const {otp,userOtp,user} = req.body;
+        // console.log(req.session.email); 
+        if(!await bcrypt.compare(otp, userOtp)){
+            req.session.message='invalid otp,please try again'
+            res.redirect('/forgPassOtpEnter')
+        }else{
+            res.render('setNewPassword',{user})
+            
+            
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const updateNewPassword = async(req,res)=>{
+    try {
+        const {user,newPassword,confirmPassword}= req.body
+        // const userToUpdate = await userModel.findById({_id:user})
+        console.log(confirmPassword);
+        const hashedPassword = await bcrypt.hash(confirmPassword,10)
+        await userModel.updateOne({_id:user},{$set:{password:hashedPassword}})
+        res.redirect('/login')
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 module.exports = {
@@ -298,5 +631,22 @@ module.exports = {
     emailVerificationPage,
     emailVerification,
     showProductDetails,
+    loadProfile,
+    manageAddress,
+    addAddress,
+    postAddress,
+    editaddress,
+    updateAddress,
+    deleteAddress,
+    editProfile,
+    updateProfile,
+    changePassword,
+    updatePassword,
+    lostPassEmailPage,
+    forgetPassSendOtp,
+    forgetPassOtpEnterPage,
+    postForgetPassOtpVerify,
+    updateNewPassword
+
 
 }

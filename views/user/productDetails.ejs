@@ -1,74 +1,76 @@
 <%- include('./layouts/header.ejs') -%>
 
-<%- include('./layouts/navbar.ejs') -%>
+    <%- include('./layouts/navbar.ejs') -%>
 
 
-   
 
-    <!-- Shop Details Section Begin -->
-    <section class="shop-details">
-        <div class="product__details__pic">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="product__details__breadcrumb">
-                            <a href="./index.html">Home</a>
-                            <a href="./shop.html">Shop</a>
-                            <span>Product Details</span>
+
+        <!-- Shop Details Section Begin -->
+        <section class="shop-details">
+            <div class="product__details__pic">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="product__details__breadcrumb">
+                                <a href="./index.html">Home</a>
+                                <a href="/shop.ejs">Shop</a>
+                                <span>Product Details</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    
+                    <div class="row">
+
                         <div class="col-lg-3 col-md-3">
-                        <ul class="nav nav-tabs" role="tablist">
-                            <% for(let i=0 ; i < product.image.length ; i++) { %>
-                                <li class="nav-item">
-                                    <a class="nav-link <% if (i === 0) { %> active <% } %>" data-toggle="tab"
-                                        href="#tabs-<%= i+1   %>" role="tab">
-                                        
-                                    <div class="product__thumb__pic">
-                                        <img src="/images/<%= product.image[i] %>">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <% for(let i=0 ; i < product.image.length ; i++) { %>
+                                    <li class="nav-item">
+                                        <a class="nav-link <% if (i === 0) { %> active <% } %>" data-toggle="tab"
+                                            href="#tabs-<%= i+1   %>" role="tab">
 
-                                    
-                                    </div>
-                                </a>
-                            </li>
-                            <% } %>
-                            
-
-                        </ul>
-                    </div>
+                                            <div class="product__thumb__pic">
+                                                <img src="/images/<%= product.image[i] %>">
 
 
-                    <div class="col-lg-6 col-md-9">
-                        <div class="tab-content">
-                            <% for(let i=0 ; i < product.image.length ; i++) { %>
-                                <div class="tab-pane <% if (i === 0) { %>active<% } %>" id="tabs-<%= i + 1 %>"
-                                    role="tabpanel">
-                                    <div class="product__details__pic__item">
-                                        <img src="/images/<%= product.image[i] %>" alt="">
-                                    </div>
-                                </div>
-                                <% } %>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <% } %>
+
+
+                            </ul>
                         </div>
-                        
+
+
+                        <div class="col-lg-6 col-md-9">
+                            <div class="tab-content">
+                                <% for(let i=0 ; i < product.image.length ; i++) { %>
+                                    <div class="tab-pane <% if (i === 0) { %>active<% } %>" id="tabs-<%= i + 1 %>"
+                                        role="tabpanel">
+                                        <div class="product__details__pic__item">
+                                            <img src="/images/<%= product.image[i] %>" alt="">
+                                        </div>
+                                    </div>
+                                    <% } %>
+                            </div>
+
+                        </div>
+
+
                     </div>
-                
-                    
+                    <input type="hidden" name="productId" id="productId" value="<%= product._id %>">
                 </div>
-
             </div>
-        </div>
 
-        <div class="product__details__content">
-            <div class="container">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-lg-8">
-                        <div class="product__details__text">
-                            <h4><%= product.name %></h4>
-                            <!-- <div class="rating">
+            <div class="product__details__content">
+                <div class="container">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="product__details__text">
+                                <h4>
+                                    <%= product.name %>
+                                </h4>
+                                <!-- <div class="rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -76,77 +78,91 @@
                                 <i class="fa fa-star-o"></i>
                                 <span> - 5 Reviews</span>
                             </div> -->
-                            <h3>₹<%= product.price %> <span>70.00</span></h3>
-                            <p><%= product.description  %></p>
-                            
-                            <div class="product__details__option">
-                                <div class="product__details__option__size">
-                                    <span>Size:</span>
-                                    <label for="xxl">xxl
-                                        <input type="radio" id="xxl">
-                                    </label>
-                                    <label class="active" for="xl">xl
-                                        <input type="radio" id="xl">
-                                    </label>
-                                    <label for="l">l
-                                        <input type="radio" id="l">
-                                    </label>
-                                    <label for="sm">s
-                                        <input type="radio" id="sm">
-                                    </label>
-                                </div>
-                                <div class="product__details__option__color">
-                                    <span>Color:</span>
-                                    <label class="c-1" for="sp-1">
-                                        <input type="radio" id="sp-1">
-                                    </label>
-                                    <label class="c-2" for="sp-2">
-                                        <input type="radio" id="sp-2">
-                                    </label>
-                                    <label class="c-3" for="sp-3">
-                                        <input type="radio" id="sp-3">
-                                    </label>
-                                    <label class="c-4" for="sp-4">
-                                        <input type="radio" id="sp-4">
-                                    </label>
-                                    <label class="c-9" for="sp-9">
-                                        <input type="radio" id="sp-9">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="product__details__cart__option">
-                                <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
+                                <h3>₹<%= product.price %> <span>70.00</span></h3>
+                                <p>
+                                    <%= product.description %>
+                                </p>
+
+                                <!-- <div class="product__details__option">
+                                    <div class="product__details__option__size">
+                                        <span>Size:</span>
+                                        <label for="xxl">xxl
+                                            <input type="radio" id="xxl">
+                                        </label>
+                                        <label class="active" for="xl">xl
+                                            <input type="radio" id="xl">
+                                        </label>
+                                        <label for="l">l
+                                            <input type="radio" id="l">
+                                        </label>
+                                        <label for="sm">s
+                                            <input type="radio" id="sm">
+                                        </label>
                                     </div>
+                                    <div class="product__details__option__color">
+                                        <span>Color:</span>
+                                        <label class="c-1" for="sp-1">
+                                            <input type="radio" id="sp-1">
+                                        </label>
+                                        <label class="c-2" for="sp-2">
+                                            <input type="radio" id="sp-2">
+                                        </label>
+                                        <label class="c-3" for="sp-3">
+                                            <input type="radio" id="sp-3">
+                                        </label>
+                                        <label class="c-4" for="sp-4">
+                                            <input type="radio" id="sp-4">
+                                        </label>
+                                        <label class="c-9" for="sp-9">
+                                            <input type="radio" id="sp-9">
+                                        </label>
+                                    </div>
+                                </div> -->
+                                
+
+                                <div class="product__details__cart__option">
+                                    <div class="quantity">
+                                        <label for="quantity">Quantity:</label>
+                                        <input 
+                                            type="number" 
+                                            value="1" 
+                                            name="quantity" 
+                                            id="quantity" 
+                                            min="1" 
+                                            max="<%= product.quantity %>"
+                                        >
+                                   
+                                    </div>
+                                    
+                                    <a href="#" class="primary-btn" onclick="addToCart()">add to cart</a>
                                 </div>
-                                <a href="#" class="primary-btn">add to cart</a>
-                            </div>
-                            <div class="product__details__btns__option">
-                                <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-                                <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
-                            </div>
-                            <div class="product__details__last__option">
-                                <h5><span>Guaranteed Safe Checkout</span></h5>
-                                <img src="img/shop-details/details-payment.png" alt="">
-                                <ul>
-                                    <li><span>SKU:</span> 3812912</li>
-                                    <li><span>Categories:</span> Clothes</li>
-                                    <li><span>Tag:</span> Clothes, Skin, Body</li>
-                                </ul>
+                                <div class="product__details__btns__option">
+                                    <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
+                                    
+                                </div>
+                                <div class="product__details__last__option">
+                                    <h5><span>Guaranteed Safe Checkout</span></h5>
+                                    <img src="/user/img/shop-details/razorpay.png" alt="">
+                                    <ul>
+                                        
+                                        <li><span>Categories:</span>
+                                            <%= product.category.name %>
+                                        </li>
+                                        <!-- <li><span>Tag:</span> Clothes, Skin, Body</li> -->
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="product__details__tab">
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" href="#tabs-5"
-                                    role="tab">Description</a>
-                                </li>
-                                <!-- <li class="nav-item">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="product__details__tab">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#tabs-5"
+                                            role="tab">Description</a>
+                                    </li>
+                                    <!-- <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Customer
                                     Previews(5)</a>
                                 </li>
@@ -154,15 +170,17 @@
                                     <a class="nav-link" data-toggle="tab" href="#tabs-7" role="tab">Additional
                                     information</a>
                                 </li> -->
-                            </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="tabs-5" role="tabpanel">
-                                    <div class="product__details__tab__content">
-                                        <p class="note">Nam tempus turpis at metus scelerisque placerat nulla deumantos
-                                            solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis
-                                            ut risus. Sedcus faucibus an sullamcorper mattis drostique des commodo
-                                        pharetras loremos.</p>
-                                        <!-- <div class="product__details__tab__content__item">
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tabs-5" role="tabpanel">
+                                        <div class="product__details__tab__content">
+                                            <p class="note">Nam tempus turpis at metus scelerisque placerat nulla
+                                                deumantos
+                                                solicitud felis. Pellentesque diam dolor, elementum etos lobortis des
+                                                mollis
+                                                ut risus. Sedcus faucibus an sullamcorper mattis drostique des commodo
+                                                pharetras loremos.</p>
+                                            <!-- <div class="product__details__tab__content__item">
                                             <h5>Products Infomation</h5>
                                             <p>A Pocket PC is a handheld computer, which features many of the same
                                                 capabilities as a modern PC. These handy little devices allow
@@ -188,9 +206,9 @@
                                                 breathable. Velvet is a great choice for dinner party jacket and can be
                                             worn all year round.</p>
                                         </div> -->
+                                        </div>
                                     </div>
-                                </div>
-                                <!-- <div class="tab-pane" id="tabs-6" role="tabpanel">
+                                    <!-- <div class="tab-pane" id="tabs-6" role="tabpanel">
                                     <div class="product__details__tab__content">
                                         <!-- <div class="product__details__tab__content__item">
                                             <h5>Products Infomation</h5>
@@ -219,8 +237,8 @@
                                             worn all year round.</p>
                                         </div> -->
                                     <!-- </div> -->
-                                <!-- </div> --> 
-                                <!-- <div class="tab-pane" id="tabs-7" role="tabpanel">
+                                    <!-- </div> -->
+                                    <!-- <div class="tab-pane" id="tabs-7" role="tabpanel">
                                     <div class="product__details__tab__content">
                                         <p class="note">Nam tempus turpis at metus scelerisque placerat nulla deumantos
                                             solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis
@@ -254,17 +272,101 @@
                                         </div>
                                     </div>
                                 </div> -->
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <!-- Shop Details Section End -->
+        </section>
+        <%- include('./layouts/footerNavbar.ejs') -%>
 
-    <!-- Related Section Begin -->
-    <!-- <section class="related spad">
+            <%- include('./layouts/footer.ejs') -%>
+
+                <script>
+                    // addToCart = async (product_Id) => {
+                    //     try {
+                    //         event.preventDefault()
+                    //         Toastify({
+                    //             text: "Added To Cart",
+                    //             duration: 1000,
+                    //             destination: '/shoppingCart',
+                    //             newWindow: false,
+                    //             close: false,
+                    //             gravity: "top",
+                    //             position: "right",
+                    //             stopOnFocus: false,
+                    //             style: {
+                    //                 background: "#384aeb",
+                    //             }
+                    //         }).showToast();
+
+                    //         let product_quantity = document.getElementById('sst').value
+                    //         const quantityData = await axios.post('/addToCart', { product_quantity, product_Id })
+                    //         return quantityData
+                    //     } catch (error) {
+                    //         console.log(error.message);
+                    //     }
+                    // }
+
+
+                    async function addToCart() {
+
+                        
+                        try {
+                            
+                            event.preventDefault()
+                            
+                            const productId = document.getElementById("productId").value;
+                            const quantity = document.getElementById("quantity").value;
+
+                            const data = {
+                                productId: productId,
+                                quantity: quantity
+                            };
+                            
+                            const response = await axios.post("/addToCart", data);
+                            // if(response.data.success){
+                            // Toastify({
+                            //     text: "Added To Cart",
+                            //     duration: 1000,
+                            //     destination: '/shoppingCart',
+                            //     newWindow: false,
+                            //     close: false,
+                            //     gravity: "top",
+                            //     position: "right",
+                            //     stopOnFocus: false,
+                            //     style: {
+                            //         background: "#384aeb",
+                            //     }
+                            // }).showToast();
+                        // }
+                            if (response.data.success) {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: 'Product added to cart',
+                                    icon: 'success',
+                                    timer: 2000
+                                })
+                            } else {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: 'Something went wrong',
+                                    icon: 'error',
+                                    timer: 2000
+                                })
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            alert("Error adding product to cart");
+                        }
+                    }
+
+                </script>
+                <!-- Shop Details Section End -->
+
+                <!-- Related Section Begin -->
+                <!-- <section class="related spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -413,10 +515,4 @@
             </div>
         </div>
     </section> -->
-    <!-- Related Section End -->
-
-
-    
-    <%- include('./layouts/footerNavbar.ejs') -%>
-
-    <%- include('./layouts/footer.ejs') -%>
+                <!-- Related Section End -->

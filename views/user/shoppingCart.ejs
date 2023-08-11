@@ -1,0 +1,206 @@
+<%- include('./layouts/header.ejs') -%>
+
+
+    <%- include('./layouts/navbar.ejs') -%>
+
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__text">
+                            <h4>Shopping Cart</h4>
+                            <div class="breadcrumb__links">
+                                <a href="./index.html">Home</a>
+                                <a href="./shop.html">Shop</a>
+                                <span>Shopping Cart</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Section End -->
+
+
+
+
+
+        <div id="reloadDiv">
+            <section class="shopping-cart spad">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <% if (cartData && cartData.items) { %>
+                                <div class="shopping__cart__table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Quantity</th>
+                                                <th>Total</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% cartData.items.forEach((x)=> { %>
+                                                <tr class="cart-item">
+                                                    <td class="product__cart__item">
+                                                        <div class="product__cart__item__pic">
+                                                            <img src="/images/<%= x.product_Id.image[0] %>" alt=""
+                                                                style="height: 100px; width: 100px;">
+                                                        </div>
+                                                        <div class="product__cart__item__text">
+                                                            <h6>
+                                                                <%= x.product_Id.name %>
+                                                            </h6>
+                                                            <h5>₹<%= x.product_Id.price %>
+                                                            </h5>
+                                                        </div>
+                                                    </td>
+                                                    <td class="quantity__item">
+                                                        <div class="">
+                                                            <div class="pro-qty-2">
+                                                                <button class="" type="button"
+                                                                    onclick="increaseQuantity('<%= x._id %>', '<%= x.product_Id._id %>', -1 )">-</button>
+                                                                <input class="qty-input small-input" type="text"
+                                                                    value="<%= x.quantity %>" readonly>
+                                                                <button class=" " type="button"
+                                                                    onclick="increaseQuantity('<%= x._id %>', '<%= x.product_Id._id %>', 1 )">+</button>
+                                                            </div>
+
+
+
+
+                                                        </div>
+                                                    </td>
+                                                    <td class="cart__price">₹ <%= x.totalPrice %>
+                                                    </td>
+                                                    <td class="cart__close">
+                                                        <a href="#" onclick="removeFromCart('<%= x._id %>')"><i
+                                                                class="fa fa-close"></i></a>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="continue__btn">
+                                            <a href="#">Continue Shopping</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } else { %>
+                                    <h4 class="text-center" style="padding-left: 420px;">No products in cart</h4>
+                                    <% } %>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="cart__total">
+                                <h6>Cart total</h6>
+                                <ul>
+                                    <li>Subtotal <span>₹ <%= total %></span></li>
+                                    <li>Total <span>₹ <%= total %></span></li>
+                                </ul>
+                                <a href="/checkout" class="primary-btn">Proceed to checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Shopping Cart Section End -->
+
+
+
+
+        <%- include('./layouts/footerNavbar.ejs') -%>
+
+            <%- include('./layouts/footer.ejs') -%>
+
+
+                <script>
+                    function removeFromCart(productId) {
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: "You want to delete!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, remove!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    url: '/deleteItems',
+                                    data: {
+                                        productId: productId
+                                    },
+                                    method: 'post',
+                                    success: (response) => {
+                                        if (response.success) {
+
+                                            $('#reloadDiv').load('/loadCart #reloadDiv', () => {
+
+                                                Swal.fire({
+                                                    title: 'Deleted!',
+                                                    text: 'Your item has been deleted.',
+                                                    icon: 'success',
+                                                    timer: 1500,
+                                                    showConfirmButton: false
+                                                });
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                title: 'Error!',
+                                                text: 'Failed to delete item.',
+                                                icon: 'error',
+                                                showConfirmButton: false
+                                            });
+                                        }
+                                    },
+                                    error: (error) => {
+                                        console.log(error);
+                                        Swal.fire({
+                                            title: 'Error!',
+                                            text: 'An error occurred while deleting the item.',
+                                            icon: 'error',
+                                            showConfirmButton: false
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    // const deleteFromCart = async (product_Id) => {
+                    //     swal({
+                    //         title: "Cancel Order",
+                    //         text: "Are you sure you want to cancel this order?",
+                    //         icon: "warning",
+                    //         buttons: ["Cancel", "OK"],
+                    //         dangerMode: true,
+                    //     }).then(async (willDelete) => {
+                    //         if (willDelete) {
+                    //             const deletedItem = await axios.put("/cart", { product_Id });
+                    //             document.getElementById("productTot al").innerHTML =
+                    //                 deletedItem?.data?.total;
+
+                    //             const { cart } = deletedItem.data;
+
+                    //             if (deletedItem) {
+                    //                 document.getElementById(product_Id).style.display = "none";
+                    //                 document.getElementById("productTotal").textContent =
+                    //                     deletedItem.data.total;
+                    //                 if (cart === 0) {
+                    //                     const remove = document.getElementById("hideCheckOut");
+                    //                     remove.parentNode.removeChild(remove);
+                    //                 }
+                    //             }
+                    //         }
+                    //     });
+                    // };
+
+                </script>

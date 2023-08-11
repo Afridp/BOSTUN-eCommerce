@@ -93,9 +93,13 @@
                 
             </div>
 
-            <% if(typeof message !=='undefined' ) { %>
-                <div class="alert alert-danger mt-3">
-                    <%= message %>
+            <% if (typeof message !=='undefined' ) { %>
+                <div class="error-container">
+                    <div class="error-message" style="background-color: rgb(251, 140, 140); border-radius: 5px; ">
+                        <p class="px-3">
+                            <%= message %>
+                        </p>
+                    </div>
                 </div>
                 <% } %>
 
@@ -111,7 +115,7 @@
                         </div>
 
                         <input type="submit" class="btn btn-success mt-3" value="Login" onclick="show()">
-                        <a href="" class="btn btn-peace mt-3" ">Lost Password.?</a>
+                        <a href="/lostPassEmailPage" class="btn btn-peace mt-3" ">Lost Password.?</a>
             </form>
             <div class=" text-center pt-3">
                             <span style="font-size: small; color: #5740bd;">Don't have an account? </span>

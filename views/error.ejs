@@ -1,3 +1,89 @@
 <h1><%= message %></h1>
 <h2><%= error.status %></h2>
 <pre><%= error.stack %></pre>
+const loadForgotPass = async(req,res)=>{
+    try {
+        res.render('forgotPass')
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+const postForgotPass = async(req,res)=>{
+    try {
+
+        const email = req.body.email
+        const emailExist = await User.findOne({email:email})
+
+        if(emailExist){
+            const otpGenerated = Math.floor(1000+Math.random()*9999);
+            otp = otpGenerated;
+            console.log(otp);
+
+            sendVerifymail(email,otpGenerated)
+            console.log(emailExist)
+            res.render('rePassOtp',{emailExist,email})
+            
+        }
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const loadForgotPassOtp = async(req,res)=>{
+    try {
+
+        res.render('rePassOtp')
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const postForgotPassOtp = async (req, res) => {
+    try {
+        const OTP = req.body.otp;
+        const email = req.query.email;
+
+        // Assuming 'otp' is defined and holds the correct OTP value
+        if (OTP == otp) {
+            res.render('newPassword',{email});
+            // console.log(email)
+        } else {
+            res.render('rePassOtp', { message: "Enter a valid Otp", email });
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+
+const loadNewPassword = async(req,res)=>{
+    try {
+        const email=req.query.email
+
+        res.render('newPassword',{email})
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const postnewPassword = async(req,res)=>{
+    try {
+        const email = req.query.email
+        console.log(email)
+        const newPass = req.body.newPassword
+        if(newPass.length>4){
+        const passwordHash = await bcrypt.hash(newPass, 10);
+            await User.updateOne({email:email},{$set:{password:passwordHash}})
+            res.redirect('/login')
+        }else{
+            res.render('newPassword',{message:"Enter at least 5 characters"})
+        }
+        
+    } catch (error) {
+        console.log(error.message)
+    }
+}

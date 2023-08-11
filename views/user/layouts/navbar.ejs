@@ -25,8 +25,8 @@
                             <li><a href="/shop">Shop</a></li>
                             <li><a href="/contact">Contact Us</a></li>
                             
-                           <% if (session) { %>
-                            <li><a href="/login"><%= user.name %></a></li>
+                           <% if (userid) { %>
+                            <li><a href="/profile"><%= user.name %></a></li>
                            <% } else { %> 
                             <li><a href="/login">Login</a></li>
                            <% } %> 
@@ -39,7 +39,7 @@
                     <div class="header__nav__option">
                         <a href="#" class="search-switch"><img src="/user/img/icon/search.png" alt=""></a>
                         <a href="#"><img src="/user/img/icon/heart.png" alt=""></a>
-                        <a href="#"><img src="/user/img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="/loadCart"><img src="/user/img/icon/cart.png" alt=""> <span>0</span></a>
                         <div class="price">₹0.00</div>
                     </div>
                 </div>

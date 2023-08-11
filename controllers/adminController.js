@@ -1,16 +1,47 @@
 const userModel = require('../models/userModel')
-const bcrypt = require('bcrypt');
-const { assign } = require('nodemailer/lib/shared');
+const dotenv = require('dotenv')
+dotenv.config()
+
 
 
 const credentials = {
-    adminEmail: "afridafriperingaden@gmail.com",
-    adminPassword: "12345"
+    adminEmail: process.env.admin_email,
+    adminPassword: process.env.admin_Password
 };
 
 const loadLogin = async (req, res) => {
     try {
-        res.render('login')
+        let { message } = req.session;
+
+        if (req.session.adminSession) {
+
+            res.locals.session = req.session.adminSession
+            res.redirect('/admin/dashboard')
+        } else {
+            req.session.message = ""
+            res.render('login', { message })
+
+        }
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const verifyLogin = async (req, res) => {
+    try {
+        let { email, password } = req.body
+        let { adminEmail, adminPassword } = credentials
+        console.log(adminEmail, adminPassword);
+        if (adminEmail === email && adminPassword === password) {
+
+            req.session.adminSession = adminEmail;
+
+            res.redirect("/admin/dashboard")
+
+        } else {
+            req.session.message = "invalid admin details"
+            res.render('login', { message })
+        }
     } catch (error) {
         console.log(error.message);
     }
@@ -18,18 +49,21 @@ const loadLogin = async (req, res) => {
 
 const loadDashboard = async (req, res) => {
     try {
-        let { email, password } = req.body
-        let { adminEmail, adminPassword } = credentials
-        if (adminEmail === email && adminPassword === password) {
-            res.render("index")
-
-        } else {
-            res.render('login', { message: "not a admin" })
-        }
+        res.render('index')
     } catch (error) {
-
+        console.log(error.message);
     }
 }
+
+const loadLogout = async (req, res) => {
+    try {
+        req.session.adminSession = null;
+        res.redirect("/admin");
+    } catch (error) {
+        res.redirect("/error500");
+    }
+}
+
 
 const loadUsers = async (req, res) => {
     try {
@@ -44,7 +78,7 @@ const loadUsers = async (req, res) => {
 
 const usersBlocked = async (req, res) => {
     try {
-        console.log("haai");
+
         const { userId } = req.body;
 
         const userToBlock = await userModel.findById({ _id: userId });
@@ -79,8 +113,10 @@ const usersBlocked = async (req, res) => {
 
 
 module.exports = {
+    verifyLogin,
     loadLogin,
     loadDashboard,
+    loadLogout,
     loadUsers,
     usersBlocked
 }

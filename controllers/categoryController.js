@@ -8,7 +8,7 @@ const loadCategories = async (req, res) => {
         req.session.message = ""
         // console.log(message);
         let categories = await catModel.find()
-        console.log(message);
+        
         res.render('categories', { message, category: categories })
     } catch (error) {
         console.log(error.message);

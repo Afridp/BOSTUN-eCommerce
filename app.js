@@ -3,14 +3,15 @@ mongoose.connect("mongodb://127.0.0.1:27017/BostonE-Commerce")
 .then(()=>console.log("connected to database"))
 .catch(()=>console.log("error..!! failed to connect database"))
 
-
-
+const flash = require('connect-flash');
 const express = require('express');
 const app = express();
+const session = require('express-session')
 const nocache = require("nocache")
 const path = require("path")
+require("dotenv").config()
 
-
+app.set('view engine', 'ejs')
 // var createError = require('http-errors');
 // const session = require("express-session")
 // const userController = require("./controllers/userController")
@@ -27,17 +28,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(cookieParser());
 
 app.use(nocache())
-
+app.use(
+    session({
+        secret:'key',
+        saveUninitialized:true,
+        resave:true
+    })
+  )
+//   app.use(flash())
 
 
 const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
 
 
+app.use('/admin', adminRouter);
 
 app.use('/', userRouter);
 
-app.use('/admin', adminRouter);
 
 
 

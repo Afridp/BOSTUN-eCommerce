@@ -1,0 +1,114 @@
+<%- include('./layouts/header.ejs') -%>
+
+
+  <%- include('./layouts/navbar.ejs') -%>
+
+    <section class="breadcrumb-option">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="breadcrumb__text">
+              <h4>Shop</h4>
+              <div class="breadcrumb__links">
+                <a href="/">Home</a>
+                <a href="/">Profile</a>
+                <span>Manage Addresses</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section style="background-color: #f8f8f8; padding: 50px 0">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title text-primary">Manage Address</h5>
+                <ul class="list-group list-group-flush">
+                  <% if(userid) { for(let userAddress of user.address) { %>
+                    <li id="deleteLi" class="list-group-item">
+                      <div class="row align-items-center">
+                        <div class="col-sm-9">
+                          <p class="mb-1">
+                            <strong class="text-dark">Name:</strong>
+                            <%= userAddress.name %>
+                          </p>
+                          <p class="mb-1">
+                            <strong class="text-dark">House Name:</strong>
+                            <%= userAddress.housename %>
+                          </p>
+                          <p class="mb-1">
+                            <strong class="text-dark">City:</strong>
+                            <%= userAddress.city %>
+                          </p>
+                          <p class="mb-1">
+                            <strong class="text-dark">State:</strong>
+                            <%= userAddress.state %>
+                          </p>
+                          <p class="mb-1">
+                            <strong class="text-dark">Phone:</strong>
+                            <%= userAddress.phone %>
+                          </p>
+                          <p class="mb-1">
+                            <strong class="text-dark">PIN Code:</strong>
+                            <%= userAddress.pincode %>
+                          </p>
+                        </div>
+                        <div class="col-sm-3 text-right">
+                          <div class="btn-group">
+                            <a href="/editAddress?id=<%= userAddress.id %>" class="btn btn-sm btn-primary">
+                              <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="#" onclick="deleteAddress('<%= userAddress.id %>')" class="btn btn-sm btn-danger ">
+                              <i class="fas fa-trash"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <% } } else { %>
+                      <li class="list-group-item text-muted">No addresses found.</li>
+                      <% } %>
+                </ul>
+
+                <div class="text-center mt-4">
+                  <a href="/addAddress" class="btn btn-primary btn-sm">Add Address</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <%- include('./layouts/footerNavbar.ejs') -%>
+
+      <%- include('./layouts/footer.ejs') -%>
+
+
+        <script>
+          const deleteAddress = async (addId) => {
+            try {
+              event.preventDefault();
+              swal({
+                title: "Remove Address",
+                text: "Are you sure you want to remove this address?",
+                icon: "warning",
+                buttons: ["Cancel", "OK"],
+                dangerMode: true,
+              }).then(async (willDelete) => {
+                if (willDelete) {
+                  let addressId = await axios.put("/deleteAddress", { addId });
+                  if (addressId) {
+                    document.getElementById("deleteLi").style.display = "none";
+                  }
+                }
+              });
+            } catch (error) {
+              console.log(error.message);
+            }
+          };
+        </script>

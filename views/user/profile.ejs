@@ -1,0 +1,166 @@
+<%- include('./layouts/header.ejs') -%>
+
+
+  <%- include('./layouts/navbar.ejs') -%>
+
+    <section class="breadcrumb-option">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="breadcrumb__text">
+              <h4>Shop</h4>
+              <div class="breadcrumb__links">
+                <a href="/">Home</a>
+                <span>Profilre</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section style="background-color: #51565c">
+      <div class="container py-5">
+        <% if(typeof successMessage!=='undefined' ){ %>
+          <div class="text-success">
+            <%=successMessage %>
+          </div>
+          <% } %>
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="card mb-4">
+                  <div class="card-body text-center">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6.webp" alt="avatar"
+                      class="rounded-circle img-fluid" style="width: 150px; border: 4px solid #fff" />
+                    <h5 class="my-3">
+                      <%= user.name %>
+                    </h5>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item">
+                        <a href="/editProfile" class="btn btn-outline-dark btn-block">Edit Profile</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a href="/orders" class="btn btn-outline-dark btn-block">Orders</a>
+                      </li>
+                      <li class="list-group-item">
+                        <a href="/manageAddress" class="btn btn-outline-dark btn-block">Manage Address</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-8">
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <h5 class="card-title">Wallet</h5>
+                    <p class="mb-0">₹<%= user.wallet %>
+                    </p>
+                    <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal"
+                      data-target="#walletModal">
+                      View Wallet
+                    </button>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title">User Profile</h5>
+                    <hr />
+
+                    <div class="row mb-3">
+                      <div class="col-sm-3">
+                        <p class="font-weight-bold mb-0">Full Name</p>
+                      </div>
+                      <div class="col-sm-9">
+                        <p class="text-muted mb-0">
+                          <%= user.name %>
+                        </p>
+                      </div>
+                    </div>
+                    <hr />
+                    <div class="row mb-3">
+                      <div class="col-sm-3">
+                        <p class="font-weight-bold mb-0">Email</p>
+                      </div>
+                      <div class="col-sm-9">
+                        <p class="text-muted mb-0">
+                          <%= user.email %>
+                        </p>
+                      </div>
+                    </div>
+                    <hr />
+                    <div class="row mb-3">
+                      <div class="col-sm-3">
+                        <p class="font-weight-bold mb-0">Phone</p>
+                      </div>
+                      <div class="col-sm-9">
+                        <p class="text-muted mb-0">
+                          <%= user.mobile %>
+                        </p>
+                      </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                      <div class="col-sm-9">
+                        <a href="/changePassword" class="btn btn-outline-info btn-sm">Change Password</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+    </section>
+    <div class="modal fade mt-5" id="walletModal" tabindex="-1" role="dialog" aria-labelledby="walletModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title text-white" id="walletModalLabel">
+              Wallet Details
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <!-- Wallet Balance Section -->
+              <div class="col-md-6 mb-4">
+                <div class="card shadow-sm">
+                  <div class="card-body">
+                    <h6 class="card-title">Your Wallet Balance:</h6>
+                    <h4 class="card-text text-primary font-weight-bold">
+                      ₹<%= user.wallet %>
+                    </h4>
+                  </div>
+                </div>
+              </div>
+              <!-- Add Wallet Money Button -->
+              <!-- <div class="col-md-6 mb-4 text-md-right">
+                  <a href="/addWalletMoney" class="btn btn-primary">
+                    Add Wallet Money
+                  </a>
+                </div> -->
+            </div>
+
+
+          </div>
+          <div class="modal-footer">
+            <a href="/orders" class="btn btn-primary"> Show Full Transactions </a>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <%- include('./layouts/footerNavbar.ejs') -%>
+
+      <%- include('./layouts/footer.ejs') -%>
