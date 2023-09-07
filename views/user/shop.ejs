@@ -28,12 +28,16 @@
                     <div class="col-lg-3">
                         <div class="shop__sidebar">
 
+
+
                             <div class="shop__sidebar__search">
-                                <form action="#">
-                                    <input type="text" placeholder="Search...">
+                                <form id="searchForm">
+                                    <input type="text" id="searchInput" placeholder="Search for products...">
                                     <button type="submit"><span class="icon_search"></span></button>
                                 </form>
                             </div>
+
+
 
                             <div class="shop__sidebar__accordion">
                                 <div class="accordion" id="accordionExample">
@@ -47,148 +51,135 @@
                                         <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
                                             <div class="card-body">
                                                 <div class="shop__sidebar__categories">
-                                                    <ul class="nice-scroll">
 
-                                                        <li><a href="#">Shirts (20)</a></li>
-                                                        <li><a href="#">Pant (20)</a></li>
-                                                        <li><a href="#">T-Shirts (20)</a></li>
+                                                    <ul class="category-checkboxes">
+                                                        <li>
+                                                            <label>
+                                                                <input type="radio" value="All"
+                                                                    class="category-checkbox" name="selectedCategory">
+                                                                All Categories
+                                                            </label>
+                                                        </li>
 
-                                                        <li><a href="#">Sheos (20)</a></li>
+                                                        <% for (let category of categories) { %>
+                                                            <li>
+                                                                <label>
+                                                                    <input type="radio" value="<%= category._id %>"
+                                                                        class="category-checkbox"
+                                                                        name="selectedCategory">
+                                                                    <%= category.name %>
+                                                                </label>
+                                                            </li>
+                                                            <% } %>
+                                                    </ul>
 
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-heading">
+                                            <a data-toggle="collapse" data-target="#collapseFour">Size</a>
+                                        </div>
+
+                                        <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <div class="shop__sidebar__size">
+
+                                                    <ul class="size-checkboxes">
+                                                        <li>
+                                                            <input type="checkbox" id="xs" class="size-checkbox"
+                                                                value="XS">
+                                                            <label for="xs" class="size-label">XS</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="sm" class="size-checkbox"
+                                                                value="S">
+                                                            <label for="sm" class="size-label">S</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="m" class="size-checkbox"
+                                                                value="M">
+                                                            <label for="m" class="size-label">M</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="l" class="size-checkbox"
+                                                                value="L">
+                                                            <label for="l" class="size-label">L</label>
+                                                        </li>
+                                                        <li>
+                                                            <input type="checkbox" id="xl" class="size-checkbox"
+                                                                value="XL">
+                                                            <label for="xl" class="size-label">XL</label>
+                                                        </li>
+
+
+                                                        <!-- Add similar labels for other sizes -->
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="card">
+                                        <div class="card-heading">
+                                            <a data-toggle="collapse" data-target="#collapseFive">Colors</a>
+                                        </div>
+
+                                        <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <div class="shop__sidebar__color">
+
+                                                    <ul class="color-list">
+
+                                                        <input type="checkbox" id="c-1" class="color-checkbox"
+                                                            value="black">
+                                                        <label class="color-label c-1" for="c-1"></label>
+
+
+                                                        <input type="checkbox" id="c-2" class="color-checkbox"
+                                                            value="white">
+                                                        <label class="color-label c-2" for="c-2"></label>
+
+
+                                                        <input type="checkbox" id="c-3" class="color-checkbox"
+                                                            value="yellow">
+                                                        <label class="color-label c-3" for="c-3"></label>
+
+
+                                                        <input type="checkbox" id="c-4" class="color-checkbox"
+                                                            value="green">
+                                                        <label class="color-label c-4" for="c-4"></label>
+
+
+                                                        <input type="checkbox" id="c-8" class="color-checkbox"
+                                                            value="red">
+                                                        <label class="color-label c-8" for="c-8"></label>
+
+
+                                                        <input type="checkbox" id="c-9" class="color-checkbox"
+                                                            value="blue">
+                                                        <label class="color-label c-9" for="c-9"></label>
+
+                                                        <!-- Add similar items for other colors -->
                                                     </ul>
                                                 </div>
                                             </div>
                                         </div>
 
-                                    </div>
-                                    <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
-                                    </div>
-                                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__brand">
-                                                <ul>
-                                                    <li><a href="#">Louis Vuitton</a></li>
-                                                    <li><a href="#">Chanel</a></li>
-                                                    <li><a href="#">Hermes</a></li>
-                                                    <li><a href="#">Gucci</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
 
-                                    <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+
                                     </div>
-                                    <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__price">
-                                                <ul>
-                                                    <li><a href="#">₹0.00 -   ₹50.00</a></li>
-                                                    <li><a href="#">₹50.00 -  ₹100.00</a></li>
-                                                    <li><a href="#">₹100.00 - ₹150.00</a></li>
-                                                    <li><a href="#">₹150.00 - ₹200.00</a></li>
-                                                    <li><a href="#">₹200.00 - ₹250.00</a></li>
-                                                    <li><a href="#">250.00+</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
+
+                                    <div class="apply-button">
+                                        <button id="applyFiltersButton" class="apply-button-style">Apply
+                                            Filters</button>
                                     </div>
-                                </div> -->
-                                    <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseFour">Size</a>
-                                    </div>
-                                    <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__size">
-                                                <label for="xs">xs
-                                                    <input type="radio" id="xs">
-                                                </label>
-                                                <label for="sm">s
-                                                    <input type="radio" id="sm">
-                                                </label>
-                                                <label for="md">m
-                                                    <input type="radio" id="md">
-                                                </label>
-                                                <label for="xl">xl
-                                                    <input type="radio" id="xl">
-                                                </label>
-                                                <label for="2xl">2xl
-                                                    <input type="radio" id="2xl">
-                                                </label>
-                                                <label for="xxl">xxl
-                                                    <input type="radio" id="xxl">
-                                                </label>
-                                                <label for="3xl">3xl
-                                                    <input type="radio" id="3xl">
-                                                </label>
-                                                <label for="4xl">4xl
-                                                    <input type="radio" id="4xl">
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                                    <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseFive">Colors</a>
-                                    </div>
-                                    <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__color">
-                                                <label class="c-1" for="sp-1">
-                                                    <input type="radio" id="sp-1">
-                                                </label>
-                                                <label class="c-2" for="sp-2">
-                                                    <input type="radio" id="sp-2">
-                                                </label>
-                                                <label class="c-3" for="sp-3">
-                                                    <input type="radio" id="sp-3">
-                                                </label>
-                                                <label class="c-4" for="sp-4">
-                                                    <input type="radio" id="sp-4">
-                                                </label>
-                                                <label class="c-5" for="sp-5">
-                                                    <input type="radio" id="sp-5">
-                                                </label>
-                                                <label class="c-6" for="sp-6">
-                                                    <input type="radio" id="sp-6">
-                                                </label>
-                                                <label class="c-7" for="sp-7">
-                                                    <input type="radio" id="sp-7">
-                                                </label>
-                                                <label class="c-8" for="sp-8">
-                                                    <input type="radio" id="sp-8">
-                                                </label>
-                                                <label class="c-9" for="sp-9">
-                                                    <input type="radio" id="sp-9">
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-                                    <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseSix">Tags</a>
-                                    </div>
-                                    <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__tags">
-                                                <a href="#">Product</a>
-                                                <a href="#">Bags</a>
-                                                <a href="#">Shoes</a>
-                                                <a href="#">Fashio</a>
-                                                <a href="#">Clothing</a>
-                                                <a href="#">Hats</a>
-                                                <a href="#">Accessories</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
+
                                 </div>
 
                             </div>
@@ -196,12 +187,12 @@
 
                     </div>
 
-                    <div class="col-lg-9">
+                    <div class="col-lg-9" id="reloadDiv">
                         <div class="shop__product__option">
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-sm-6">
                                     <div class="shop__product__option__left">
-                                        <p>Showing 1-12 of 126 results</p>
+                                        <p>Showing <%= count %> of <%=productsCount %> results</p>
                                     </div>
                                 </div>
                                 <!-- <div class="col-lg-6 col-md-6 col-sm-6">
@@ -227,10 +218,8 @@
 
 
                                         <a href="/productDetails?id=<%= product._id %>">
-                                            <div class="product__item__pic set-bg"
-                                                data-setbg="/images/<%= product.image[1] %>">
+                                            <img src="/images/<%= product.image[1] %>" alt="">
 
-                                            </div>
                                         </a>
 
 
@@ -238,10 +227,19 @@
                                             <h6>
                                                 <%= product.name %>
                                             </h6>
-
-                                            <h5>₹
-                                                <%= product.price %>
-                                            </h5>
+                                            
+                                            <% if ( product.offer){ var discount = (product.price * product.offer.percentage / 100).toFixed(0)  } else if ( product.category.offer ) {var discount = ( product.price * product.category.offer.percentage / 100 ).toFixed(0) } %>
+                                            
+                                            <% if ( product.offer ) { %>
+                                                <p class="mb-0"><del>₹ <%= product.price %></del></p>
+                                                <h5 class="mb-0">₹ <%= product.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                                            <%} else if ( product.category.offer ) { %>
+                                                <p class="mb-0"><del>₹ <%= product.price %></del></p>
+                                                <h5 class="mb-0 fw-700">₹ <%= product.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
+                                                <% } else { %>
+                                                <h5>₹ <%= product.price %> </h5>
+                                            <% } %>
+                                          
 
 
                                         </div>
@@ -249,6 +247,7 @@
                                 </div>
                                 <% }) %>
                         </div>
+
 
                         <!-- pagination area -->
                         <div class="row">
@@ -271,3 +270,194 @@
         <%- include('./layouts/footerNavbar.ejs') -%>
 
             <%- include('./layouts/footer.ejs') -%>
+
+                <script>
+                    // // Assuming you have an array to store the selected values
+                    // let selectedCategories = [];
+
+                    // // Get all the category checkboxes
+                    // const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+
+                    // // Loop through the checkboxes and check for the checked ones
+                    // categoryCheckboxes.forEach(checkbox => {
+                    //     if (checkbox.checked) {
+                    //         selectedCategories.push(checkbox.value);
+                    //     }
+                    // });
+
+
+                    // // Assuming you have an array to store the selected values
+                    // let selectedSize = [];
+
+                    // // Get all the category checkboxes
+                    // const sizeCheckboxes = document.querySelectorAll('.category-checkbox');
+
+                    // // Loop through the checkboxes and check for the checked ones
+                    // sizeCheckboxes.forEach(checkbox => {
+                    //     if (checkbox.checked) {
+                    //         selectedSize.push(checkbox.value);
+                    //     }
+                    // });
+
+
+
+                    // // Assuming you have an array to store the selected values
+                    // let selectedColor = [];
+
+                    // // Get all the category checkboxes
+                    // const colorCheckboxes = document.querySelectorAll('.category-checkbox');
+
+                    // // Loop through the checkboxes and check for the checked ones
+                    // colorCheckboxes.forEach(checkbox => {
+                    //     if (checkbox.checked) {
+                    //         selectedColor.push(checkbox.value);
+                    //     }
+                    // });
+
+                    const searchForm = document.getElementById('searchForm')
+                    searchForm.addEventListener('submit', function (event) {
+                        event.preventDefault(); // Prevent the form from submitting the traditional way
+                        // Your search logic will go here
+                        const searchInput = document.getElementById('searchInput').value
+                        console.log(searchInput)
+                        applyFilters(null,null,null,searchInput)
+                    });
+                    // console.log(searchForm);
+                    document.getElementById('applyFiltersButton').addEventListener('click', function () {
+                        // Get the selected category checkbox
+                        const selectedCategoryCheckbox = document.querySelector('input[name="selectedCategory"]:checked');
+                        const selectedCategories = selectedCategoryCheckbox ? selectedCategoryCheckbox.value : null;
+                        // console.log(selectedCategories);
+
+                        // Get all the checked size checkboxes
+                        const selectedSizeCheckboxes = document.querySelectorAll('.size-checkbox:checked');
+                        const selectedSize = Array.from(selectedSizeCheckboxes).map(checkbox => checkbox.value);
+                        // console.log(selectedSize);
+
+                        // Get all the checked color checkboxes
+                        const selectedColorCheckboxes = document.querySelectorAll('.color-checkbox:checked');
+                        const selectedColors = Array.from(selectedColorCheckboxes).map(checkbox => checkbox.value);
+                        // console.log(selectedColors);
+
+                        // Call your function and pass the selected categories, sizes, and colors
+                        if (selectedCategories || selectedColors.length > 0 || selectedSize.length > 0) {
+                            applyFilters(selectedCategories, selectedSize, selectedColors);
+                        }
+                    });
+
+                    function applyFilters(selectedCategories, selectedSize, selectedColors, searchInput) {
+                        // Swal.fire({
+                        //     title: 'Are you sure?',
+                        //     text: "You want to delete!",
+                        //     icon: 'warning',
+                        //     showCancelButton: true,
+                        //     confirmButton: '#3085d6',
+                        //     cancelButton: '#d33',
+                        //     confirmButtonText: 'Yes, remove!'
+                        // }).then((result) => {
+                        //     if (result.isConfirmed) {
+                        $.ajax({
+
+                            url: '/shop',
+                            data: {
+                                selectedCategories,
+                                selectedSize,
+                                selectedColors,
+                                searchInput
+
+                            },
+                            method: 'post',
+                            success: (response) => {
+                                if (response.success) {
+
+                                    $('#reloadDiv').load('/shop #reloadDiv'
+
+                                        // Swal.fire({
+                                        //     title: 'Deleted!',
+                                        //     text: 'Your item has been deleted.',
+                                        //     icon: 'success',
+                                        //     timer: 1500,
+                                        //     showConfirmButton: false
+                                        // });
+                                        // }
+                                    );
+                                }
+                            },
+
+                            error: (error) => {
+
+                                console.log(error);
+
+                            }
+                        });
+                    }
+
+
+                        // Here you can use the selectedCategories and selectedColors
+                        // to perform your filter logic and update content
+                        // For example, you can console.log the selected values
+                        // console.log('Selected Categories:', selectedCategories);
+                        // console.log('selectedSize:',selectedSize);
+                        // console.log('Selected Colors:', selectedColors);
+
+                        // Add your filter logic here
+
+
+                </script>
+
+                <!-- <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__brand">
+                                                <ul>
+                                                    <li><a href="#">Louis Vuitton</a></li>
+                                                    <li><a href="#">Chanel</a></li>
+                                                    <li><a href="#">Hermes</a></li>
+                                                    <li><a href="#">Gucci</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                <!-- <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+                                    </div>
+                                    <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__price">
+                                                <ul>
+                                                    <li><a href="#">₹0.00 -   ₹50.00</a></li>
+                                                    <li><a href="#">₹50.00 -  ₹100.00</a></li>
+                                                    <li><a href="#">₹100.00 - ₹150.00</a></li>
+                                                    <li><a href="#">₹150.00 - ₹200.00</a></li>
+                                                    <li><a href="#">₹200.00 - ₹250.00</a></li>
+                                                    <li><a href="#">250.00+</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->
+
+                <!-- <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseSix">Tags</a>
+                                    </div>
+                                    <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__tags">
+                                                <a href="#">Product</a>
+                                                <a href="#">Bags</a>
+                                                <a href="#">Shoes</a>
+                                                <a href="#">Fashio</a>
+                                                <a href="#">Clothing</a>
+                                                <a href="#">Hats</a>
+                                                <a href="#">Accessories</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> -->

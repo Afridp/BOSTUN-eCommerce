@@ -54,27 +54,35 @@
                                                             <h6>
                                                                 <%= x.product_Id.name %>
                                                             </h6>
-                                                            <h5>₹<%= x.product_Id.price %>
-                                                            </h5>
+                                                            <% if ( x.product_Id.offer){ var discount = (x.product_Id.price * x.product_Id.offer.percentage / 100).toFixed(0)  } else if ( x.product_Id.category.offer ) {var discount = ( x.product_Id.price * x.product_Id.category.offer.percentage / 100 ).toFixed(0) } %>
+                                                            
+                                                                <% if ( x.product_Id.offer ) { %>
+                                                                    <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%= x.product_Id.price %></del></h6>
+                    
+                                                                    <h5>₹ <%= x.product_Id.price - discount %> </h5>
+                    
+                    
+                                                                <%} else if (x.product_Id.category.offer ) { %>
+                                                                    <h6 ><del style="color: rgba(0, 0, 0, 0.372);">₹ <%= x.product_Id.price %></del></h6>
+                                                                    <h5 >₹ <%= x.product_Id.price - discount %></h5>
+                    
+                                                                    <% } else { %>
+                                                                    <h5>₹ <%= x.product_Id.price %> </h5>
+                                                                <% } %>
+                                                            
                                                         </div>
                                                     </td>
                                                     <td class="quantity__item">
-                                                        <div class="">
-                                                            <div class="pro-qty-2">
-                                                                <button class="" type="button"
-                                                                    onclick="increaseQuantity('<%= x._id %>', '<%= x.product_Id._id %>', -1 )">-</button>
-                                                                <input class="qty-input small-input" type="text"
-                                                                    value="<%= x.quantity %>" readonly>
-                                                                <button class=" " type="button"
-                                                                    onclick="increaseQuantity('<%= x._id %>', '<%= x.product_Id._id %>', 1 )">+</button>
-                                                            </div>
-
-
-
-
+                                                        <div class="quantity-controls">
+                                                            <button class="quantity-btn minus" type="button"
+                                                                onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', -1 )">-</button>
+                                                            <input class="qty-input" type="text"
+                                                                value="<%= x.quantity %>" readonly>
+                                                            <button class="quantity-btn plus" type="button"
+                                                                onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', 1 )">+</button>
                                                         </div>
-                                                    </td>
-                                                    <td class="cart__price">₹ <%= x.totalPrice %>
+                                                    </td>89
+                                                    <td class="cart__price">₹ <%= total %>
                                                     </td>
                                                     <td class="cart__close">
                                                         <a href="#" onclick="removeFromCart('<%= x._id %>')"><i
@@ -85,23 +93,26 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-6">
-                                        <div class="continue__btn">
-                                            <a href="#">Continue Shopping</a>
-                                        </div>
-                                    </div>
-                                </div>
+                              
                                 <% } else { %>
                                     <h4 class="text-center" style="padding-left: 420px;">No products in cart</h4>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                            <div class="continue__btn">
+                                                <a href="/shop">Continue Shopping</a>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <% } %>
                         </div>
                         <div class="col-lg-4">
                             <div class="cart__total">
                                 <h6>Cart total</h6>
                                 <ul>
-                                    <li>Subtotal <span>₹ <%= total %></span></li>
-                                    <li>Total <span>₹ <%= total %></span></li>
+                                    <li>SubTotal <span>₹ <%= originalAmts %></span></li>
+                                    <li>Offer Discounts <span style="color: rgba(235, 7, 7, 0.582);">₹ <%= discountAmt %></span></li>
+
+                                    <li>Total <span style="color: rgba(28, 179, 14, 0.908);">₹ <%= total %></span></li>
                                 </ul>
                                 <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                             </div>
@@ -123,13 +134,14 @@
 
                 <script>
                     function removeFromCart(productId) {
+
                         Swal.fire({
                             title: 'Are you sure?',
                             text: "You want to delete!",
                             icon: 'warning',
                             showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
+                            confirmButton: '#3085d6',
+                            cancelButton: '#d33',
                             confirmButtonText: 'Yes, remove!'
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -173,6 +185,40 @@
                                 });
                             }
                         });
+                    }
+
+                    
+                    function increaseQuantity(cartId, productId, count) {
+                        $.ajax({
+                            url: '/changes',
+                            method: 'post',
+                            data: {
+                                cartId: cartId,
+                                productId,
+                                count: count
+                            },
+                            success: (response) => {
+                                if (response.success) {
+                                    $('#reloadDiv').load('/loadCart #reloadDiv')
+                                } else {
+                                    Swal.fire({
+                                        title: "Error",
+                                        icon: 'error',
+                                        text: response.message,
+                                        timer: 2000
+                                    })
+                                }
+                            },
+                            error: (error) => {
+
+                                Swal.fire({
+                                    title: "Error",
+                                    icon: 'error',
+                                    text: response.message,
+                                    timer: 1500
+                                })
+                            }
+                        })
                     }
 
                     // const deleteFromCart = async (product_Id) => {

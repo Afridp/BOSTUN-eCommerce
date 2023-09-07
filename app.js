@@ -3,22 +3,19 @@ mongoose.connect("mongodb://127.0.0.1:27017/BostonE-Commerce")
 .then(()=>console.log("connected to database"))
 .catch(()=>console.log("error..!! failed to connect database"))
 
-const flash = require('connect-flash');
+// const flash = require('connect-flash');
 const express = require('express');
 const app = express();
 const session = require('express-session')
 const nocache = require("nocache")
 const path = require("path")
-require("dotenv").config()
+const dotenv = require('dotenv')
+const moment = require('moment');
+
+dotenv.config()
+// var logger = require('morgan');
 
 app.set('view engine', 'ejs')
-// var createError = require('http-errors');
-// const session = require("express-session")
-// const userController = require("./controllers/userController")
-// var path = require('path');
-// var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
-// const auth = require('./middleware/auth')
 
 
 // app.use(logger('dev'));
@@ -37,6 +34,12 @@ app.use(
   )
 //   app.use(flash())
 
+// Date format
+const shortDateFormat = "MMM Do YY"
+
+// Middle ware for moment date
+app.locals.moment = moment;
+app.locals.shortDateFormat = shortDateFormat;
 
 const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');

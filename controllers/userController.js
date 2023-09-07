@@ -212,10 +212,13 @@ const loginLoad = async (req, res) => {
     try {
         let { message } = req.session
         req.session.message = ""
-        res.render('login', { message })
+        let currentPage = 'login'
+        let {userid} = req.session
+        console.log(userid);
+        res.render('login', { message,currentPage,userid})
     } catch (error) {
         console.log(error.message);
-    }
+    } 
 }
 
 
@@ -235,7 +238,8 @@ const verifyLogin = async (req, res) => {
             if (passwordMatch) {
 
                 if (userData.is_verified === false) {
-                    res.redirect('/login', { message: "email verification required" })
+                    req.session.message = "email verification required"
+                    res.redirect('/login' )
                 } else {
                     // console.log("hello");
                     req.session.userid = userData._id
@@ -244,11 +248,13 @@ const verifyLogin = async (req, res) => {
                 }
 
             } else {
-                res.render('login', { message: "Oops..username and password incorrect " })
+                req.session.message = "Oops..username and password incorrect "
+                res.redirect('/login')
             }
         } else {
             // console.log("hai");
-            res.render('login', { message: "Oops.. User Is Not Registerd,Please register" })
+            req.session.message =  "Oops.. User Is Not Registerd,Please register" 
+            res.redirect('/login')
         }
     } catch (error) {
         console.log(error.message)
@@ -258,38 +264,173 @@ const verifyLogin = async (req, res) => {
 
 const homeLoad = async (req, res) => {
     try {
-        const { userid } = req.session
+        const { userid } = req.session;
 
-        const user = await userModel.findOne({ _id: userid })
-        // console.log(user);
-        res.render('index', { user, userid });
+        const user = await userModel.findOne({ _id: userid });
+        let currentPage = 'home'; // Define currentPage here
+
+        res.render('index', { user, userid, currentPage }); // Pass currentPage to the template
     } catch (error) {
         console.log(error.message);
     }
-}
-
+};
 
 const shopLoad = async (req, res) => {
     try {
-        const category = await catModel.find({ list: true })
-        const product = await productModel.find({ list: true })
+        // const categories = await catModel.find({ list: true })
+
+        // const product = await productModel.find({ list: true })
+        // const { userid } = req.session
+        // const user = await userModel.findOne({ _id: userid, })
+        // const { cat, search } = req.query
+        // console.log(req.body,"this body");
+        const { selectedCategories, selectedSize, selectedColors ,searchInput} = req.body
+        // const condition = { list: true }
+        
+
+        if(selectedCategories || selectedColors || selectedSize || searchInput){
+            // console.log(selectedColors);
+
+            if (selectedCategories) {
+                req.session.category = selectedCategories
+                // console.log(req.session.category);
+
+            }
+            // if (search) {
+            //     condition.name = { $regex: search, $options: "i" };
+            // }
+            if (selectedSize) {
+                isSizeIn = await productModel.find({ size: selectedSize })
+                if (isSizeIn) {
+                   req.session.size = selectedSize
+                }
+                
+            }
+            if(selectedColors){
+                isColorIn = await productModel.find({color:selectedColors})
+                if(isColorIn){
+                    req.session.color=selectedColors
+                }
+            } 
+            if(searchInput){
+                
+                isSerchIn = await productModel.find({ name : { $regex: searchInput, $options: 'i' }})
+                if(isSerchIn){
+                    console.log(isSerchIn);
+                    req.session.searchInput=searchInput
+                }
+            }
+
+            res.json({success:true})
+            
+        }else{
+            // console.log("haaai");
+            
+            
+            
+            // const product = await productModel.find({ list: true })
+            const condition = { list: true }
+            // console.log(req.session,'this is session');
+            if ( req.session ){
+
+                const { color,size,category,searchInput} = req.session
+
+                if(searchInput){
+                    // isSearchIn = await productModel.find({name : {$regex : searchInput ,$options:'i'} })
+                    // if(isSearchIn){
+                        condition.name = {$regex : searchInput ,$options:'i'} 
+                    }
+                    delete req.session.searchInput;
+
+                
+                if(category){
+                    if(category==='All'){
+                        condition.category
+                    }else{
+                    // console.log("hellllooooooooosdkjfhauklsdgfkjhasdfg");
+                    // let categorys = category.join(', ') 
+                    condition.category = category
+                    }
+                }
+                delete req.session.category;
 
 
-        const { userid } = req.session
+                if(color){
+                    // let arrayAsString = color
+                    let queryConditions = { $in: color } ;
+                    isColorIn = await productModel.find({ color: queryConditions})
+                    // console.log(color,"this is color");
+                    if(isColorIn){
+                    condition.color = queryConditions
+                    }
+                }
 
-        const user = await userModel.findOne({ _id: userid, })
+                delete req.session.color
 
+                if(size){
+                    // let arrayAsString = size
+                    // console.log(arrayAsString,"asdhfjkasdhfkjlasdhfkjl;sdfja;klsdf");
+                    let queryConditions = { $in: size } ;
+
+                    isSizeIn = await productModel.find({size : queryConditions})
+                    // console.log(isSizeIn,"this is in or not");
+                    if(isSizeIn){
+                    condition.size = queryConditions
+                    }
+                }
+                delete req.session.size
+            }
+
+            const {userid} = req.session
+            const user = await userModel.findOne({ _id: userid })
+            // const { cat, search } = req.query
+            // const { selectedCategories, selectedSize, selectedColors } = req.body
+        
+        // console.log(size)
+        // if (cat) {
+        //     condition.category = cat
+        // }
+        // if (search) {
+        //     condition.name = { $regex: search, $options: "i" };
+        // }
+        // if (size) {
+        //     isSizeIn = await productModel.find({ size: size })
+        //     if (isSizeIn) {
+        //         condition.size = size
+        //     }
+
+        // }
+        // console.log(condition,"this is condition");
+
+        const products = await productModel.find(condition).populate({
+            path : 'offer',
+            match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+        }) .populate({
+            path : 'category',
+            populate : {
+                path : 'offer',
+                match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            }
+        })
+        const productsCount = await productModel.find({ list: true }).populate("category").count()
+        const count = await productModel.find(condition).populate("category").count()
+        const categories = await catModel.find({ list: true })
+        let currentPage = 'shop';
         res.render('shop',
             {
                 userid, user,
-                category: category,
-                products: product
+                categories,
+                products,
+                currentPage,
+                count, productsCount
             })
+        }
 
     } catch (error) {
         console.log(error.message);
     }
 }
+
 
 const showProductDetails = async (req, res) => {
     try {
@@ -297,24 +438,35 @@ const showProductDetails = async (req, res) => {
         const user = await userModel.findOne({ _id: userid })
 
         const { id } = req.query
+        let currentPage = 'shop';
 
 
-        
-        const product = await productModel.findById({ _id: id }).populate("category")
-        
-        res.render('productDetails', { userid, product, user })
+        const product = await productModel.findById({ _id: id }).populate({
+            path : 'offer',
+            match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+        }) .populate({
+            path : 'category',
+            populate : {
+                path : 'offer',
+                match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            }
+        })
+    
+        res.render('productDetails', { userid, product, user,currentPage })
 
     } catch (error) {
         console.log(error.message);
     }
 }
 
+
 const loadProfile = async (req, res) => {
     try {
         const { userid } = req.session
 
         const user = await userModel.findOne({ _id: userid })
-        res.render('profile', { user, userid })
+        let currentPage = 'profile'
+        res.render('profile', { user, userid,currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -322,9 +474,10 @@ const loadProfile = async (req, res) => {
 
 const manageAddress = async (req, res) => {
     try {
-        const { userid } = req.session
+        const { userid } = req.session 
         const user = await userModel.findOne({ _id: userid })
-        res.render('address', { userid, user })
+        let currentPage = 'profile'
+        res.render('address', { userid, user ,currentPage})
     } catch (error) {
         console.log(error.message);
     }
@@ -334,12 +487,20 @@ const addAddress = async (req, res) => {
     try {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
-        res.render('addAddress', { userid, user })
+        let currentPage = 'profile'
+        res.render('addAddress', { userid, user,currentPage })
     } catch (error) {
         console.log(error.message);
     }
 }
-
+const loadLogout = async (req, res) => {
+    try {
+      req.session.userid = null;
+      res.redirect("/");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
 const postAddress = async (req, res) => {
     try {
@@ -376,8 +537,8 @@ const editaddress = async (req, res) => {
             { _id: userid },
             { address: { $elemMatch: { _id: id } } }
         );
-        console.log(userAddress);
-        res.render("editAddress", { userid, userAddress: userAddress, user });
+        let currentPage = 'profile'
+        res.render("editAddress", { userid, userAddress: userAddress, user,currentPage });
     } catch (error) {
         console.log(error.message);
     }
@@ -423,9 +584,9 @@ const deleteAddress = async (req, res) => {
 const editProfile = async (req, res) => {
     try {
         const { userid } = req.session
-       
+        let currentPage = 'profile'
         const user = await userModel.findById({ _id: userid })
-        res.render('editProfile', { user, userid })
+        res.render('editProfile', { user, userid,currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -453,9 +614,9 @@ const updateProfile = async (req, res) => {
 const changePassword = async (req, res) => {
     try {
         const { userid } = req.session
-      
+        let currentPage = 'profile'
         const user = await userModel.findById({ _id: userid })
-        res.render('changePassword', {  user, userid })
+        res.render('changePassword', { user, userid,currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -478,12 +639,12 @@ const updatePassword = async (req, res) => {
                 )
                 // req.flash("success","password has changed")
                 res.redirect('/profile')
-            }else{
+            } else {
                 req.session.message = "new password and confirm password didin't match"
                 res.redirect('/changePassword')
             }
-        }else{
-            req.session.message="currentPassword didin't match"
+        } else {
+            req.session.message = "currentPassword didin't match"
             res.redirect('/changePassword')
         }
 
@@ -493,26 +654,27 @@ const updatePassword = async (req, res) => {
 
 }
 
-const lostPassEmailPage = async (req,res)=>{
+const lostPassEmailPage = async (req, res) => {
     try {
-        const {message}=req.session
-        req.session.message=''
-        res.render('forgetPassEmail',{message})
-    }catch(error){
+        const { message } = req.session
+        req.session.message = ''
+        let currentPage = 'login'
+        res.render('forgetPassEmail', { message ,currentPage})
+    } catch (error) {
         console.log(error.message);
     }
 }
 
-const forgetPassSendOtp = async(req,res)=>{
+const forgetPassSendOtp = async (req, res) => {
     try {
-        const {email} = req.body
-        const emailExist = await userModel.findOne({email:email})
+        const { email } = req.body
+        const emailExist = await userModel.findOne({ email: email })
         // console.log(email);
-        
-        if(emailExist){
-           
-            req.session.user=emailExist._id
-           
+
+        if (emailExist) {
+
+            req.session.user = emailExist._id
+
             const otps = `${Math.floor(1000 + Math.random() * 9000)}`
             //send OTP to the mail
             let transporter = nodemailer.createTransport({
@@ -525,24 +687,24 @@ const forgetPassSendOtp = async(req,res)=>{
                     pass: process.env.email_password
                 }
             })
-            
+
             console.log(otps)
-    
+
             const mailOptions = {
                 from: 'afridp@gmail.com',
                 to: email,
                 subject: 'Otp For Seting New Password',
                 html: `${otps}`
             }
-    
-           await transporter.sendMail(mailOptions);
 
-           let hashedOtp = await bcrypt.hash(otps,10)
-           req.session.otp=hashedOtp
-           
-           res.redirect('/forgPassOtpEnter')
-        }else{
-            req.session.message='This Email Is not registered with Us,plaease register'
+            await transporter.sendMail(mailOptions);
+
+            let hashedOtp = await bcrypt.hash(otps, 10)
+            req.session.otp = hashedOtp
+
+            res.redirect('/forgPassOtpEnter')
+        } else {
+            req.session.message = 'This Email Is not registered with Us,plaease register'
             res.redirect('/lostPassEmailPage');
         }
     } catch (error) {
@@ -550,42 +712,42 @@ const forgetPassSendOtp = async(req,res)=>{
     }
 }
 
-const forgetPassOtpEnterPage = async(req,res)=>{
+const forgetPassOtpEnterPage = async (req, res) => {
     try {
-        let {message,otp,user}=req.session
-        // console.log(email);
-        req.session.message=''
-        res.render('forgPassOtpEnter',{message,otp,user})
-       
+        let { message, otp, user } = req.session
+        let currentPage = 'login'
+        req.session.message = ''
+        res.render('forgPassOtpEnter', { message, otp, user,currentPage })
+
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const postForgetPassOtpVerify = async(req,res)=>{
+const postForgetPassOtpVerify = async (req, res) => {
     try {
-        const {otp,userOtp,user} = req.body;
-        // console.log(req.session.email); 
-        if(!await bcrypt.compare(otp, userOtp)){
-            req.session.message='invalid otp,please try again'
+        const { otp, userOtp, user } = req.body;
+        let currentPage = 'login'
+        if (!await bcrypt.compare(otp, userOtp)) {
+            req.session.message = 'invalid otp,please try again'
             res.redirect('/forgPassOtpEnter')
-        }else{
-            res.render('setNewPassword',{user})
-            
-            
+        } else {
+            res.render('setNewPassword', { user,currentPage })
+
+
         }
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const updateNewPassword = async(req,res)=>{
+const updateNewPassword = async (req, res) => {
     try {
-        const {user,newPassword,confirmPassword}= req.body
+        const { user, newPassword, confirmPassword } = req.body
         // const userToUpdate = await userModel.findById({_id:user})
         console.log(confirmPassword);
-        const hashedPassword = await bcrypt.hash(confirmPassword,10)
-        await userModel.updateOne({_id:user},{$set:{password:hashedPassword}})
+        const hashedPassword = await bcrypt.hash(confirmPassword, 10)
+        await userModel.updateOne({ _id: user }, { $set: { password: hashedPassword } })
         res.redirect('/login')
 
     } catch (error) {
@@ -625,6 +787,7 @@ module.exports = {
     homeLoad,
     shopLoad,
     loginLoad,
+    loadLogout,
     verifyLogin,
     loadRegister,
     postRegister,

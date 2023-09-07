@@ -1,0 +1,232 @@
+<%- include('./layouts/header.ejs') -%>
+
+  <%- include('./layouts/sidebar.ejs') -%>
+
+    <%- include('./layouts/topbar.ejs') -%>
+
+
+
+
+
+      <div class="container">
+        <h1 class="mt-5">Sales Report</h1>
+        <div class="btn-group mt-3">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            Download
+          </button>
+          <div class="dropdown-menu sub-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="#" onclick="downloadPDF('printThisDiv')">Download as PDF</a>
+            <a class="dropdown-item" href="#" onclick="downloadExcel('printThisDiv')">Download as Excel</a>
+          </div>
+        </div>
+
+
+
+        <div class="row mt-4">
+          <div class="col-lg-6">
+            <div class="form-group">
+              <label for="startDatePicker">Select start date:</label>
+              <input type="date" id="startDatePicker" class="form-control" min="<%= firstOrder %>"
+                max="<%= lastOrder %>" onchange="selectedDate()" required />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group">
+              <label for="endDatePicker">Select end date:</label>
+              <input type="date" id="endDatePicker" class="form-control" min="<%= firstOrder %>" max="<%= lastOrder %>"
+                onchange="selectedDate()" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="container mt-4">
+          <div class="row">
+            <div class="col">
+              <div id="reportContainer">
+                <div id="printThisDiv">
+                  <% if (salesReport && salesReport.length > 0) { %>
+                    <table class="table table-striped table-bordered">
+                      <thead class="thead-dark" id="reportHeader">
+                        <tr class="text-center">
+                          <th scope="col">Email</th>
+                          <th scope="col">Mobile</th>
+                          <th scope="col">Address</th>
+                          <th scope="col">Order ID</th>
+                          <th scope="col">Date</th>
+                          <th scope="col">Payment Method</th>
+                          <th scope="col">Grand Total</th>
+                          <th scope="col">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="reportBody">
+                        <% salesReport.forEach(element => { %>
+                          <tr class="text-center">
+                            <td><%= element.user.email %></td>
+                            <td><%= element.user.mobile %></td>
+                            <td><%= element.deliveryAddress %></td>
+                            <td><%= element._id %></td>
+                            <td><%= element.date %></td>
+                            <td><%= element.payment %></td>
+                            <td><%= element.totalAmount %></td>
+                            <td><%= element.status %></td>
+                          </tr>
+                        <% }) %>
+                      </tbody>
+                    </table>
+                  <% } else { %>
+                    <p class="text-center">No sales</p>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+
+      <%- include('./layouts/footer.ejs') -%>
+
+
+
+
+
+
+        <script>
+          const selectedDate = async () => {
+            let startDate = document.getElementById("startDatePicker").value;
+            let endDate = document.getElementById("endDatePicker").value;
+            if (!startDate || !endDate) {
+              console.log("haaaai");
+              Toastify({
+                text: "Please select both start and end dates",
+                duration: 3000,
+                position: "center",
+                style: {
+                  background: "#FFFFFF",
+                  color: "#D21312",
+                },
+              }).showToast();
+              console.log("haaai");
+              return false;
+            }
+
+            let startDateObj = new Date(startDate);
+            let endDateObj = new Date(endDate);
+            if (startDateObj > endDateObj) {
+              console.log('hi');
+              Toastify({
+                text: "Start date cannot be greater than end date",
+                duration: 3000,
+                position: "center",
+                style: {
+                  background: "#FFFFFF",
+                  color: "#D21312",
+                },
+              }).showToast();
+              return false;
+            }
+
+            const today = new Date();
+            if (endDateObj > today) {
+              Toastify({
+                text: "End date cannot be in the future",
+                duration: 3000,
+                position: "center",
+                style: {
+                  background: "#FFFFFF",
+                  color: "#D21312",
+                },
+              }).showToast();
+              return false;
+            }
+
+
+
+            const response = await axios.post("/admin/salesReport", {
+              startDate,
+              endDate,
+            });
+            console.log(response.data);
+            const salesReport = response.data.selectedDate;
+            const reportBody = document.getElementById("reportBody");
+            reportBody.innerHTML = salesReport
+              .map(
+                (element) => `
+        <tr>
+          <td>${element.user[0].email}</td>
+          <td>${element.user[0].mobile}</td>
+          <td>${element.deliveryAddress}</td>
+          <td>${element._id}</td>
+          <td>${element.date}</td>
+          <td>${element.payment}</td>
+          <td>${element.totalAmount}</td>
+          <td>${element.status}</td>
+        </tr>
+      `
+              )
+              .join("");
+            const tableHeader = `
+        <tr>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Address</th>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Payment Method</th>
+                <th>Grand Total</th>
+                <th>Status</th>
+        </tr>
+      `;
+            const reportHeader = document.getElementById("reportHeader");
+            reportHeader.innerHTML = tableHeader;
+          };
+        </script>
+
+
+
+        <script>
+
+          function showDownloadOptions(divName) {
+            const choice = confirm("Do you want to download as PDF or Excel?");
+
+            if (choice) {
+              downloadPDF(divName);
+            } else {
+              downloadExcel(divName);
+            }
+          }
+          function downloadPDF(divName) {
+            const printContents = document.getElementById(divName).innerHTML;
+            const originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+          }
+
+          function downloadExcel(divName) {
+            const table = document.getElementById(divName);
+            const rows = table.getElementsByTagName('tr');
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+
+            for (const row of rows) {
+              const cells = row.getElementsByTagName('td');
+              const cellValues = [];
+              for (const cell of cells) {
+                cellValues.push(cell.textContent);
+              }
+              csvContent += cellValues.join(',') + '\n';
+            }
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'data.csv');
+            document.body.appendChild(link);
+
+            link.click();
+            document.body.removeChild(link);
+          }
+
+        </script>

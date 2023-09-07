@@ -17,6 +17,12 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  size:{
+    type:Array
+  },
+  color:{
+    type : Array
+  },
   category: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
@@ -35,6 +41,11 @@ const productSchema = new mongoose.Schema({
     default: true,
     required: true,
   },
+  offer:{
+    type : mongoose.Schema.Types.ObjectId,
+    ref:"offer"
+  }
+
 })
 
 module.exports = mongoose.model("Product", productSchema)

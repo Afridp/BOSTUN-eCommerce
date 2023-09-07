@@ -3,6 +3,7 @@ const user_router = express()
 const userController=require('../controllers/userController')
 const cartController = require('../controllers/cartController')
 const checkoutController = require('../controllers/checkoutController')
+const orderController = require('../controllers/orderController')
 const auth = require('../middleware/userSession') 
 
 
@@ -20,9 +21,13 @@ user_router.get('/',userController.homeLoad)
 
 user_router.get('/shop',userController.shopLoad)
 
+user_router.post('/shop',userController.shopLoad)
+
 user_router.get('/login',auth.isLogout,userController.loginLoad)
 
 user_router.post('/login',auth.isLogout,userController.verifyLogin)
+
+user_router.get('/logout',userController.loadLogout)
 
 user_router.get('/register',userController.loadRegister)
 
@@ -78,16 +83,22 @@ user_router.post('/deleteItems',auth.isLogin,cartController.deleteItems)
 
 user_router.get('/checkout',auth.isLogin,cartController.loadCheckout)
 
+user_router.post('/checkout',auth.isLogin,checkoutController.placeOrder)
+
+user_router.post('/verifyPayment',checkoutController.verifyPayment)  
+
+user_router.post('/changes',auth.isLogin,cartController.qtyChanges)
 
 
-user_router.get('/check-edit-address',checkoutController.loadEditAddAddress)
+user_router.get('/check-edit-address',auth.isLogin,checkoutController.loadEditAddAddress)
 
-user_router.post('/postCheckEditAddress',checkoutController.postEditCheckAddress)
+user_router.post('/postCheckEditAddress',auth.isLogin,checkoutController.postEditCheckAddress)
 
+user_router.get('/order-placed/:id',auth.isLogin, checkoutController.loadOrderPlaced)
 
-user_router.post('/checkout',checkoutController.placeOrder)
+user_router.get('/orders',orderController.orders)
 
-user_router.get('/order-placed/:id' , checkoutController.loadOrderPlaced)
+user_router.get('/viewOrdered',orderController.viewOrdered)
 
 
 module.exports = user_router;

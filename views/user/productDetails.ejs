@@ -58,7 +58,8 @@
 
 
                     </div>
-                    <input type="hidden" name="productId" id="productId" value="<%= product._id %>">
+                    <input type="text" name="productId" id="productId" value="<%= product._id %>">
+                    
                 </div>
             </div>
 
@@ -78,91 +79,125 @@
                                 <i class="fa fa-star-o"></i>
                                 <span> - 5 Reviews</span>
                             </div> -->
-                                <h3>₹<%= product.price %> <span>70.00</span></h3>
+                            <% if ( product.offer){ var discount = (product.price * product.offer.percentage / 100).toFixed(0)  } else if ( product.category.offer ) {var discount = ( product.price * product.category.offer.percentage / 100 ).toFixed(0) } %>
+                                            
+                                            <% if ( product.offer ) { %>
+                                                <h4 class="mb-0"><del style="color: rgba(0, 0, 0, 0.492);">₹ <%= product.price %></del></h4>
+
+                                                <h4 class="mb-0 fw-700">Sale Price: ₹ <%= product.price - discount %> <span style="text-decoration: underline;color: rgb(41, 162, 41);">Save ₹ <%= discount %></span></h4>
+
+
+                                            <%} else if ( product.category.offer ) { %>
+                                                <h4 class="mb-0"><del>₹ <%= product.price %></del></h4>
+                                                <h4 class="mb-0 fw-700" style="color: #E74C3C;">Sale Price: ₹ <%= product.price - discount %> <span class="badge badge-danger">Save ₹ <%= discount %></span></h4>
+
+                                                <% } else { %>
+                                                <h5>₹ <%= product.price %> </h5>
+                                            <% } %>
+                                          
+                              
                                 <p>
                                     <%= product.description %>
                                 </p>
 
-                                <!-- <div class="product__details__option">
+                                <div class="product__details__option">
+
+
+
                                     <div class="product__details__option__size">
                                         <span>Size:</span>
-                                        <label for="xxl">xxl
-                                            <input type="radio" id="xxl">
-                                        </label>
-                                        <label class="active" for="xl">xl
-                                            <input type="radio" id="xl">
-                                        </label>
-                                        <label for="l">l
-                                            <input type="radio" id="l">
-                                        </label>
-                                        <label for="sm">s
-                                            <input type="radio" id="sm">
-                                        </label>
+
+                                        <% product.size.forEach(sizes=> { %>
+                                            <label for="<%= sizes %>">
+                                                <%= sizes %>
+                                                    <input type="radio" id="<%= sizes %>" name="selectedSize"
+                                                        value="<%= sizes %>">
+                                            </label>
+                                            <% }) %>
                                     </div>
+
+
+
+
                                     <div class="product__details__option__color">
                                         <span>Color:</span>
-                                        <label class="c-1" for="sp-1">
-                                            <input type="radio" id="sp-1">
-                                        </label>
-                                        <label class="c-2" for="sp-2">
-                                            <input type="radio" id="sp-2">
-                                        </label>
-                                        <label class="c-3" for="sp-3">
-                                            <input type="radio" id="sp-3">
-                                        </label>
-                                        <label class="c-4" for="sp-4">
-                                            <input type="radio" id="sp-4">
-                                        </label>
-                                        <label class="c-9" for="sp-9">
-                                            <input type="radio" id="sp-9">
-                                        </label>
-                                    </div>
-                                </div> -->
-                                
 
-                                <div class="product__details__cart__option">
-                                    <div class="quantity">
-                                        <label for="quantity">Quantity:</label>
-                                        <input 
-                                            type="number" 
-                                            value="1" 
-                                            name="quantity" 
-                                            id="quantity" 
-                                            min="1" 
-                                            max="<%= product.quantity %>"
-                                        >
-                                   
+
+                                        <% product.color.forEach(hexCode=>{ %>
+                                            <div class="color-box mx-1" 
+                                            <% if(hexCode=='blue' ){ %>style="background-color:#4E4FEB;" <% }
+                                             else if(hexCode=='red' ){ %>
+                                                    style="background-color: #FE0000;" <% }
+                                                    else if(hexCode=='yellow' ){
+                                                        %>style="background-color: #F1C93B;" <% }
+                                                        else if(hexCode=='green' ){ %>style="background-color: #1A5D1A;"
+                                                            <% }else if(hexCode=='white' ){ %>style="background-color:
+                                                                #ffffff;" <% }else if(hexCode=='black' ){ %>
+                                                                    style="background-color: #000000;" <% }%>
+
+
+                                                                        >
+                                                                        <input type="radio" name="selectedColor"
+                                                                            id="selectedColor" value="<%= hexCode %>">
+                                            </div>
+                                            <% } )%>
                                     </div>
-                                    
-                                    <a href="#" class="primary-btn" onclick="addToCart()">add to cart</a>
+
                                 </div>
-                                <div class="product__details__btns__option">
-                                    <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-                                    
-                                </div>
-                                <div class="product__details__last__option">
-                                    <h5><span>Guaranteed Safe Checkout</span></h5>
-                                    <img src="/user/img/shop-details/razorpay.png" alt="">
-                                    <ul>
-                                        
-                                        <li><span>Categories:</span>
-                                            <%= product.category.name %>
-                                        </li>
-                                        <!-- <li><span>Tag:</span> Clothes, Skin, Body</li> -->
-                                    </ul>
-                                </div>
+
+
+                                <% if(product.quantity>0) {%>
+                                    <div class="product__details__cart__option mt-4">
+                                        <div class="quantity">
+                                            <label for="quantity">Quantity:</label>
+                                            <input type="number" value="1" name="quantity" id="quantity" min="1"
+                                                max="<%= product.quantity %>" readonly>
+
+
+                                        </div>
+
+                                        <a href="#" class="primary-btn" onclick="addToCart()">add to cart</a>
+                                        <% } else {%>
+                                            <div class="product__details__cart__option mt-4">
+                                                <div class="quantity">
+                                                    <label for="quantity">Quantity:</label>
+                                                    <input type="number" value="0" min="0" max="<%= product.quantity %>"
+                                                        readonly>
+
+
+                                                </div>
+
+                                                <a href="#" class="danger-btn">out of stock</a>
+                                                <% } %>
+
+                                            </div>
+                                            <div class="product__details__btns__option">
+                                                <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
+
+                                            </div>
+                                            <div class="product__details__last__option">
+                                                <h5><span>Guaranteed Safe Checkout</span></h5>
+                                                <img src="/user/img/shop-details/razorpay.png" alt="">
+                                                <ul>
+
+                                                    <li><span>Categories:</span>
+                                                        <%= product.category.name %>
+                                                    </li>
+                                                    <!-- <li><span>Tag:</span> Clothes, Skin, Body</li> -->
+                                                </ul>
+                                            </div>
+                                    </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="product__details__tab">
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item">
-                                        <a class="nav-link active" data-toggle="tab" href="#tabs-5"
-                                            role="tab">Description</a>
-                                    </li>
-                                    <!-- <li class="nav-item">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="product__details__tab">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#tabs-5"
+                                                role="tab">Description</a>
+                                        </li>
+                                        <!-- <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tabs-6" role="tab">Customer
                                     Previews(5)</a>
                                 </li>
@@ -170,17 +205,19 @@
                                     <a class="nav-link" data-toggle="tab" href="#tabs-7" role="tab">Additional
                                     information</a>
                                 </li> -->
-                                </ul>
-                                <div class="tab-content">
-                                    <div class="tab-pane active" id="tabs-5" role="tabpanel">
-                                        <div class="product__details__tab__content">
-                                            <p class="note">Nam tempus turpis at metus scelerisque placerat nulla
-                                                deumantos
-                                                solicitud felis. Pellentesque diam dolor, elementum etos lobortis des
-                                                mollis
-                                                ut risus. Sedcus faucibus an sullamcorper mattis drostique des commodo
-                                                pharetras loremos.</p>
-                                            <!-- <div class="product__details__tab__content__item">
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tabs-5" role="tabpanel">
+                                            <div class="product__details__tab__content">
+                                                <p class="note">Nam tempus turpis at metus scelerisque placerat nulla
+                                                    deumantos
+                                                    solicitud felis. Pellentesque diam dolor, elementum etos lobortis
+                                                    des
+                                                    mollis
+                                                    ut risus. Sedcus faucibus an sullamcorper mattis drostique des
+                                                    commodo
+                                                    pharetras loremos.</p>
+                                                <!-- <div class="product__details__tab__content__item">
                                             <h5>Products Infomation</h5>
                                             <p>A Pocket PC is a handheld computer, which features many of the same
                                                 capabilities as a modern PC. These handy little devices allow
@@ -206,9 +243,9 @@
                                                 breathable. Velvet is a great choice for dinner party jacket and can be
                                             worn all year round.</p>
                                         </div> -->
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!-- <div class="tab-pane" id="tabs-6" role="tabpanel">
+                                        <!-- <div class="tab-pane" id="tabs-6" role="tabpanel">
                                     <div class="product__details__tab__content">
                                         <!-- <div class="product__details__tab__content__item">
                                             <h5>Products Infomation</h5>
@@ -236,9 +273,9 @@
                                                 breathable. Velvet is a great choice for dinner party jacket and can be
                                             worn all year round.</p>
                                         </div> -->
-                                    <!-- </div> -->
-                                    <!-- </div> -->
-                                    <!-- <div class="tab-pane" id="tabs-7" role="tabpanel">
+                                        <!-- </div> -->
+                                        <!-- </div> -->
+                                        <!-- <div class="tab-pane" id="tabs-7" role="tabpanel">
                                     <div class="product__details__tab__content">
                                         <p class="note">Nam tempus turpis at metus scelerisque placerat nulla deumantos
                                             solicitud felis. Pellentesque diam dolor, elementum etos lobortis des mollis
@@ -272,12 +309,12 @@
                                         </div>
                                     </div>
                                 </div> -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </section>
         <%- include('./layouts/footerNavbar.ejs') -%>
 
@@ -309,22 +346,55 @@
                     //     }
                     // }
 
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const colorOptions = document.querySelectorAll(".color-box");
+
+                        colorOptions.forEach(option => {
+                            const radioInput = option.querySelector("input[type='radio']");
+
+                            option.addEventListener("click", () => {
+                                if (!radioInput.disabled) {
+                                    radioInput.checked = true;
+
+                                    colorOptions.forEach(otherOption => {
+                                        otherOption.classList.remove("selected");
+                                        otherOption.querySelector("input[type='radio']").disabled = false;
+                                    });
+
+                                    option.classList.add("selected");
+                                    radioInput.disabled = true;
+                                }
+                            });
+                        });
+                    });
 
                     async function addToCart() {
 
-                        
                         try {
                             
-                            event.preventDefault()
                             
+                            
+                            
+                            event.preventDefault()
+                            console.log('hatgdfggllloo');
+
                             const productId = document.getElementById("productId").value;
+    
+                            const selectedColor = document.querySelector('input[name = "selectedColor"]:checked').value
+                    
+                            const selectedSize = document.querySelector('input[name = "selectedSize"]:checked').value
+                
                             const quantity = document.getElementById("quantity").value;
+
+                            
+                        
 
                             const data = {
                                 productId: productId,
+                                selectedColor: selectedColor,
+                                selectedSize: selectedSize,
                                 quantity: quantity
                             };
-                            
                             const response = await axios.post("/addToCart", data);
                             // if(response.data.success){
                             // Toastify({
@@ -340,7 +410,7 @@
                             //         background: "#384aeb",
                             //     }
                             // }).showToast();
-                        // }
+                            // }
                             if (response.data.success) {
                                 Swal.fire({
                                     title: "Success",
@@ -348,6 +418,16 @@
                                     icon: 'success',
                                     timer: 2000
                                 })
+                            } else if (response.data.limited) {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: 'Sorry!Product stock exceeded',
+                                    icon: 'error',
+                                    timer: 2000
+                                })
+
+
+
                             } else {
                                 Swal.fire({
                                     title: "Error",

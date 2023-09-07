@@ -50,12 +50,18 @@
                       <li class="list-group-item">
                         <a href="/manageAddress" class="btn btn-outline-dark btn-block">Manage Address</a>
                       </li>
+                      <!-- Add Logout Button Here -->
+                      <li class="list-group-item">
+                        <a href="/logout" class="btn btn-outline-danger btn-block">Logout</a>
+                      </li>
                     </ul>
                   </div>
                 </div>
               </div>
+              
+              
               <div class="col-lg-8">
-                <div class="card mb-4">
+                <!-- <div class="card mb-4">
                   <div class="card-body">
                     <h5 class="card-title">Wallet</h5>
                     <p class="mb-0">₹<%= user.wallet %>
@@ -65,7 +71,7 @@
                       View Wallet
                     </button>
                   </div>
-                </div>
+                </div> -->
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">User Profile</h5>
@@ -73,10 +79,10 @@
 
                     <div class="row mb-3">
                       <div class="col-sm-3">
-                        <p class="font-weight-bold mb-0">Full Name</p>
+                        <p class="font-weight-bold mb-0" style="color: #000000;">Full Name</p>
                       </div>
                       <div class="col-sm-9">
-                        <p class="text-muted mb-0">
+                        <p class="text-muted mb-0" >
                           <%= user.name %>
                         </p>
                       </div>
@@ -84,7 +90,7 @@
                     <hr />
                     <div class="row mb-3">
                       <div class="col-sm-3">
-                        <p class="font-weight-bold mb-0">Email</p>
+                        <p class="font-weight-bold mb-0" style="color: #000000;">Email</p>
                       </div>
                       <div class="col-sm-9">
                         <p class="text-muted mb-0">
@@ -95,7 +101,7 @@
                     <hr />
                     <div class="row mb-3">
                       <div class="col-sm-3">
-                        <p class="font-weight-bold mb-0">Phone</p>
+                        <p class="font-weight-bold mb-0" style="color: #000000;">Phone</p>
                       </div>
                       <div class="col-sm-9">
                         <p class="text-muted mb-0">
@@ -115,7 +121,7 @@
             </div>
       </div>
     </section>
-    <div class="modal fade mt-5" id="walletModal" tabindex="-1" role="dialog" aria-labelledby="walletModalLabel"
+    <!-- <div class="modal fade mt-5" id="walletModal" tabindex="-1" role="dialog" aria-labelledby="walletModalLabel"
       aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -130,7 +136,7 @@
           <div class="modal-body">
             <div class="row">
               <!-- Wallet Balance Section -->
-              <div class="col-md-6 mb-4">
+              <!-- <div class="col-md-6 mb-4">
                 <div class="card shadow-sm">
                   <div class="card-body">
                     <h6 class="card-title">Your Wallet Balance:</h6>
@@ -146,7 +152,7 @@
                     Add Wallet Money
                   </a>
                 </div> -->
-            </div>
+            <!-- </div>
 
 
           </div>
@@ -158,7 +164,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
 
     <%- include('./layouts/footerNavbar.ejs') -%>

@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema({
     },
 
     date: {
-        type: Date,
+        type: String,
         required: true
     },
 
@@ -43,7 +43,7 @@ const orderSchema = new mongoose.Schema({
         type : Date,
         required : true
     },
-
+    
     paymentId : {
         type : String
     },
@@ -83,8 +83,12 @@ const orderSchema = new mongoose.Schema({
         //     type : String
         // }
 
-    }]
+    }],
+    total:{
+        type:Number
+    }
 
-})
+},
+{timestamps:true})
 
 module.exports = mongoose.model('order', orderSchema)

@@ -1,5 +1,6 @@
 
 const catModel = require('../models/categoryModel')
+const offerModel = require('../models/offerModel')
 
 
 const loadCategories = async (req, res) => {
@@ -7,9 +8,10 @@ const loadCategories = async (req, res) => {
         let message = req.session.message
         req.session.message = ""
         // console.log(message);
-        let categories = await catModel.find()
+        let categories = await catModel.find().populate('offer')
+        const availableOffers = await offerModel.find({ expiryDate : { $gte : new Date() }})
         
-        res.render('categories', { message, category: categories })
+        res.render('categories', { message, category: categories ,availableOffers})
     } catch (error) {
         console.log(error.message);
     }

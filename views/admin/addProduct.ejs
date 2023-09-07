@@ -55,6 +55,23 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Size</label>
+                                                <div class="row gx-2">
+                                                    <select class="form-select" id="product_size" name="product_size[]" multiple required>
+                                                        <!-- <option value="" selected disabled>Select a size</option> -->
+                                                        <option value="XS">XS</option>
+                                                        <option value="S">S</option>
+                                                        <option value="M">M</option>
+                                                        <option value="L">L</option>
+                                                        <option value="XL">XL</option>
+                                                        <!-- Add more size options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
 
                                     <div class="row">
@@ -69,6 +86,26 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Color</label>
+                                                <div class="row gx-2">
+                                                    <select id="product_color" class="form-select" name="product_color[]" multiple required>
+                                                        <!-- <option value="" selected disabled>Select a color</option> -->
+                                                        <option value="red" style="color:red;">Red</option>
+                                                        <option value="blue" style="color: blue;">Blue</option> 
+                                                        <option value="green"style="color:green;">Green</option>
+                                                        <option value="yellow" style="color: yellow;">Yellow</option>
+                                                        <option value="white" style="color: white;">White</option> 
+                                                        <option value="black"style="color: black;">Black</option>
+                                                        <!-- Add more color options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                
+                                        
                                     </div>
 
                                     <div class="card mb-4">
@@ -168,6 +205,6 @@
                     });
 
                     // Function to handle the file input change event
-                    document.getElementById('product_img').addEventListener('change', handleFileSelect);
+                    // document.getElementById('product_img').addEventListener('change', handleFileSelect);
 
                 </script>

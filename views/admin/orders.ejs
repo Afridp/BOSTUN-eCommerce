@@ -1,0 +1,299 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+            <!-- card-header end// -->
+            <section class="content-main">
+                <div class="content-header">
+                    <h2 class="">Orders</h2>
+                </div>
+                <div class="card mb-4">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#ID</th>
+                                    <th scope="col">User Name</th>
+                                    <th scope="col">Payment Method</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col" class="t">Orders</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(let order=0;order<orders.length;order++){%>
+
+
+                                    <tr>
+                                        <td>
+                                            <%= order+1 %>
+                                        </td>
+                                        <td><b>
+                                                <%= orders[order].user.name %>
+                                            </b></td>
+                                        <td>
+                                            <%= orders[order].payment %>
+                                        </td>
+                                        <td>
+                                            <%= orders[order].totalAmount %>
+                                        </td>
+                                        <!-- <td><span class="badge rounded-pill alert-warning">
+                                            <%= orders[order].status %>
+                                        </span></td> -->
+                                        <td>
+                                            <%= orders[order].date %>
+                                        </td>
+                                        <td>
+                                            <a href="#" onclick="showModal('<%= orders[order]._id %>')"
+                                                data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                                class="btn btn-md rounded font-sm show-items">Items</a>
+
+
+                                        </td>
+                                        <td>
+                                            <!-- <div class="dropdown">
+                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a> -->
+
+                                            <select onchange="orderStatus(this.value, '<%= orders[order]._id %>')"
+                                                class="form-select statusSelector" name="statusSelector"
+                                                id="statusSelector<%= orders[order]._id %>">
+                                                <option value="canceled" <% if(orders[order].status==='canceled' ){ %>
+                                                    selected
+                                                    <% } %>>Canceled
+                                                </option>
+                                                <option value="placed" <% if(orders[order].status==='placed' ){ %>
+                                                    selected<% } %>>Placed</option>
+                                                <option value="pending" <% if(orders[order].status==='pending' ){ %>
+                                                    selected
+                                                    <% } %>>Pending
+                                                </option>
+                                                <option value="delivered" <% if(orders[order].status==='delivered' ){ %>
+                                                    selected<% } %>>Delivered
+                                                </option>
+                                                <option value="dispatched" <% if(orders[order].status==='dispatched' ){
+                                                    %>
+                                                    selected<% } %>>Dispatched
+                                                </option>
+                                                <option value="returned" <% if(orders[order].status==='returned' ){ %>
+                                                    selected
+                                                    <% } %>>Returned
+                                                </option>
+                                            </select>
+                                        </td>
+                                        <!-- </div> -->
+                                        <!-- dropdown //end -->
+                                    </tr>
+                                    <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- table-responsive //end -->
+                </div>
+                <!-- card-body end// -->
+                </div>
+                <!-- card end// -->
+                <!-- <div class="pagination-area mt-15 mb-50">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                            <li class="page-item"><a class="page-link" href="#">02</a></li>
+                            <li class="page-item"><a class="page-link" href="#">03</a></li>
+                            <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                            <li class="page-item"><a class="page-link" href="#">16</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="material-icons md-chevron_right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div> -->
+            </div>
+            </section>
+
+
+
+
+
+
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="card-header p-4 bg-light card-header-large">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-2">
+                                            Order ID:
+                                            <span class="fw-bold text-dark" id="orderId"></span>
+                                        </p>
+                                        <p class="text-muted mb-0">
+                                            Ordered On:
+                                            <span class="fw-bold text-dark" id="orderDate"></span>
+                                        </p>
+                                        <p class="text-muted mb-0">
+                                            Order Status:
+                                            <span class="fw-bold text-success" id="orderStatus"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1> -->
+                            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body p-4" id="orderItemsContainer">
+                                <!-- Items will be added here dynamically -->
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                onclick="refreshOrderPage()">Close</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- content-main end// -->
+            <%- include('./layouts/footer.ejs') -%>
+
+                <script>
+                    const orderStatus = async (status, orderId) => {
+                        try {
+                            const updatedStatus = await axios.patch('/admin/changeStatus', { status, orderId })
+
+
+                            if (updatedStatus.data.success) {
+                                document.getElementById(`statusSelector${orderId}`).value = status;
+                                if (status === 'canceled') {
+                                    document.getElementById(`btnhide${orderId}`).style.display = 'none'
+                                } else {
+                                    document.getElementById(`btnhide${orderId}`).addEventListener('click', updatedStatus)
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Seem like there is an error in the orders list')
+                        }
+                    }
+
+
+                    function showModal(orderId) {
+                        event.preventDefault()
+                        // Use AJAX to fetch the order items
+                        console.log(orderId);
+                        $.ajax({
+                            url: '/admin/orderItems', // Replace with your actual API endpoint
+                            method: 'GET',
+                            data: { 'id': orderId },
+                            dataType: "json",
+
+                            success: function (response) {
+                                // Parse the JSON response if needed\
+
+                                if (response.success) {
+
+                                    let order = response.order
+                                    let orderId = order._id
+                                    let date = order.date
+                                    let status = order.status
+                                    let items = order.items
+                                    console.log(items);
+                                    const orderIdElement = document.getElementById('orderId');
+                                    const orderDateElement = document.getElementById('orderDate');
+                                    const orderStatusElement = document.getElementById('orderStatus');
+                                    orderIdElement.textContent = orderId;
+                                    orderDateElement.textContent = date;
+                                    orderStatusElement.textContent = status;
+
+
+                                    // Get the container where you want to append the items
+                                    const orderItemsContainer = document.getElementById('orderItemsContainer');
+
+                                    // Iterate through the items and create HTML for each one
+                                    items.forEach((item) => {
+                                        const itemElement = document.createElement('div');
+                                        itemElement.classList.add('mb-4'); // Add margin between items
+
+                                        // You can create the HTML structure for each item here, e.g., using innerHTML
+                                        itemElement.innerHTML = `
+                                        <div class="d-flex flex-row mb-4 pb-2">
+                                          <div class="flex-fill">
+                                              <h5 class="font-weight-bold mb-3">${item.product_Id.name}</h5>
+                                              <p class="text-muted mb-2">Quantity: <span class="fw-bold">${item.quantity}</span></p>
+                                              <h4 class="mb-3">₹${item.totalPrice}</h4>
+                                              <!-- You can add more item details here as needed -->
+                                          </div>
+                                          <div>
+                                              <img class="align-self-center img-fluid" src="/images/${item.product_Id.image[0]}" width="150" alt="Product Image">
+                                          </div>
+                                      </div>
+                                       `;
+
+                                        // Append the item to the container
+                                        orderItemsContainer.appendChild(itemElement);
+                                    });
+
+                                    // Display the modal
+                                    $('#myModal').css('display', 'block');
+                                } else {
+
+                                    // Handle the case where the request was not successful
+                                    console.error('Request was not successful:', response.error);
+                                }
+                            }, error: function (xhr, status, error) {
+                                // Handle the case where the AJAX request itself fails
+                                console.error('AJAX request failed:', error);
+                            }
+
+
+                        })
+                    }
+
+                    function refreshOrderPage() {
+                        // Reload the current page
+                        location.reload();
+                    }
+
+                    $(document).ready(function () {
+                        $("#myTable").DataTable();
+                    })
+                    // function closeModal() {
+                    //     // Close the modal
+                    //     $('#myModal').css('display', 'none');
+                    // }
+
+
+
+
+                // // Add a click event listener to all buttons with the class 'show-items'
+                // $('.show-items').on('click', function () {
+                // // Get the order ID from the data attribute
+                // var orderId = $(this).data('orderid');
+                // console.log("helllolsdjkfhsjkdfh");
+                // console.log(orderId);
+                // // Use AJAX to fetch the order items
+                // $.ajax({
+                // url: '/admin/OrderItems', // Replace with your actual API endpoint
+                // method: 'GET',
+                // data: { orderId: orderId },
+                // success: function (response) {
+                // // Populate the modal with the order items
+                // var modalContent = $('#myModal .modal-content');
+                // modalContent.empty(); // Clear previous content
+                // modalContent.append(response);
+
+                // // Display the modal
+                // $('#myModal').css('display', 'block');
+                // },
+                // error: function (error) {
+                // console.error('Error fetching order items:', error);
+                // }
+                // });
+                // });
+
+                </script>

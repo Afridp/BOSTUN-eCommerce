@@ -11,7 +11,9 @@
                         <p>Add, edit or delete a category</p>
                     </div>
                     <div>
-                        <input type="text" placeholder="Search Categories" class="form-control bg-white" />
+                        <input type="text" placeholder="Search Categories" class="form-control bg-white"
+                            id="searchInput" />
+
                     </div>
                 </div>
 
@@ -23,23 +25,27 @@
                                 <form action="/admin/categories" method="post">
                                     <div class="mb-4">
                                         <label for="category_name" class="form-label">Category Name</label>
-                                        <input type="text" placeholder="name" class="form-control"
-                                            id="category_name" name="category_name" required />
+                                        <input type="text" placeholder="name" class="form-control" id="category_name"
+                                            name="category_name" required />
                                     </div>
 
-                                    <%if(typeof message!==undefined){%>
-                                        <div><p class="text-center text-danger"><%= message %></p></div>
-                                    <%}%>
+                                    <%if(typeof message!=='undefined ' ){%>
+                                        <div>
+                                            <p class="text-center text-danger">
+                                                <%= message %>
+                                            </p>
+                                        </div>
+                                        <%}%>
 
-                                    <div class="mb-4">
-                                        <label class="form-label">Description</label>
-                                        <textarea placeholder="Description" class="form-control"
-                                            name="category_description" required></textarea>
-                                    </div>
+                                            <div class="mb-4">
+                                                <label class="form-label">Description</label>
+                                                <textarea placeholder="Description" class="form-control"
+                                                    name="category_description" required></textarea>
+                                            </div>
 
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-primary">Create category</button>
-                                    </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">Create category</button>
+                                            </div>
                                 </form>
 
                             </div>
@@ -53,41 +59,66 @@
                                                 <th style="width: 5%">ID</th>
                                                 <th style="width: 10%">Name</th>
                                                 <th style="width: 20%">Description</th>
+                                                <th>Offers</th>
+                                                <th></th>
                                                 <th class="text-end">Action</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
 
                                         <tbody>
 
                                             <tr>
-                                             <%if(category && category.length>0){for(let i=0;i<category.length;i++){%></category.length>
-                                                <td>
-                                                    <%= i+1 %>
-                                                </td>
-                                                <td><b>
-                                                        <%= category[i].name%>
-                                                    </b></td>
+                                                <%if(category && category.length>0){for(let i=0;i
+                                                    <category.length;i++){%>
+                                                        </category.length>
+                                                        <td>
+                                                            <%= i+1 %>
+                                                        </td>
+                                                        <td><b>
+                                                                <%= category[i].name%>
+                                                            </b></td>
 
-                                                <td>
-                                                    <%= category[i].description %>
-                                                </td>
+                                                        <td>
+                                                            <%= category[i].description %>
+                                                        </td>
+                                                        <td>
+                                                            <% if( category[i].offer ){%>
+                                                                <%= category[i].offer.name %>( <%=
+                                                                        category[i].offer.percentage %>% )<%} else { %>
+                                                                            No
+                                                                            offers<% }%>
+                                                        </td>
+                                                        <td>
+                                                            <% if ( category[i].offer ){%>
 
-                                                <td class="text-end">
-                                                    <a href="/admin/editCategory?id=<%= category[i]._id %>"
-                                                        class="btn btn-sm btn-success rounded font-sm text-white mt-15">Edit</a>
+                                                                <button onclick="removeOffer('<%= category[i]._id %>')"
+                                                                    class="btn btn-sm btn-outline-warning rounded font-sm">
+                                                                    Remove offer </button>
+                                                                <% } else {%>
+                                                                    <button class="btn btn-sm btn-outline-primary rounded
+                                                    font-sm" onclick="showModal('<%= category[i]._id %>')"> Apply offer
+                                                                    </button>
+                                                                    <% }%>
+                                                        </td>
+                                                        <td class="text-end">
+                                                            <a href="/admin/editCategory?id=<%= category[i]._id %>"
+                                                                class="btn btn-sm btn-success rounded font-sm text-white mt-15">Edit</a>
 
-                                                    <button id="categId<%= category[i]._id %>"
-                                                        onclick="categoryList('<%= category[i]._id %>')"
-                                                        class="btn btn-sm btn-danger rounded font-sm mt-15 ms-2">
-                                                        <%if(category[i].list===true){%>
-                                                            Unlist
-                                                        <%}else{%>
-                                                            List
-                                                        <%}%>
-                                                    </button>
-                                                </td>
+                                                            <button id="categId<%= category[i]._id %>"
+                                                                onclick="categoryList('<%= category[i]._id %>')"
+                                                                class="btn btn-sm btn-danger rounded font-sm mt-15 ms-2">
+                                                                <%if(category[i].list===true){%>
+                                                                    Unlist
+                                                                    <%}else{%>
+                                                                        List
+                                                                        <%}%>
+                                                            </button>
+                                                        </td>
 
                                             </tr>
+                                           
+                                            
 
                                             <%}}else{%>
                                                 <h5>Categories not found</h5>
@@ -142,8 +173,44 @@
                 </div>
                 <!-- card .// -->
             </section>
+
             <!-- content-main end// -->
 
+            <!--  -->
+
+            <div class="modal fade" id="discountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <% if (availableOffers && availableOffers.length> 0) { %>
+                        <% for (offer of availableOffers) { %>
+                            <div class="modal-content rounded-50">
+                                <div data-offerid="<%= offer._id %>" style="cursor: pointer;"
+                                    class="modal-body text-center">
+                                    <div class="icon text-danger">
+                                        <i style="font-size: 20px;" class="fas fa-gift"></i>
+                                    </div>
+                                    <div class="notice">
+                                        <h2>
+                                            <%= offer.name %>
+                                        </h2>
+                                        <h4>
+                                            <%= offer.percentage %>% Discount
+                                        </h4>
+                                        <p class="offer-validity">
+                                            <span>Valid from</span>
+                                            <%= offer.startingDate %> <span>to</span>
+                                                <%= offer.expiryDate %>
+                                        </p>
+                                    </div>
+                                    <div class="code"></div>
+                                </div>
+                            </div>
+                            <% } %>
+                                <% } %>
+                </div>
+            </div>
+
+            </div>
 
             <%- include('./layouts/footer.ejs') -%>
 
@@ -171,4 +238,128 @@
                         }
 
                     }
+
+                    function showModal(categoryId) {
+                        console.log(categoryId);
+                        $('#discountModal').modal('show');
+                        const offerElements = document.querySelectorAll('.modal-body.text-center');
+                        offerElements.forEach((element) => {
+                            element.onclick = function () {
+                                const offerId = this.getAttribute('data-offerid');
+                                enterOffer(offerId, categoryId);
+                            };
+                        });
+                    }
+
+                    async function enterOffer(offerId, categoryId) {
+                        $('#discountModal').modal('hide');
+                        const response = await axios.patch('/admin/applycategoryOffer', { offerId, categoryId })
+                        if (response.data.success) {
+
+                            alert('Offer applied')
+                            window.location = '/admin/categories'
+                        }
+                    }
+
+                    async function removeOffer(categoryId) {
+
+                        try {
+                            const isConfirmed = await Swal.fire({
+                                title: 'Are you sure?',
+                                text: "You won't be able to revert this!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#d33',
+                                cancelButtonColor: '#3085d6',
+                                confirmButtonText: 'Yes, remove it!'
+                            });
+
+                            if (isConfirmed.isConfirmed) {
+                                const response = await axios.patch('/admin/removeCategoryOffer', { categoryId })
+                                if (response.data.success) {
+                                    window.location = '/admin/categories'
+                                }
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+
+
+
+                    // Add an event listener to the search input to trigger the search function
+//                     document.addEventListener("DOMContentLoaded", () => {
+//     const searchInput = document.getElementById("searchInput");
+//     searchInput.addEventListener("input", searchCategories);
+
+//     // Initialize the flag
+//     let messageDisplayed = false;
+
+//     function displayNoCategoriesMessage(display) {
+//         const noCategoriesMessage = document.getElementById("noCategoriesMessage");
+//         if (noCategoriesMessage) {
+//             noCategoriesMessage.style.display = display ? "table-row" : "none";
+//         }
+//     }
+
+//     function searchCategories() {
+//         const searchInput = document.getElementById("searchInput");
+//         const searchText = searchInput.value.toLowerCase();
+//         const tableRows = document.querySelectorAll("tbody tr");
+//         let foundMatch = false;
+
+//         tableRows.forEach((row) => {
+//             const categoryName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+//             if (categoryName.includes(searchText)) {
+//                 row.style.display = "table-row";
+//                 foundMatch = true;
+//             } else {
+//                 row.style.display = "none";
+//             }
+//         });
+
+//         if (!foundMatch) {
+//             // Display "No categories available" message if it hasn't been displayed
+//             if (!messageDisplayed) {
+//                 displayNoCategoriesMessage(true);
+//                 messageDisplayed = true;
+//             }
+//         } else {
+//             // Remove the "No categories available" message if it's displayed
+//             displayNoCategoriesMessage(false);
+//             messageDisplayed = false;
+//         }
+//     }
+
+//     // Initial display of the message
+//     displayNoCategoriesMessage(true);
+// });
+
+function searchCategories() {
+    const searchInput = document.getElementById("searchInput");
+    const searchText = searchInput.value.toLowerCase();
+    const tableRows = document.querySelectorAll("tbody tr");
+
+    tableRows.forEach((row) => {
+        const categoryName = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+        if (categoryName.includes(searchText)) {
+            row.style.display = "table-row";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
+// Add an event listener to the search input to trigger the search function
+const searchInput = document.getElementById("searchInput");
+searchInput.addEventListener("input", searchCategories);
+
+
+
+
+
+
+
+
+
                 </script>

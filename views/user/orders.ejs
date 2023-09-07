@@ -1,0 +1,150 @@
+<%- include('./layouts/header.ejs') -%>
+
+  <%- include('./layouts/navbar.ejs') -%>
+
+    <section style="background-color: #eee">
+      <div class="container py-5">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Orders</h5>
+                <hr />
+                <div class="table-responsive">
+                  <table id="myTable" class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Order ID</th>
+                        <th>Address</th>
+                        <th>Payment Method</th>
+                        <th>Ordered Items</th>
+                        <th>Order Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <%if(orders){%>
+                        <% for (let order of orders) { %>
+                          <tr id="ordertable-<%= order._id %>">
+                            <td>
+                              <%= order._id %>
+                            </td>
+                            <td>
+                              <%= order.deliveryAddress %>
+                            </td>
+                            <td>
+                              <%= order.payment %>
+                            </td>
+                            <td>
+                              <a href="/viewOrdered?id=<%= order._id %>">View Details</a>
+                            </td>
+
+                            <td id="status">
+                              <%= order.status %>
+                            </td>
+
+                            <td>
+                              <% if (order.status==='delivered' ) { %>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                  data-bs-target="#returnModal<%= order._id %>">
+                                  Return
+                                </button>
+                                <% } else if (order.status==='cancelled' ) { %>
+                                  <p></p>
+                                  <% } else if (order.status==='returned' ) { %>
+                                    <p></p>
+                                    <% } else { %>
+                                      <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#cancelModal<%= order._id %>">
+                                        Cancel
+                                      </button>
+                                      <% } %>
+                            </td>
+
+
+                            <!-- <span id="delete" style="display: none">order has been removed</span> -->
+                          </tr>
+                          <% }}else{ %>
+                            <h6>There is no order in the list</h6>
+                            <%}%>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- <%  { %>
+        <div class="modal fade" id="cancelModal<%= %>" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Reason for cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-check">
+                  <input type="radio" id="cancelReason" name="cancelReason" value="Change of Mind" required>
+                  <label>Change of Mind</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" id="cancelReason" name="cancelReason" value="Shipping or Delivery Concerns"
+                    required>
+                  <label>Shipping or Delivery Concerns</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" id="cancelReason" name="cancelReason" value="Payment Issues" required>
+                  <label>Payment Issues</label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="cancelOrder('<%=  %>')" class="btn btn-danger">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <div class="modal fade" id="returnModal<%=  %>" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Reason for return</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="form-check">
+                  <input type="radio" id="returnReason" name="returnReason" value="Defective Product" required>
+                  <label>Defective Product</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" id="returnReason" name="returnReason" value="Wrong Item Received" required>
+                  <label>Wrong Item Received</label>
+                </div>
+                <div class="form-check">
+                  <input type="radio" id="returnReason" name="returnReason" value="Size or Fit Issues" required>
+                  <label>Size or Fit Issues</label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="returnOrder('<%=  %>')" class="btn btn-danger">Return</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% } %>
+          <%  %> -->
+
+
+            <%- include('./layouts/footerNavbar.ejs') -%>
+
+              <%- include('./layouts/footer.ejs') -%>

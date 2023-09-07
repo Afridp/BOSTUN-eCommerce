@@ -122,8 +122,8 @@
 
 
                         <div class="form-group">
-                            <input type="number" class="form-control" placeholder="Enter Mobile" name="mobile"
-                                id="number" required>
+                            <input type="text" class="form-control" placeholder="Enter Mobile" name="mobile" id="number"
+                                required>
                             <p id="para3" style="color: rgb(255, 2, 2);"></p>
                         </div>
 
@@ -263,11 +263,44 @@
                             }
 
                             // Validate password (assuming at least 6 characters required)
+                            // Check if the password is at least 6 characters long
                             if (password.length < 6) {
                                 document.getElementById("para2").textContent = "Password must be at least 6 characters long.";
                                 isValid = false;
                             } else {
                                 document.getElementById("para2").textContent = "";
+
+                                // Check if the password contains at least one uppercase letter
+                                if (!/[A-Z]/.test(password)) {
+                                    document.getElementById("para2").textContent = "Password must contain at least one uppercase letter.";
+                                    isValid = false;
+                                } else {
+                                    document.getElementById("para2").textContent = "";
+                                }
+
+                                // Check if the password contains at least one lowercase letter
+                                if (!/[a-z]/.test(password)) {
+                                    document.getElementById("para2").textContent = "Password must contain at least one lowercase letter.";
+                                    isValid = false;
+                                } else {
+                                    document.getElementById("para2").textContent = "";
+                                }
+
+                                // Check if the password contains at least one digit
+                                if (!/\d/.test(password)) {
+                                    document.getElementById("para2").textContent = "Password must contain at least one digit.";
+                                    isValid = false;
+                                } else {
+                                    document.getElementById("para2").textContent = "";
+                                }
+
+                                // Check if the password contains at least one special character (e.g., !, @, #, etc.)
+                                if (!/[!@#$%^&*]/.test(password)) {
+                                    document.getElementById("para2").textContent = "Password must contain at least one special character.";
+                                    isValid = false;
+                                } else {
+                                    document.getElementById("para2").textContent = "";
+                                }
                             }
                             console.log(isValid);
                             // Submit the form if all inputs are valid

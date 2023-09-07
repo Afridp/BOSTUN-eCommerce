@@ -14,6 +14,10 @@ let categorySchema = mongoose.Schema({
     default: true,
     required: true,
   },
+  offer : {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : 'offer'
+}
 })
 
 module.exports = mongoose.model("Category", categorySchema)

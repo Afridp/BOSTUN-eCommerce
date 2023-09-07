@@ -29,7 +29,9 @@ time, mark, audio, video {
   font: inherit;
   vertical-align: baseline;
 }
-
+.border {
+  border: 1px solid #dee2e6!important;
+}
 thead {
   font-weight: 600;
 }
@@ -935,7 +937,10 @@ b {
   height: unset;
   border-radius: 4px;
 }
-
+ /* Customize input width */
+ .form-control-sm {
+  width: 150px; /* Adjust the value as needed */
+}
 .form-label {
   font-size: 13px;
 }
@@ -4141,6 +4146,44 @@ body.dark .dropdown-menu .dropdown-item.text-danger {
 }
 
 .btn-mobile {
+  display: none;
+}
+
+  /* AddOffer form styling */
+  /* .card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  } */
+
+  .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group label {
+    /* font-weight: bold; */
+  }
+
+  .btn-primary {
+    background-color: #007bff;
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+  }
+
+
+  /* Offer validity */
+.offer-validity {
+  font-size: 14px;
+  color: #888;
+}
+
+/* Highlight "Valid from" and "to" in green */
+.offer-validity span {
+  color: #27ae60; /* Green color */
+}
+/* Hide the dropdown arrow on the download button */
+.btn-group .btn.dropdown-toggle::after {
   display: none;
 }
 

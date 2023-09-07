@@ -1,14 +1,17 @@
 const productModel = require('../models/productModel')
 const catModel = require('../models/categoryModel')
+const offerModel = require('../models/offerModel')
 const path = require('path')
 const sharp = require('sharp')
+const colorConvert = require('color-convert')
 
 const loadProducts = async (req, res) => {
     try {
         
-        const product = await productModel.find().populate("category")
+        const product = await productModel.find().populate("category").populate('offer')
+        const availableOffers = await offerModel.find({ expiryDate : { $gte : new Date() }})
 
-        res.render('products', { product })
+        res.render('products', { product ,availableOffers})
     } catch (error) {
         console.log(error.message);
     }
@@ -34,8 +37,11 @@ const addProduct = async (req, res) => {
             product_price,
             product_quantity,
             product_category,
+            product_color,
+            product_size,
         } = req.body
-
+        console.log(product_size);
+        console.log(product_color);
         const existingProduct = await productModel.findOne({
 
             name: { $regex: new RegExp(`^${product_name}$`, "i") }
@@ -61,6 +67,14 @@ const addProduct = async (req, res) => {
                     imageArr.push(req.files[i].filename);
                 }
             }
+            // let productColor=[]
+            // product_color.forEach(element => {
+            //     let colorName = element
+            //     let hexCode = colorConvert.keyword.hex(colorName.toLowerCase())
+            //     console.log(hexCode);
+            //     productColor.push(hexCode)
+                
+            // });
 
             const product = new productModel({
                 name: product_name,
@@ -68,6 +82,8 @@ const addProduct = async (req, res) => {
                 price: product_price,
                 quantity: product_quantity,
                 category: product_category,
+                color: product_color,
+                size: product_size,
                 image: imageArr,
                 stock: true,
             })

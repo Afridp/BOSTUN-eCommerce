@@ -66,16 +66,10 @@
             </div>
 
 
-            <div class="col-lg-6 col-md-6">
-                <nav class="header__menu mobile-menu">
-                    <ul>
-                        <li class="active"><a href="/index.ejs" style="color: rgb(255, 255, 255);">Home</a></li>
-                        <li><a href="/shop" style="color: rgb(255, 255, 255);">Shop</a></li>
-                        <li><a href="/contact" style="color: rgb(255, 255, 255);">Contact Us</a></li>
-                        <li><a href="/login" style="color: rgb(255, 255, 255);">Login</a></li>
-                    </ul>
-                </nav>
-            </div>
+            <%- include('./layouts/navItems.ejs') -%>
+
+
+
         </div>
         <div class="canvas__open"><i class="fa fa-bars"></i></div>
     </div>
@@ -93,14 +87,20 @@
                 
             </div>
 
-            <% if (typeof message !=='undefined' ) { %>
-                <div class="error-container">
-                    <div class="error-message" style="background-color: rgb(251, 140, 140); border-radius: 5px; ">
-                        <p class="px-3">
-                            <%= message %>
-                        </p>
-                    </div>
-                </div>
+            <% if (typeof message !== 'undefined') { %>
+                <%if(message === ''){%>
+                 
+                    <h6>
+                      <%= message %>
+                    </h6>
+                  
+                <%}else {%>
+                  <div class="alert alert-danger">
+                    <p>
+                      <%= message %>
+                    </p>
+                  </div>
+                <%}%>
                 <% } %>
 
                     <form action="" method="post">

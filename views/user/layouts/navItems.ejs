@@ -1,0 +1,15 @@
+<div class="col-lg-6 col-md-6">
+    <nav class="header__menu mobile-menu">
+        <ul>
+            <li class="<%= currentPage === 'home' ? 'active' : '' %>"><a href="/">Home</a></li>
+            <li class="<%= currentPage === 'shop' ? 'active' : '' %>"><a href="/shop">Shop</a></li>
+            <li class="<%= currentPage === 'contact' ? 'active' : '' %>"><a href="/contact">Contact Us</a></li>
+
+            <% if (userid) { %>
+            <li class="<%= currentPage === 'profile' ? 'active' : '' %>"><a href="/profile"><%= user.name %></a></li>
+            <% } else { %>
+            <li class="<%= currentPage === 'login' ? 'active' : '' %>"><a href="/login">Login</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
