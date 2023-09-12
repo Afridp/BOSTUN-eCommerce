@@ -11,7 +11,7 @@ const app = express();
 const session = require('express-session')
 const nocache = require("nocache")
 const path = require("path")
-const moment = require('moment');
+// const moment = require('moment');
 
 // var logger = require('morgan');
 
@@ -38,8 +38,8 @@ app.use(
 const shortDateFormat = "MMM Do YY"
 
 // Middle ware for moment date
-app.locals.moment = moment;
-app.locals.shortDateFormat = shortDateFormat;
+// app.locals.moment = moment;
+// app.locals.shortDateFormat = shortDateFormat;
 
 const userRouter = require('./routes/user');
 const adminRouter = require('./routes/admin');
