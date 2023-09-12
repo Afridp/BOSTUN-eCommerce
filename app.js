@@ -1,5 +1,7 @@
+const dotenv = require('dotenv')
+dotenv.config()
 const mongoose = require("mongoose")
-mongoose.connect("mongodb://127.0.0.1:27017/BostonE-Commerce")
+mongoose.connect(process.env.MONGO)
 .then(()=>console.log("connected to database"))
 .catch(()=>console.log("error..!! failed to connect database"))
 
@@ -9,10 +11,8 @@ const app = express();
 const session = require('express-session')
 const nocache = require("nocache")
 const path = require("path")
-const dotenv = require('dotenv')
 const moment = require('moment');
 
-dotenv.config()
 // var logger = require('morgan');
 
 app.set('view engine', 'ejs')
