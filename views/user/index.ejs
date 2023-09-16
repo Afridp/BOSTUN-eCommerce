@@ -3,8 +3,10 @@
 <%- include('./layouts/navbar.ejs') -%>
 
     <!-- Hero Section Begin -->
-    <section class="hero">
+    <!-- <section class="hero">
         <div class="hero__slider owl-carousel">
+
+
             <div class="hero__items set-bg" data-setbg="/user/img/hero/hero-1.jpg">
                 <div class="container">
                     <div class="row">
@@ -26,6 +28,7 @@
                     </div>
                 </div>
             </div>
+        
             <div class="hero__items set-bg" data-setbg="/user/img/hero/hero-2.jpg">
                 <div class="container">
                     <div class="row">
@@ -48,11 +51,44 @@
                 </div>
             </div>
         </div>
+    </section> -->
+    <section class="hero">
+        <div class="hero__slider owl-carousel">
+            <% for (let i = 0; i < banner.length; i++) { %>
+                <div class="hero__items" style="background-image: url('images/<%= banner[i].image[0] %>');"  >
+                    <div class="container" >
+                        <div class="row">
+                            <div class="col-xl-5 col-lg-7 col-md-8">
+                                <div class="hero__text">
+                                    <div style="backgound-color:rgb(255, 200, 0)">
+                                        <p style="color: rgb(255, 204, 2);">#<%= banner[i].occassion %></p>
+                                    </div>
+
+                                    <h2><%= banner[i].title %></h2>
+                                    <h6><%= banner[i].description %></h6>
+                                    <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
+                                    <div class="hero__social">
+                                        <a href="#"><i class="fa fa-facebook"></i></a>
+                                        <a href="#"><i class="fa fa-twitter"></i></a>
+                                        <a href="#"><i class="fa fa-pinterest"></i></a>
+                                        <a href="#"><i class="fa fa-instagram"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
     </section>
+   
+    
     <!-- Hero Section End -->
 
+    
+
      <!-- Categories Section Begin -->
-     <section class="categories spad">
+     <!-- <section class="categories spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
@@ -96,7 +132,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- Categories Section End -->
 
     <!-- Product Section Begin -->

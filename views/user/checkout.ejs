@@ -85,40 +85,66 @@
                                                             <%= cart.product_Id.name %>
                                                         </h6>
 
-                                                        <% if ( cart.product_Id.offer){ var discount = (cart.product_Id.price * cart.product_Id.offer.percentage / 100).toFixed(0)  } else if ( cart.product_Id.category.offer ) {var discount = ( cart.product_Id.price * cart.product_Id.category.offer.percentage / 100 ).toFixed(0) } %>
-                                                            
-                                                        <% if ( cart.product_Id.offer ) { %>
-                                                            <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%= cart.product_Id.price %></del></h6>
-            
-                                                            <h5>₹ <%= cart.product_Id.price - discount %> </h5>
-            
-            
-                                                        <%} else if (cart.product_Id.category.offer ) { %>
-                                                            <h6 ><del style="color: rgba(0, 0, 0, 0.372);">₹ <%= cart.product_Id.price %></del></h6>
-                                                            <h5 >₹ <%= cart.product_Id.price - discount %></h5>
-            
-                                                            <% } else { %>
-                                                            <h5>₹ <%= cart.product_Id.price %> </h5>
-                                                        <% } %>
+                                                        <% if ( cart.product_Id.offer){ var
+                                                            discount=(cart.product_Id.price *
+                                                            cart.product_Id.offer.percentage / 100).toFixed(0) } else
+                                                            if( cart.product_Id.category.offer ) { var
+                                                            discount=(cart.product_Id.price
+                                                            *cart.product_Id.category.offer.percentage / 100
+                                                            ).toFixed(0) } %>
+
+
+                                                            <% if ( cart.product_Id.offer ) { %>
+                                                                <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%=
+                                                                            cart.product_Id.price %></del></h6>
+
+                                                                <h5>₹ <%= cart.product_Id.price - discount %>
+                                                                </h5>
+
+
+                                                                <%} else if (cart.product_Id.category.offer ) { %>
+                                                                    <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%=
+                                                                                cart.product_Id.price %></del></h6>
+                                                                    <h5>₹ <%= cart.product_Id.price - discount %>
+                                                                    </h5>
+
+                                                                    <% } else { %>
+                                                                        <h5>₹ <%= cart.product_Id.price %>
+                                                                        </h5>
+                                                                        <% } %>
 
 
 
-                                                        
 
 
 
-                                                        
+
+
 
                                                     </div>
                                                 </td>
                                                 <td class="quantity">
-                                                    
-                                                        <input type="text" class="form-control-plain" value="<%= cart.quantity %>" readonly>
-                                                    
+
+                                                    <input type="text" class="form-control-plain"
+                                                        value="<%= cart.quantity %>" readonly>
+
                                                 </td>
-                                                
-                                                <td class="cart__price">₹ <%= cart.totalPrice %>
-                                                </td>
+
+                                                <% if ( cart.product_Id.offer){ var totlAmt=(cart.product_Id.price *
+                                                    cart.product_Id.offer.percentage / 100).toFixed(0) * cart.quantity } else if (
+                                                    x.product_Id.category.offer ) { var totlAmt=(x.product_Id.price *
+                                                    cart.product_Id.category.offer.percentage / 100 ).toFixed(0)  * cart.quantity } %>
+
+
+                                                    <% var Price=cart.product_Id.price * cart.quantity - totlAmt %>
+
+                                                        <td class="cart__price">₹ <%= Price %>
+
+
+
+
+
+                                                        </td>
                                             </tr>
                                             <% }) %>
                                     </tbody>
@@ -132,89 +158,127 @@
                                 <% if (coupon) { %>
                                     <h3 class="mt-3 mb-5 mx-3">
                                         "<%= coupon %>" Coupon Applied
-                                        <a href="#" onclick="remove()" class="text-danger">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </a>
+                                            <a href="#" onclick="remove()" class="text-danger">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </a>
                                     </h3>
                                     <input type="hidden" name="code" id="code" value="<%= coupon %>">
-                                <% } else { %>
-                                    <div class="cart__discount">
-                                        <h6>Discount codes</h6>
-                                        <form>
-                                            <input type="text" placeholder="Coupon code" name="coupon">
-                                            <button type="submit">Apply</button>
-                                        </form>
-                                        <input type="hidden" name="code" id="code" value="<%= coupon %>">
-                                    </div>
-                                <% } %>
-                                <div class="col-xl-8 col-lg-8 mt-4">
-                                    <div class="card shadow-0 border mb-4" id="addressDetails">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Select address</h5>
-                                            <div class="d-flex justify-content-end">
-                                                <a href="/add-addresss" class="btn btn-primary btn-sm">Add New Address</a>
+                                    <% } else { %>
+
+                                        <div id="couponReloadDiv">
+
+
+                                            <!-- <label for="couponCode">Discount coupons</label>
+                                            <input type="text" class="form-control" >
+                                            <button class="btn btn-primary mt-2"
+                                                onclick="applyCoupon('<%= %>')">Apply
+                                                Coupon</button>
+                                                
+                                            <!-- Modal -->
+                                            <!-- <button type="button" class="btn btn-primary mt-2"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                Available
+                                            </button> -->
+
+
+
+
+                                            <div class="cart__discount">
+                                                <h6>discount code</h6>
+                                                <form id="couponForm">
+                                                    <input type="text" placeholder="Coupon code" id="couponCode"
+                                                        name="coupon">
+                                                    <button type="submit" id="applyButton"
+                                                        onclick="applyCoupon('<%= total %>')">Apply</button>
+                                                </form>
+                                                <!-- <input type="hidden" name="code" id="code" value="<%=  %>"> -->
                                             </div>
-                                            <hr />
-                                            <% if (user && user.address) { %>
-                                                <% user.address.forEach((address) => { %>
-                                                    <% if (address) { %>
-                                                        <div id="addrId">
-                                                            <div class="row">
-                                                                <div class="col-sm-1">
-                                                                    <div class="form-check">
-                                                                        <input class="custom-radio-style" type="radio"
-                                                                            name="selectedAddress" value="<%= address.name %>,
-                                                                            <%= address.housename %>, <%= address.city %>, <%= address.pincode %> 
-                                                                            <%= address.phone %>" id="address" required>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-sm-8">
-                                                                    <p class="text-muted mb-0"><%= address.name %></p>
-                                                                    <p class="text-muted mb-0"><%= address.phone %></p>
-                                                                    <p class="text-muted mb-0"><%= address.housename %>,
-                                                                        <%= address.city %>, <%= address.pincode %></p>
-                                                                </div>
-                                                                <div class="col-sm-3">
-                                                                    <a href="/check-edit-address?addressId=<%= address._id %>"
-                                                                        class="btn btn-primary btn-sm mr-2">Edit</a>
-                                                                </div>
-                                                            </div>
+                                        </div>
+                                        <% } %>
+
+
+
+                                            <div class="col-xl-8 col-lg-8 mt-4">
+                                                <div class="card shadow-0 border mb-4" id="addressDetails">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Select address</h5>
+                                                        <div class="d-flex justify-content-end">
+                                                            <a href="/add-addresss" class="btn btn-primary btn-sm">Add
+                                                                New Address</a>
                                                         </div>
                                                         <hr />
-                                                    <% } %>
-                                                <% }) %>
-                                            <% } else { %>
-                                                <p>No addresses found.</p>
-                                            <% } %>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="cart__total">
-                                    <h6>Summary</h6>
-                                    <ul>
-                                        <li>Subtotal <span>₹ <%= originalAmts %></span></li>
-                                        <li>Delivery Charges <span>₹ <%= 0.00 %></span></li>
-                                        <li>Total <span>₹ <%= total %></span></li>
-                                    </ul>
-                                    <input type="hidden" name='total' id="total" value="<%= total %>">
-                                    <hr>
-                                    <h6>Select payment method</h6>
-                                    <ul>
-                                        <li>
-                                            <input type="radio" id="payment" name="payment" value="cod" required>
-                                            <label for="paymentMethod1">Cash on delivery</label>
-                                        </li>
-                                        <li>
-                                            <input type="radio" id="payment" name="payment" value="RazorPay" required>
-                                            <label for="paymentMethod1">RazorPay</label>
-                                        </li>
-                                    </ul>
-                                    <button onclick="placeOrder()" type="submit" class="primary-btn">Place order</button>
-                                </div>
+                                                        <% if (user && user.address) { %>
+                                                            <% user.address.forEach((address)=> { %>
+                                                                <% if (address) { %>
+                                                                    <div id="addrId">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-1">
+                                                                                <div class="form-check">
+                                                                                    <input class="custom-radio-style"
+                                                                                        type="radio"
+                                                                                        name="selectedAddress" value="<%= address.name %>,
+                                                                            <%= address.housename %>, <%= address.city %>, <%= address.pincode %> 
+                                                                            <%= address.phone %>" id="address"
+                                                                                        required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="col-sm-8">
+                                                                                <p class="text-muted mb-0">
+                                                                                    <%= address.name %>
+                                                                                </p>
+                                                                                <p class="text-muted mb-0">
+                                                                                    <%= address.phone %>
+                                                                                </p>
+                                                                                <p class="text-muted mb-0">
+                                                                                    <%= address.housename %>,
+                                                                                        <%= address.city %>, <%=
+                                                                                                address.pincode %>
+                                                                                </p>
+                                                                            </div>
+                                                                            <div class="col-sm-3">
+                                                                                <a href="/check-edit-address?addressId=<%= address._id %>"
+                                                                                    class="btn btn-primary btn-sm mr-2">Edit</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr />
+                                                                    <% } %>
+                                                                        <% }) %>
+                                                                            <% } else { %>
+                                                                                <p>No addresses found.</p>
+                                                                                <% } %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="cart__total">
+                                                <h6>Summary</h6>
+                                                <ul>
+                                                    <li>Subtotal <span>₹ <%= originalAmts %></span></li>
+                                                    <li>Delivery Charges <span>₹ <%= 0.00 %></span></li>
+                                                    <li>Total <span>₹ <%= total %></span></li>
+                                                </ul>
+                                                <input type="hidden" name='total' id="total" value="<%= total %>">
+                                                <hr>
+                                                <h6>Select payment method</h6>
+                                                <ul>
+                                                    <li>
+                                                        <input type="radio" id="payment" name="payment" value="cod"
+                                                            required>
+                                                        <label for="paymentMethod1">Cash on delivery</label>
+                                                    </li>
+                                                    <li>
+                                                        <input type="radio" id="payment" name="payment" value="RazorPay"
+                                                            required>
+                                                        <label for="paymentMethod1">RazorPay</label>
+                                                    </li>
+                                                </ul>
+                                                <button onclick="placeOrder()" type="submit" class="primary-btn">Place
+                                                    order</button>
+                                            </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <% } else { %>
                         <h4 class="text-center" style="padding-left: 420px;">No products in cart</h4>
                         <% } %>
@@ -230,6 +294,56 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
+                    
+
+                    function applyCoupon(total) {
+                        event.preventDefault(); // Prevent the default form submission
+
+                        // Your custom logic here
+                        const couponCode = document.getElementById('couponCode').value;
+                       
+                        console.log(total);
+
+                        console.log(couponCode);
+                        if (couponCode !== '') {
+                            $.ajax({
+                                url: '/couponCheck',
+                                method: 'patch',
+                                data: {
+                                    couponCode,
+                                    total,
+
+
+                                },
+                                success: (Response) => {
+                                    if (Response.failed === true) {
+                                        Swal.fire({
+                                            title: 'oops..',
+                                            text: 'cannot use coupon anymore',
+                                            icon: 'error',
+                                            timer: 1500
+                                        });
+                                    } if (Response.success === true) {
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: 'applied',
+                                            icon: 'success',
+                                            timer: 1500
+                                        });
+                                        $('#couponReloadDiv').load('/Proceed #couponReloadDiv')
+                                        $('#reloadDiv').load('/Proceed #reloadDiv')
+                                    }
+                                }
+
+                            })
+
+                        } else {
+                            alert('Please enter a valid coupon code.');
+                        }
+
+                        // Call your function or perform the desired action
+                        // Example: applyCouponFunction(couponCode);
+                    }
 
                     // function remove() {
                     //     window.location.href = '/checkout'
@@ -321,7 +435,7 @@
                                 // code
                             },
                             success: (response) => {
-                                if (response.success==true) {
+                                if (response.success == true) {
                                     const param = response.params
                                     const url = '/order-placed/' + param
                                     window.location.href = url
@@ -334,62 +448,62 @@
                     }
 
 
-                    
 
-        function razorpayPayment(order) {
-            var options = {
-                "key": "rzp_test_7WU8dcNr9LTHKO", // Enter the Key ID generated from the Dashboard
-                "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                "currency": "INR",
-                "name": "Boston", //your business name
-                "description": "Test Transaction",
-                "image": "https://example.com/your_logo",
-                "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                // "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
-                "handler": function (response) {
-                    verifyPayment(response, order)
-                },
-                "prefill": {
-                    "name": "skdjfklsd", //your customer's name
-                    "email": "gaurav.kumar@example.com",
-                    "contact": "9000090000"
-                },
-                "notes": {
-                    "address": "Razorpay Corporate Office"
-                },
-                "theme": {
-                    "color": "#3399cc"
-                }
 
-            };
+                    function razorpayPayment(order) {
+                        var options = {
+                            "key": "rzp_test_7WU8dcNr9LTHKO", // Enter the Key ID generated from the Dashboard
+                            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "currency": "INR",
+                            "name": "Boston", //your business name
+                            "description": "Test Transaction",
+                            "image": "https://example.com/your_logo",
+                            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                            // "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
+                            "handler": function (response) {
+                                verifyPayment(response, order)
+                            },
+                            "prefill": {
+                                "name": "skdjfklsd", //your customer's name
+                                "email": "gaurav.kumar@example.com",
+                                "contact": "9000090000"
+                            },
+                            "notes": {
+                                "address": "Razorpay Corporate Office"
+                            },
+                            "theme": {
+                                "color": "#3399cc"
+                            }
 
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-        }
+                        };
 
-        function verifyPayment(payment, order) {
-            $.ajax({
-                url: "/verifypayment",
-                method: 'post',
-                data: {
-                    payment,
-                    order
-                },
-                success: (response) => {
-                    if (response.success == true) {
-                        const param = response.params
-                        const url = '/order-placed/' + param
-                        window.location.href = url;
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Payment has failed',
-                            showConfirmButton: false,
-                            timer: 1500
+                        var rzp1 = new Razorpay(options);
+                        rzp1.open();
+                    }
+
+                    function verifyPayment(payment, order) {
+                        $.ajax({
+                            url: "/verifypayment",
+                            method: 'post',
+                            data: {
+                                payment,
+                                order
+                            },
+                            success: (response) => {
+                                if (response.success == true) {
+                                    const param = response.params
+                                    const url = '/order-placed/' + param
+                                    window.location.href = url;
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Payment has failed',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                }
+                            }
                         })
                     }
-                }
-            })
-        }
 
                 </script>

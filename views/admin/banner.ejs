@@ -1,0 +1,146 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Banner List</h2>
+                    </div>
+
+                    <div>
+                        <a href="/admin/addBanner" class="btn btn-primary btn-sm rounded">Add Banner</a>
+                    </div>
+
+                </div>
+
+                <div class="row gx-3">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Occassion</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                        <!-- <th>Actions</th> --> 
+                                    </tr>
+                                </thead>
+                                <% if (banner && banner.length> 0) { for (let i = 0; i < banner.length; i++) { %>
+                                        <tbody id="banner<%=banner[i]._id %>">
+                                            <tr>
+                                                <td>
+
+
+                                                    <span>
+                                                        <%= i+1 %>
+                                                    </span>
+
+                                                </td>
+
+
+                                                <td>
+                                                    <div class="left">
+                                                        <img src="/images/<%= banner[i].image[0] %>"
+                                                            class="img-sm img-thumbnail" alt="Item" />
+                                                    </div>
+                                                  
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                        <%= banner[i].title %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                       <%= banner[i].description %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                        <%= banner[i].occassion %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge rounded-pill alert-warning">
+                                                        <%= banner[i].status %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <a onclick="removeBanner('<%= banner[i]._id %>')"
+                                                        class="btn btn-sm btn-danger rounded font-sm">Remove</a>
+
+                                                        <a href="/admin/bannerEdit?id=<%= banner[i]._id %>"
+                                                            class="btn btn-sm btn-warning rounded font-sm">Edit</a>
+
+                                                </td>
+
+                                            </tr>
+                                            <% } } else { %>
+                                                <tr>
+                                                    <td colspan="5">Banners Not Found</td>
+                                                </tr>
+                                                <% } %>
+                                        </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </section>
+
+            <%- include('./layouts/footer.ejs') -%>
+
+
+                <script>
+                    $(document).ready(function () {
+                        $("#myTable").DataTable();
+                    })
+
+                    const removeBanner = async (bannerId) => {
+                        try {
+                            const response = await axios.patch("/admin/bannerRemove", { bannerId });
+                            if (response.data.success === true) {
+                                document.getElementById(`banner${bannerId}`).style.display = 'none';
+                                toast.success('banner removed successfully', {
+                                    position: toast.POSITION.TOP_RIGHT,
+                                    autoClose: 3000, // You can adjust the duration of the toast
+                                });
+                            }
+                        } catch (error) {
+                            toast.error('An error occurred while removing the coupon', {
+                                position: toast.POSITION.TOP_RIGHT,
+                                autoClose: 3000,
+                            });
+                        }
+                    }
+
+
+                    const productList = async (productId) => {
+                        try {
+                            const button = document.getElementById(`block-${productId}`);
+                            const responses = await axios.patch("/admin/listProduct", { productId });
+
+                            if (responses.data.unlistSuccess) {
+                                button.textContent = "List";
+                            } else if (responses.data.listSuccess) {
+                                button.textContent = "Unlist";
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                </script>

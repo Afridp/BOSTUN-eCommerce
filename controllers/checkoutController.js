@@ -3,7 +3,8 @@ const productModel = require('../models/productModel')
 const cartModel = require('../models/cartModel');
 const orderModel = require('../models/orderModel');
 const razorpay =  require('razorpay')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const couponModel = require('../models/couponModel');
 dotenv.config()
 
 
@@ -185,10 +186,26 @@ const loadOrderPlaced = async (req, res) => {
         console.log(error.message)
     }
 }
+
+const couponCheck = async(req,res)=>{
+    try {
+        const {couponCode,total} = req.body
+        const couponData = await couponModel.findOne({ code : couponCode })
+
+        if(couponData){
+            let totalAmount =  total - couponData.value
+            
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 module.exports = {
     loadEditAddAddress,
     postEditCheckAddress,
     placeOrder,
     loadOrderPlaced,
-    verifyPayment
+    verifyPayment,
+    couponCheck
 }  

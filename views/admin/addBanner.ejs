@@ -1,0 +1,99 @@
+<%- include('./layouts/header.ejs') -%>
+
+  <%- include('./layouts/sidebar.ejs') -%>
+
+    <%- include('./layouts/topbar.ejs') -%>
+
+      <section class="content-main">
+        <div class="row">
+          <div class="card mb-4" style="max-width: 500px">
+            <div class="card-body">
+              <h4 class="card-title">Add Banner</h4>
+
+              <% if (typeof message !== 'undefined') { %>
+                <%if(message === 'saved'){%>
+                  <div class="alert alert-success">
+                    <p>
+                      <%= message %>
+                    </p>
+                  </div>
+                <%}else if(message === ''){%>
+                  <div>
+                    <p>
+                      <%= message %>
+                    </p>
+                  </div>
+                <%}else{%>
+                  <div class="alert alert-danger">
+                    <p>
+                      <%= message %>
+                    </p>
+                  </div>
+                <%}%>
+                <% }%>
+
+                <div id="errorContainer" class="alert alert-danger" style="display: none;"></div>
+
+                  <form id="offer-form" class="forms-sample" action="/admin/addBanner" method="POST" enctype="multipart/form-data">
+
+                    <div class="form-group mb-4">
+                      <label for=coupon-name" class="form-label">Banner Title</label>
+                      <input type="text" class="form-control" id="banner-title" name="title" placeholder="Enter banner title"
+                        required>
+                    </div>
+
+                    
+
+                    <div class="form-group mb-4">
+                      <label class="form-label" for="">Description</label>
+                      
+                      <textarea placeholder="Enter description" class="form-control" rows="4"
+                                            id="banner-description" name="bannerDescription" required>
+                      </textarea>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label class="form-label" for="">Occassion</label>   
+                        <input type="text" class="form-control" id="banner-occassion" name="bannerOccassion" placeholder="Enter occassion" required>
+                        
+                    </div>
+                    
+
+                    <div class="form-group mb-4">
+                        <label for="form-label">Banner Image</label>
+                
+
+                            <div class="input-upload">
+                                <input id="bannerImage" name="bannerImage" accept="image/*"
+                                    class="form-control" type="file"  />
+                            </div>
+                    </div>
+                   
+  
+
+                    <!-- <div class="form-group mb-4">
+                      <label for="percentage" class="form-label">Availability</label>
+                      <div class="input-group">
+                        <input type="number" class="form-control" id="percentage" name="percentage"
+                          placeholder="Enter percentage" required>
+                        <div class="input-group-append">
+                          <span class="input-group-text">%</span>
+                        </div>
+                      </div>
+                    </div> -->
+
+                    <div class="mt-4">
+                      <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                      <a href="/admin/" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+                  </form>
+
+
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <%- include('./layouts/footer.ejs') -%>

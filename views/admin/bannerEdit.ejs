@@ -1,0 +1,133 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+
+
+            <section class="content-main">
+                <div class="row">
+                    <div class="col-9">
+                        <div class="content-header">
+                            <h2 class="content-title">Edit Banner</h2>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card mb-4">
+                            <!-- <div class="card-header">
+                                <h4>Basic</h4>
+                            </div> -->
+
+                            <div class="card-body">
+
+                                <form action="/admin/bannerEdit" enctype="multipart/form-data" method="post">
+
+                                    <div class="mb-4">
+                                        <input type="hidden" placeholder="banner_id" class="form-control"
+                                            name="banner_id" id="banner_id" value="<%=banner._id%>" />
+                                    </div>
+
+
+                                    <div class="mb-4">
+                                        <label for="banner_name" class="form-label"> Banner Title</label>
+
+                                        <input type="text" placeholder="Enter title" class="form-control"
+                                            id="banner_title" name="banner_title" value="<%=banner.title %>" required />
+                                    </div>
+
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Banner Description</label>
+
+                                        <textarea placeholder="Description" class="form-control" rows="4"
+                                            id="banner_description" name="banner_description" required>
+                                                 <%=banner.description  %></textarea>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="banner_occassion" class="form-label"> Banner Occassion</label>
+
+                                        <input type="text" placeholder="Occassion" class="form-control"
+                                            id="banner_occassion" name="banner_occassion" value=" <%= banner.occassion %>"
+                                        required />
+                                    </div>
+
+
+                                    <div class="form-group mb-4">
+                                        <label for="form-label">Banner Image</label>
+
+
+                                        <div class="input-upload">
+                                            <img src="/images/<%= banner.image %>" alt="">
+                                            <input id="bannerImage" name="bannerImage" accept="image/*"
+                                                class="form-control" type="file" onchange="viewImage(event)" />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <!-- <button class="btn btn-md rounded font-sm hover-up">
+                                                        Submit
+                                                    </button> -->
+                                        <input type="submit" class="btn btn-md rounded font-sm hover-up" value="Submit">
+                                    </div>
+
+                            </div>
+                        </div>
+                        
+                        </form>
+
+                    </div>
+                </div>
+                <!-- card end// -->
+                </div
+                </div>
+            </section>
+
+            <%- include('./layouts/footer.ejs') -%>
+
+                <script>
+                    function viewImage(event) {
+                        document.getElementById("bannerImage").src = URL.createObjectURL(
+                            event.target.files[0]
+                        );
+                    }
+
+                    let banner_name = document.getElementById("banner_name");
+                    let banner_price = document.getElementById("banner_price");
+                    let banner_quantity = document.getElementById("banner_quantity");
+
+                    banner_name.addEventListener("input", () => {
+                        if (banner_name.value.trim() == "") {
+                            banner_name.setCustomValidity("Field must be filled out");
+                        } else {
+                            banner_name.setCustomValidity("");
+                        }
+                    })
+
+                    banner_price.addEventListener("input", () => {
+                        if (banner_price.value.trim() == "") {
+                            banner_price.setCustomValidity("Field must be filled out");
+                        } else if (isNaN(banner_price.value)) {
+                            banner_price.setCustomValidity("Field must be containing only digits");
+                        } else {
+                            banner_price.setCustomValidity("");
+                        }
+                    })
+
+                    banner_quantity.addEventListener("input", () => {
+                        if (banner_quantity.value.trim() == "") {
+                            banner_quantity.setCustomValidity("Field must be filled out");
+                        } else if (isNaN(banner_quantity.value)) {
+                            banner_quantity.setCustomValidity(
+                                "Field must be containing only digits"
+                            );
+                        } else {
+                            banner_quantity.setCustomValidity("");
+                        }
+                    });
+
+
+
+                </script>

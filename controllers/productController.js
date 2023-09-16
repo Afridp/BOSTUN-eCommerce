@@ -40,8 +40,7 @@ const addProduct = async (req, res) => {
             product_color,
             product_size,
         } = req.body
-        console.log(product_size);
-        console.log(product_color);
+        
         const existingProduct = await productModel.findOne({
 
             name: { $regex: new RegExp(`^${product_name}$`, "i") }
@@ -161,7 +160,7 @@ const productEditUpdated = async (req, res) => {
                 const filePath = path.join(__dirname,"../public/images",req.files[i].filename)
 
                 await sharp(req.files[i].path)
-                    .resize({ width: 250, height: 250 })
+                    .resize({ width: 260, height: 260 })
                     .toFile(filePath);
                 imageArra.push(req.files[i].filename);
             }

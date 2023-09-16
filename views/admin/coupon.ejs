@@ -1,0 +1,158 @@
+<%- include('./layouts/header.ejs') -%>
+
+    <%- include('./layouts/sidebar.ejs') -%>
+
+        <%- include('./layouts/topbar.ejs') -%>
+
+
+            <section class="content-main">
+                <div class="content-header">
+                    <div>
+                        <h2 class="content-title card-title">Coupon List</h2>
+                    </div>
+
+                    <div>
+                        <a href="/admin/addCoupon" class="btn btn-primary btn-sm rounded">Add Coupons</a>
+                    </div>
+
+                </div>
+
+                <div class="row gx-3">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover text-center">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Code</th>
+                                        <th>Description</th>
+                                        <th>Availability</th>
+                                        <th>Value</th>
+                                        <th>status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <% if (coupon && coupon.length> 0) { for (let i = 0; i < coupon.length; i++) { %>
+                                        <tbody id="coupon<%=coupon[i]._id %>">
+                                            <tr>
+                                                <td>
+
+
+                                                    <span>
+                                                        <%= i+1 %>
+                                                    </span>
+
+                                                </td>
+
+
+                                                <td>
+                                                    <span>
+                                                        <%= coupon[i].name %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                        <%= coupon[i].code %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                        <%= coupon[i].description %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge rounded-pill alert-success">
+                                                        <%= coupon[i].availabilty %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span>
+                                                        ₹<%= coupon[i].value %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge rounded-pill alert-warning">
+                                                        <%= coupon[i].status %>
+                                                    </span>
+                                                </td>
+
+                                                <td>
+                                                    <a onclick="removeCoupon('<%= coupon[i]._id %>')"
+                                                        class="btn btn-sm btn-danger rounded font-sm">Remove</a>
+
+
+                                                    <!-- <button id="block-<%= coupon[i]._id %>"
+                                            onclick="productList('<%= coupon[i]._id %>')"
+                                            class="btn btn-sm btn-danger rounded font-sm mt-17">
+                                            <% if (coupon[i].list===true) { %>
+                                                Unlist
+                                                <% } else { %>
+                                                    List
+                                                    <% } %>
+                                        </button> -->
+
+                                                </td>
+
+                                            </tr>
+                                            <% } } else { %>
+                                                <tr>
+                                                    <td colspan="5">Coupons Not Found</td>
+                                                </tr>
+                                                <% } %>
+                                        </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </section>
+
+            <%- include('./layouts/footer.ejs') -%>
+
+
+                <script>
+                    $(document).ready(function () {
+                        $("#myTable").DataTable();
+                    })
+
+                    const removeCoupon = async (couponId) => {
+                        try {
+                            const response = await axios.patch("/admin/couponRemove", { couponId });
+                            if (response.data.success === "hai") {
+                                document.getElementById(`coupon${couponId}`).style.display = 'none';
+                                toast.success('Coupon removed successfully', {
+                                    position: toast.POSITION.TOP_RIGHT,
+                                    autoClose: 3000, // You can adjust the duration of the toast
+                                });
+                            }
+                        } catch (error) {
+                            toast.error('An error occurred while removing the coupon', {
+                                position: toast.POSITION.TOP_RIGHT,
+                                autoClose: 3000,
+                            });
+                        }
+                    }
+
+
+                    const productList = async (productId) => {
+                        try {
+                            const button = document.getElementById(`block-${productId}`);
+                            const responses = await axios.patch("/admin/listProduct", { productId });
+
+                            if (responses.data.unlistSuccess) {
+                                button.textContent = "List";
+                            } else if (responses.data.listSuccess) {
+                                button.textContent = "Unlist";
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    }
+                </script>

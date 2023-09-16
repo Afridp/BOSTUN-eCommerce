@@ -5,8 +5,11 @@ const categoryController = require("../controllers/categoryController")
 const productController = require("../controllers/productController")
 const orderController = require("../controllers/orderController")
 const offerController = require('../controllers/offerController')
+const couponController = require('../controllers/couponController')
+const bannerController = require('../controllers/bannerController')
 const isAdminLogin = require("../middleware/adminSession")
 const upload = require("../middleware/uploadImage");
+const bannerModel = require('../models/bannerModel')
 
 
 
@@ -84,7 +87,30 @@ admin_router.patch('/applycategoryOffer',offerController.applycategoryOffer)
 
 admin_router.patch('/removeCategoryOffer',offerController.removeCategoryOffer)
 
+// coupon manage
 
+admin_router.get('/coupon',couponController.loadCoupon)
+
+admin_router.get('/addCoupon',couponController.addCouponLoad)
+
+admin_router.post('/addCoupon',couponController.postCoupon)
+
+admin_router.patch('/couponRemove',couponController.couponRemove)
+
+
+// banner management 
+
+admin_router.get('/bannerLoad',bannerController.loadBanner)
+
+admin_router.get('/addBanner',bannerController.addBanner)
+
+admin_router.post('/addBanner',upload.array("bannerImage", 4),bannerController.postBanner)
+
+admin_router.patch('/bannerRemove',bannerController.removeBanner)
+
+admin_router.get('/bannerEdit',bannerController.loadEditBanner)
+
+admin_router.post('/bannerEdit',upload.array("bannerImage", 4),bannerController.editBanner)
 
 
 module.exports =  admin_router

@@ -81,8 +81,23 @@
                                                             <button class="quantity-btn plus" type="button"
                                                                 onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', 1 )">+</button>
                                                         </div>
-                                                    </td>89
-                                                    <td class="cart__price">₹ <%= total %>
+                                                    </td>
+
+                                                    <% if ( x.product_Id.offer){ 
+                                                        
+                                                        var totlAmt = (x.product_Id.price * x.product_Id.offer.percentage / 100).toFixed(0)  * x.quantity
+                                                    } else if ( x.product_Id.category.offer ) {
+                                                        var totlAmt =  (x.product_Id.price * x.product_Id.category.offer.percentage / 100 ).toFixed(0) * x.quantity } %>
+                                                        
+                                                        
+                                                            <% var Price = x.product_Id.price * x.quantity - totlAmt %>
+                                                        
+                                                    <td class="cart__price">₹ <%= Price %>
+
+
+
+
+                                                
                                                     </td>
                                                     <td class="cart__close">
                                                         <a href="#" onclick="removeFromCart('<%= x._id %>')"><i

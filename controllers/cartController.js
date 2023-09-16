@@ -1,6 +1,7 @@
 const userModel = require('../models/userModel')
 const catModel = require('../models/categoryModel')
 const productModel = require('../models/productModel')
+const couponModel = require('../models/couponModel')
 const cartModel = require('../models/cartModel')
 const mongoose = require('mongoose')
 
@@ -58,6 +59,7 @@ const loadCart = async (req, res) => {
                 total += price * product.quantity
 
                 
+
                 discountAmt = originalAmts - total
             });
         }
@@ -140,7 +142,7 @@ const addToCart = async (req, res) => {
                     const { percentage } = product.category.offer;
                     itemPrice -= (itemPrice * percentage) / 100;
                 }
-                const total = req.body.quantity * Math.ceil(itemPrice)
+                let totalPrice = req.body.quantity * Math.ceil(itemPrice)
                 await cartModel.findOneAndUpdate({ userId: userid },
                     {
                         $push: {
@@ -148,7 +150,7 @@ const addToCart = async (req, res) => {
                                 product_Id: req.body.productId,
                                 quantity: req.body.quantity,
                                 price: product.price,
-                                totalPrice: total
+                                totalPrice: totalPrice
                             }
                         }
                     }
@@ -216,7 +218,10 @@ const deleteItems = async (req, res) => {
 
 const loadCheckout = async (req, res) => {
     try {
+
+        
         const { userid } = req.session;
+        // const coupon = await couponModel.find({})
         // const moment = require("moment");
         // req.session.couponApplied = false;
         // req.session.discountAmount = 0;
@@ -234,19 +239,23 @@ const loadCheckout = async (req, res) => {
                 },
             }]
         });
+        
         let total = 0;
         let originalAmts = 0
         let subtotal = 0;
         
         if (cart) {
             cart.items.forEach((product) => {
-                let itemPrice = product.price;
+                let itemPrice = product.product_Id.price;
+                console.log(itemPrice,"haiaiiaiaiaiaia");
                 originalAmts += itemPrice * product.quantity
 
                 // Check if there's an offer on the product
                 if (product.product_Id.offer) {
                     const { percentage } = product.product_Id.offer;
-                    itemPrice -= (itemPrice * percentage) / 100;
+                    itemPrice -= (product.product_Id.price * percentage / 100 ) 
+                    console.log(itemPrice);
+                    console.log(product.quantity);
 
                 } else if (product.product_Id.category.offer) {
                     const { percentage } = product.product_Id.category.offer;

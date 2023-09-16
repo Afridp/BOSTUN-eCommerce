@@ -1,6 +1,7 @@
 const userModel = require('../models/userModel')
 const catModel = require('../models/categoryModel')
 const productModel = require('../models/productModel')
+const bannerModel = require('../models/bannerModel')
 const dotenv = require('dotenv')
 const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer")
@@ -267,9 +268,10 @@ const homeLoad = async (req, res) => {
         const { userid } = req.session;
 
         const user = await userModel.findOne({ _id: userid });
+        const banner = await bannerModel.find({status : true})
         let currentPage = 'home'; // Define currentPage here
 
-        res.render('index', { user, userid, currentPage }); // Pass currentPage to the template
+        res.render('index', { user, userid, currentPage,banner }); // Pass currentPage to the template
     } catch (error) {
         console.log(error.message);
     }

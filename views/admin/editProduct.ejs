@@ -26,7 +26,7 @@
 
                                     <div class="mb-4">
                                         <input type="hidden" placeholder="product_id" class="form-control"
-                                            name="product_id" id="product_id" value="<%=product_id%>" />
+                                            name="product_id" id="product_id" value="<%=product._id%>" />
                                     </div>
 
 
@@ -114,12 +114,12 @@
                                                         <img id="product_img" src="/images/<%= image%>" alt="" />
                                                         <% }) %>
                                                             <input name="product_img" class="form-control" type="file"
-                                                                multiple accept="image/*" onchange="viewImage(event)" />
+                                                                 accept="image/*" onchange="viewImage(event)" multiple />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div>
+                                    <div >
                                         <!-- <button class="btn btn-md rounded font-sm hover-up">
                                             Submit
                                         </button> -->

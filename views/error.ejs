@@ -47,3 +47,25 @@
   </div>
   
 </div> 
+
+
+
+
+<% if ( cart.product_Id.offer ) { %>
+    <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%=
+                cart.product_Id.price %></del></h6>
+
+    <h5>₹ <%= cart.product_Id.price - discount %>
+    </h5>
+
+
+    <%} else if (cart.product_Id.category.offer ) { %>
+        <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%=
+                    cart.product_Id.price %></del></h6>
+        <h5>₹ <%= cart.product_Id.price - discount %>
+        </h5>
+
+        <% } else { %>
+            <h5>₹ <%= cart.product_Id.price %>
+            </h5>
+            <% } %>

@@ -100,5 +100,6 @@ user_router.get('/orders',orderController.orders)
 
 user_router.get('/viewOrdered',orderController.viewOrdered)
 
+user_router.patch('/couponCheck',checkoutController.couponCheck)
 
 module.exports = user_router;
