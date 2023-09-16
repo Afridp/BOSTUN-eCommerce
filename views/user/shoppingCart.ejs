@@ -82,15 +82,22 @@
                                                                 onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', 1 )">+</button>
                                                         </div>
                                                     </td>
-
+                                                         <% if (x){ %>   
+                                                            <% var totlAmt = 0 %>
+                                                            <% var Price = 0 %>
                                                     <% if ( x.product_Id.offer){ 
-                                                        
-                                                        var totlAmt = (x.product_Id.price * x.product_Id.offer.percentage / 100).toFixed(0)  * x.quantity
+                                                         totlAmt = (x.product_Id.price * x.product_Id.offer.percentage / 100).toFixed(0)  * x.quantity
+                                                         Price = x.product_Id.price * x.quantity - totlAmt
                                                     } else if ( x.product_Id.category.offer ) {
-                                                        var totlAmt =  (x.product_Id.price * x.product_Id.category.offer.percentage / 100 ).toFixed(0) * x.quantity } %>
+                                                       
+                                                         totlAmt =  (x.product_Id.price * x.product_Id.category.offer.percentage / 100 ).toFixed(0) * x.quantity 
+                                                         Price = x.product_Id.price * x.quantity - totlAmt
+                                                    } else {
+                                                           Price = x.product_Id.price * x.quantity 
+                                                    } %>
+                                                        <% } %>
                                                         
-                                                        
-                                                            <% var Price = x.product_Id.price * x.quantity - totlAmt %>
+                                                            
                                                         
                                                     <td class="cart__price">₹ <%= Price %>
 

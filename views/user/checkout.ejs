@@ -129,19 +129,30 @@
                                                         value="<%= cart.quantity %>" readonly>
 
                                                 </td>
+                                                <% if(cart){ %>
+                                                    <% var totlAmt = 0 %>
+                                                    <% var Price = 0 %>
+                                                <% if ( cart.product_Id.offer){
+                                                     totlAmt=(cart.product_Id.price *
+                                                    cart.product_Id.offer.percentage / 100).toFixed(0) * cart.quantity 
+                                                    Price = cart.product_Id.price * cart.quantity - totlAmt
+                                                } else if (
+                                                    cart.product_Id.category.offer ) {  totlAmt=(cart.product_Id.price *
+                                                    cart.product_Id.category.offer.percentage / 100 ).toFixed(0)  * cart.quantity 
+                                                } else{
+                                                    Price = cart.product_Id.price * cart.quantity 
+                                                } %>
 
-                                                <% if ( cart.product_Id.offer){ var totlAmt=(cart.product_Id.price *
-                                                    cart.product_Id.offer.percentage / 100).toFixed(0) * cart.quantity } else if (
-                                                    x.product_Id.category.offer ) { var totlAmt=(x.product_Id.price *
-                                                    cart.product_Id.category.offer.percentage / 100 ).toFixed(0)  * cart.quantity } %>
+                                                <% } %>
 
-
-                                                    <% var Price=cart.product_Id.price * cart.quantity - totlAmt %>
+                                                   
 
                                                         <td class="cart__price">₹ <%= Price %>
 
 
-
+                                                            
+                                                                
+                                                        
 
 
                                                         </td>

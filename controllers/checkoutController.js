@@ -180,7 +180,8 @@ const loadOrderPlaced = async (req, res) => {
         const id = req.params.id
         const order = await orderModel.findOne({ _id: id }).populate('items.product_Id')
         const user = await userModel.findOne({ _id: userid })
-        res.render('orderPlaced', { userid: req.session.userid, order: order, user })
+        let currentPage = ''
+        res.render('orderPlaced', { userid: req.session.userid, order: order, user,currentPage })
 
     } catch (error) {
         console.log(error.message)
