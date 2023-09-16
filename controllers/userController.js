@@ -270,7 +270,7 @@ const homeLoad = async (req, res) => {
         const user = await userModel.findOne({ _id: userid });
         const banner = await bannerModel.find({status : true})
         let currentPage = 'home'; // Define currentPage here
-
+        console.log(banner,"bannners");
         res.render('index', { user, userid, currentPage,banner }); // Pass currentPage to the template
     } catch (error) {
         console.log(error.message);
