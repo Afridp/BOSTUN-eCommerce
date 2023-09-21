@@ -105,6 +105,13 @@ ol {
 	padding: 0;
 	margin: 0;
 }
+/* Reset or normalize CSS (if not already done) */
+#banner-description {
+    margin: 0;
+    padding: 10px;
+    text-align: left;
+}
+
 
 /*---------------------
   Helper CSS

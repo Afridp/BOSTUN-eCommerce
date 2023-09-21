@@ -60,8 +60,8 @@
 
 
                                         <div class="input-upload">
-                                            <img src="/images/<%= banner.image %>" alt="">
-                                            <input id="bannerImage" name="bannerImage" accept="image/*"
+                                            <img id="bannerImage" src="/images/<%= banner.image[0] %>" alt="/images/<%= banner.image[0] %>"/>
+                                            <input name="bannerImage" accept="image/*"
                                                 class="form-control" type="file" onchange="viewImage(event)" />
                                         </div>
                                     </div>

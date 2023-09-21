@@ -9,7 +9,7 @@ const offerPage = async (req,res)=>{
     try {
         let {message} = req.session
         req.session.message= ''
-        console.log(req.session.message);
+      
          res.render('addOffer',{message})
     } catch (error) {
         console.log(error.message);

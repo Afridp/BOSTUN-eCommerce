@@ -15,9 +15,9 @@ const loadCoupon = async(req,res)=>{
 
 const addCouponLoad = async(req,res)=>{
     try {
+        let {message} = req.session
         req.session.message= ''
-        res.render('addBanner',{message})
-        res.render('addCoupon')
+        res.render('addCoupon',{message})
     } catch (error) {
         console.log(error.message);
     }
@@ -44,8 +44,8 @@ const postCoupon = async(req,res)=>{
             // page : page
          }) 
          await coupon.save()
-         req.session.message="saved"
-         res.redirect('/admin/coupon')
+         req.session.message="saved" 
+         res.redirect('/admin/addCoupon')
         }
     } catch (error) {
         console.log(error.message);

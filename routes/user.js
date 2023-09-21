@@ -23,11 +23,11 @@ user_router.get('/shop',userController.shopLoad)
 
 user_router.post('/shop',userController.shopLoad)
 
-user_router.get('/login',auth.isLogout,userController.loginLoad)
+user_router.get('/login',userController.loginLoad)
 
 user_router.post('/login',auth.isLogout,userController.verifyLogin)
 
-user_router.get('/logout',userController.loadLogout)
+user_router.get('/logout',auth.isLogin,userController.loadLogout)
 
 user_router.get('/register',userController.loadRegister)
 
@@ -75,15 +75,17 @@ user_router.post('/newPasswordSubmit',userController.updateNewPassword)
 
 
 
-user_router.get('/loadCart',auth.isLogin,cartController.loadCart)
+user_router.get('/loadCart',cartController.loadCart)
 
-user_router.post('/addToCart',auth.isLogin,cartController.addToCart)
+user_router.post('/addToCart',cartController.addToCart)
 
 user_router.post('/deleteItems',auth.isLogin,cartController.deleteItems)
 
 user_router.get('/checkout',auth.isLogin,cartController.loadCheckout)
 
 user_router.post('/checkout',auth.isLogin,checkoutController.placeOrder)
+
+user_router.post('/checkoutAddressAdd',checkoutController.addressAdd)
 
 user_router.post('/verifyPayment',checkoutController.verifyPayment)  
 
@@ -96,10 +98,17 @@ user_router.post('/postCheckEditAddress',auth.isLogin,checkoutController.postEdi
 
 user_router.get('/order-placed/:id',auth.isLogin, checkoutController.loadOrderPlaced)
 
-user_router.get('/orders',orderController.orders)
+user_router.get('/orders',auth.isLogin,orderController.orders)
 
-user_router.get('/viewOrdered',orderController.viewOrdered)
+user_router.get('/viewOrdered',auth.isLogin, orderController.viewOrdered)
 
 user_router.patch('/couponCheck',checkoutController.couponCheck)
+
+
+user_router.get('/loadWhishlist',auth.isLogin,userController.loadWhishlist)
+
+user_router.get('/addToWhishlist',auth.isLogin,userController.addToWhishlist)
+
+user_router.put('/deleteFromWishlist',auth.isLogin,userController.deleteFromWishlist)
 
 module.exports = user_router;

@@ -3,7 +3,7 @@
         <ul>
             <li class="<%= currentPage === 'home' ? 'active' : '' %>"><a href="/">Home</a></li>
             <li class="<%= currentPage === 'shop' || '' ? 'active' : '' %>"><a href="/shop">Shop</a></li>
-            <li class="<%= currentPage === 'contact' ? 'active' : '' %>"><a href="/contact">Contact Us</a></li>
+            <li class="<%= currentPage === 'contact' ? 'active' : '' %>"><a href="/">Contact Us</a></li>
 
             <% if (userid) { %>
             <li class="<%= currentPage === 'profile' ? 'active' : '' %>"><a href="/profile"><%= user.name %></a></li>

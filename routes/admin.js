@@ -30,7 +30,7 @@ admin_router.get('/logout',adminController.loadLogout)
 
 admin_router.get('/dashboard',isAdminLogin,adminController.loadDashboard)
 
-admin_router.get('/salesReport',adminController.salesReport)
+admin_router.get('/salesReport',isAdminLogin,adminController.salesReport)
 
 admin_router.post('/salesReport',adminController.datePicker)
 
@@ -73,9 +73,9 @@ admin_router.get('/orderItems',isAdminLogin,orderController.orderItems)
 
 // offer Manage
 
-admin_router.get('/offers',offerController.offerPage)
+admin_router.get('/offers',isAdminLogin,offerController.offerPage)
 
-admin_router.post('/addOffer',offerController.addOffer)
+admin_router.post('/addOffer',isAdminLogin,offerController.addOffer)
     
 // offer apply
 
@@ -89,9 +89,9 @@ admin_router.patch('/removeCategoryOffer',offerController.removeCategoryOffer)
 
 // coupon manage
 
-admin_router.get('/coupon',couponController.loadCoupon)
+admin_router.get('/coupon',isAdminLogin,couponController.loadCoupon)
 
-admin_router.get('/addCoupon',couponController.addCouponLoad)
+admin_router.get('/addCoupon',isAdminLogin,couponController.addCouponLoad)
 
 admin_router.post('/addCoupon',couponController.postCoupon)
 
@@ -100,17 +100,17 @@ admin_router.patch('/couponRemove',couponController.couponRemove)
 
 // banner management 
 
-admin_router.get('/bannerLoad',bannerController.loadBanner)
+admin_router.get('/bannerLoad',isAdminLogin,bannerController.loadBanner)
 
-admin_router.get('/addBanner',bannerController.addBanner)
-
-admin_router.post('/addBanner',upload.array("bannerImage", 4),bannerController.postBanner)
+admin_router.get('/addBanner',isAdminLogin,bannerController.addBanner)
 
 admin_router.patch('/bannerRemove',bannerController.removeBanner)
 
-admin_router.get('/bannerEdit',bannerController.loadEditBanner)
+admin_router.post('/addBanner',upload.array("bannerImage", 1),bannerController.postBanner)
 
-admin_router.post('/bannerEdit',upload.array("bannerImage", 4),bannerController.editBanner)
+admin_router.get('/bannerEdit',isAdminLogin,bannerController.loadEditBanner)
+
+admin_router.post('/bannerEdit',upload.array("bannerImage",1 ),bannerController.editBanner)
 
 
 module.exports =  admin_router

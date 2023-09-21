@@ -3506,6 +3506,13 @@ ol {
 	display: inline-block
 }
 
+/* This CSS rule targets the img tag inside the .product__details__pic__item class */
+.product__details__pic__item img {
+    width: 80%; /* This sets the width of the image to 100% of its container */
+    height: auto; /* This maintains the aspect ratio so the image doesn't get distorted */
+}
+
+
 /* .quantity input:focus {
 	border-color: #007bff;
 	outline: none;

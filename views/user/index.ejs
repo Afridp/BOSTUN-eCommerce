@@ -1,9 +1,9 @@
 <%- include('./layouts/header.ejs') -%>
 
-<%- include('./layouts/navbar.ejs') -%>
+    <%- include('./layouts/navbar.ejs') -%>
 
-    <!-- Hero Section Begin -->
-    <!-- <section class="hero">
+        <!-- Hero Section Begin -->
+        <!-- <section class="hero">
         <div class="hero__slider owl-carousel">
 
 
@@ -52,43 +52,49 @@
             </div>
         </div>
     </section> -->
-    <section class="hero">
-        <div class="hero__slider owl-carousel">
-            <% for (let i = 0; i < banner.length; i++) { %>
-                <div class="hero__items" style="background-image: url('images/<%= banner[i].image[0] %>');"  >
-                    <div class="container" >
-                        <div class="row">
-                            <div class="col-xl-5 col-lg-7 col-md-8">
-                                <div class="hero__text">
-                                    <div style="backgound-color:rgb(255, 200, 0)">
-                                        <p style="color: rgb(255, 204, 2);">#<%= banner[i].occassion %></p>
-                                    </div>
+        <section class="hero">
+            <div class="hero__slider owl-carousel">
+                <% for (let i=0; i < banner.length; i++) { %>
+                    <div class="hero__items" style="background-image: url('images/<%= banner[i].image[0] %>');">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xl-5 col-lg-7 col-md-8">
+                                    <div class="hero__text">
+                                        <div style="backgound-color:rgb(255, 200, 0)">
+                                            <p style="color: rgb(255, 204, 2);">#<%= banner[i].occassion %>
+                                            </p>
+                                        </div>
 
-                                    <h2><%= banner[i].title %></h2>
-                                    <h6><%= banner[i].description %></h6>
-                                    <a href="/shop" class="primary-btn">Shop now <span class="arrow_right"></span></a>
-                                    <div class="hero__social">
-                                        <a href="#"><i class="fa fa-facebook"></i></a>
-                                        <a href="#"><i class="fa fa-twitter"></i></a>
-                                        <a href="#"><i class="fa fa-pinterest"></i></a>
-                                        <a href="#"><i class="fa fa-instagram"></i></a>
+                                        <h2>
+                                            <%= banner[i].title %>
+                                        </h2>
+                                        <h6>
+                                            <%= banner[i].description %>
+                                        </h6>
+                                        <a href="/shop" class="primary-btn">Shop now <span
+                                                class="arrow_right"></span></a>
+                                        <div class="hero__social">
+                                            <a href="#"><i class="fa fa-facebook"></i></a>
+                                            <a href="#"><i class="fa fa-twitter"></i></a>
+                                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                                            <a href="#"><i class="fa fa-instagram"></i></a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            <% } %>
-        </div>
-    </section>
-   
-    
-    <!-- Hero Section End -->
+                    <% } %>
+            </div>
+        </section>
 
-    
 
-     <!-- Categories Section Begin -->
-     <!-- <section class="categories spad">
+        <!-- Hero Section End -->
+
+
+
+        <!-- Categories Section Begin -->
+        <!-- <section class="categories spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3">
@@ -133,21 +139,21 @@
             </div>
         </div>
     </section> -->
-    <!-- Categories Section End -->
+        <!-- Categories Section End -->
 
-    <!-- Product Section Begin -->
-    <section class="product spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <ul class="filter__controls">
-                        <li class="active" data-filter="*">Best Sellers</li>
-                        <!-- <li data-filter=".new-arrivals">New Arrivals</li>
-                        <li data-filter=".hot-sales">Hot Sales</li> -->      
-                    </ul>
+        <!-- Product Section Begin -->
+        <section class="product spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="filter__controls">
+                            <li class="active" data-filter="*">New Arrivals</li>
+                            <!-- <li data-filter=".new-arrivals">New Arrivals</li>
+                        <li data-filter=".hot-sales">Hot Sales</li> -->
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <div class="row product__filter">
+                <!-- <div class="row product__filter">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
                     <div class="product__item">
                         <div class="product__item__pic set-bg" data-setbg="/user/img/product/product-1.jpg">
@@ -158,6 +164,7 @@
                                 <li><a href="#"><img src="/user/img/icon/search.png" alt=""></a></li>
                             </ul>
                         </div>
+                        
                         <div class="product__item__text">
                             <h6>Piqué Biker Jacket</h6>
                             <a href="#" class="add-cart">+ Add To Cart</a>
@@ -182,8 +189,52 @@
                             </div>
                         </div>
                     </div>
+                </div> -->
+                <!-- Inside your products.ejs file -->
+                <div class="row product__filter">
+                    <% bestSellers.forEach((product, index)=> { %>
+                        <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
+                            <div class="product__item">
+                                <div class="product__item__pic ">
+
+                                    <a href="/productDetails?id=<%= product._id %>">
+                                    <img src="/images/<%= product.image[1] %>" alt="">
+                                </a>
+
+                                    <% if (product.isNew) { %>
+                                        <span class="label">New</span>
+                                        <% } %>
+                                            <!-- <ul class="product__hover">
+                                                <li><a href="#"><img src="/user/img/icon/heart.png" alt=""></a></li>
+                                                <li><a href="#"><img src="/user/img/icon/compare.png" alt="">
+                                                        <span>Compare</span></a></li>
+                                                <li><a href="#"><img src="/user/img/icon/search.png" alt=""></a></li>
+                                            </ul> -->
+                                </div>
+
+                                <div class="product__item__text">
+                                    <h6>
+                                        <%= product.name %>
+                                    </h6>
+                                    <!-- <a href="#" class="add-cart">+ Add To Cart</a> -->
+                                    <div class="rating">
+                                        <% for (let i=0; i < product.rating; i++) { %>
+                                            <i class="fa fa-star"></i>
+                                            <% } %>
+                                                <% for (let i=product.rating; i < 5; i++) { %>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <% } %>
+                                    </div>
+                                    <h5>₹<%= product.price.toFixed(2) %>
+                                    </h5>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
                 </div>
-                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
+
+                <!-- <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
                     <div class="product__item">
                         <div class="product__item__pic set-bg" data-setbg="/user/img/product/product-2.jpg">
                             <ul class="product__hover">
@@ -422,29 +473,29 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
-        </div>
-    </section>
-    <!-- Product Section End -->
+            </div>
+        </section>
+        <!-- Product Section End -->
 
-        
-    <!-- Banner Section Begin -->
-    <section class="banner spad" >
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-7 offset-lg-4">
-                    <div class="banner__item">
-                        <div class="banner__item__pic1">
-                            <img src="user/img/banner/banner-1.jpg" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2>Clothing Collections 2030</h2>
-                            <a href="#">Shop now</a>
+
+        <!-- Banner Section Begin -->
+        <section class="banner spad">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 offset-lg-4">
+                        <div class="banner__item">
+                            <div class="banner__item__pic1">
+                                <img src="user/img/banner/banner-1.jpg" alt="">
+                            </div>
+                            <div class="banner__item__text">
+                                <h2>Clothing Collections 2030</h2>
+                                <a href="#">Shop now</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- <div class="col-lg-5">
+                    <!-- <div class="col-lg-5">
                     <div class="banner__item banner__item--middle">
                         <div class="banner__item__pic">
                             <img src="/user/img/banner/banner-2.jpg" alt="">
@@ -455,23 +506,23 @@
                         </div>
                     </div>
                 </div> -->
-                <div class="col-lg-7">
-                    <div class="banner__item banner__item--last">
-                        <div class="banner__item__pic2">
-                            <img src="user/img/banner/banner-3.jpg" alt="">
-                        </div>
-                        <div class="banner__item__text">
-                            <h2>Shoes Spring 2030</h2>
-                            <a href="#">Shop now</a>
+                    <div class="col-lg-7">
+                        <div class="banner__item banner__item--last">
+                            <div class="banner__item__pic2">
+                                <img src="user/img/banner/banner-3.jpg" alt="">
+                            </div>
+                            <div class="banner__item__text">
+                                <h2>Shoes Spring 2030</h2>
+                                <a href="#">Shop now</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-    <!-- Banner Section End -->
-    
-    
-    <%- include('./layouts/footerNavbar.ejs') -%>
+        </section>
+        <!-- Banner Section End -->
 
-    <%- include('./layouts/footer.ejs') -%>
+
+        <%- include('./layouts/footerNavbar.ejs') -%>
+
+            <%- include('./layouts/footer.ejs') -%>

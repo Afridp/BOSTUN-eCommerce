@@ -80,10 +80,7 @@
                                                         <img src="/Images/<%= cart.product_Id.image[1] %>" alt=""
                                                             style="height: 100px; width: 100px;">
                                                     </div>
-                                                    <div class="product__cart__item__pic">
-                                                        <img src="/images/<%= x.product_Id.image[0] %>" alt=""
-                                                            style="height: 100px; width: 100px;">
-                                                    </div>
+                                                    
                                                     <div class="product__cart__item__text">
                                                         <h6>
                                                             <%= cart.product_Id.name %>
@@ -167,49 +164,66 @@
                             </div>
                     </div>
 
+
+
+
+                    
                     <div class="col-lg-12">
                         <div class="card mb-5">
                             <div class="card-body">
+                        
+     
+
+
                                 <% if (coupon) { %>
-                                    <h3 class="mt-3 mb-5 mx-3">
-                                        "<%= coupon %>" Coupon Applied
-                                            <a href="#" onclick="remove()" class="text-danger">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </a>
-                                    </h3>
+                                    <h5 class="mt-3 mb-5 mx-3">
+                                        <span style="color: green;"><%= coupon %></span> Coupon Applied
+                                        <a href="#" onclick="remove()" class="text-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </h5>
+                                    
                                     <input type="hidden" name="code" id="code" value="<%= coupon %>">
                                     <% } else { %>
 
                                         <div id="couponReloadDiv">
 
-
-                                            <!-- <label for="couponCode">Discount coupons</label>
-                                            <input type="text" class="form-control" >
-                                            <button class="btn btn-primary mt-2"
-                                                onclick="applyCoupon('<%= %>')">Apply
-                                                Coupon</button>
-                                                
-                                            <!-- Modal -->
-                                            <!-- <button type="button" class="btn btn-primary mt-2"
-                                                data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                Available
-                                            </button> -->
-
-
-
-
                                             <div class="cart__discount">
-                                                <h6>discount code</h6>
-                                                <form id="couponForm">
-                                                    <input type="text" placeholder="Coupon code" id="couponCode"
-                                                        name="coupon">
-                                                    <button type="submit" id="applyButton"
-                                                        onclick="applyCoupon('<%= total %>')">Apply</button>
+                                                <h6>Discount codes</h6>
+                                                <form>
+                                                    <input type="text" placeholder="Coupon code" name="coupon">
+                                                    <button type="submit">Apply</button>
                                                 </form>
-                                                <!-- <input type="hidden" name="code" id="code" value="<%=  %>"> -->
+                                                <input type="hidden" name="code" id="code" value="<%= coupon %>">
                                             </div>
-                                        </div>
+                                            
+                                            <% if(coupons) {%>
+                                            <div class="text-center">
+                                                <div class="dropdown">
+                                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="codeDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        Coupons for you
+                                                    </button>
+                                                    
+                                                    <div class="dropdown-menu sub-menu" aria-labelledby="dropdownMenuButton">
+
+                                                        <% for (const i in coupons) { %>
+                                                            <a class="dropdown-item" href="#"><%= coupons[i].code %></a>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                                
+                                                
+                                            </div>
+                                            <% } %>
+                                     
+
+
+
                                         <% } %>
+
+
+
+
 
 
 
@@ -218,7 +232,7 @@
                                                     <div class="card-body">
                                                         <h5 class="card-title">Select address</h5>
                                                         <div class="d-flex justify-content-end">
-                                                            <a href="/add-addresss" class="btn btn-primary btn-sm">Add
+                                                            <a href="#" onclick="showModal()" class="btn btn-primary btn-sm">Add
                                                                 New Address</a>
                                                         </div>
                                                         <hr />
@@ -250,10 +264,7 @@
                                                                                                 address.pincode %>
                                                                                 </p>
                                                                             </div>
-                                                                            <div class="col-sm-3">
-                                                                                <a href="/check-edit-address?addressId=<%= address._id %>"
-                                                                                    class="btn btn-primary btn-sm mr-2">Edit</a>
-                                                                            </div>
+                                                                            
                                                                         </div>
                                                                     </div>
                                                                     <hr />
@@ -270,6 +281,10 @@
                                                 <ul>
                                                     <li>Subtotal <span>₹ <%= originalAmts %></span></li>
                                                     <li>Delivery Charges <span>₹ <%= 0.00 %></span></li>
+                                                    <% if(coupon){ %>
+
+                                                    <li>Coupon Discounts <span>₹ -<%= couponData.value %></span></li>
+                                                    <% } %>
                                                     <li>Total <span>₹ <%= total %></span></li>
                                                 </ul>
                                                 <input type="hidden" name='total' id="total" value="<%= total %>">
@@ -294,14 +309,65 @@
                         </div>
                     </div>
 
-                    <% } else { %>
-                        <h4 class="text-center" style="padding-left: 420px;">No products in cart</h4>
-                        <% } %>
+                    <% }%>
+                        
                 </div>
             </div>
         </section>
 
+        <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+     
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title fs-5" id="staticBackdropLabel">Add Address</h2>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addAddressForm" action="/checkoutaddressAdd" method="POST">
+                                <div class="form-group">
+                                  <label for="name">Name:</label>
+                                  <input type="text" class="form-control" id="name" name="name" required />
+                                  <div class="invalid-feedback">Please enter your name.</div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="housename">House Name:</label>
+                                  <input type="text" class="form-control" id="housename" name="housename" required />
+                                  <div class="invalid-feedback">Please enter your house name.</div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="city">City:</label>
+                                  <input type="text" class="form-control" id="city" name="city" required />
+                                  <div class="invalid-feedback">Please enter your city.</div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="state">State:</label>
+                                  <input type="text" class="form-control" id="state" name="state" required />
+                                  <div class="invalid-feedback">Please enter your state.</div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="phone">Phone:</label>
+                                  <input type="text" class="form-control" id="phone" name="phone" required pattern="[0-9]{10}" />
+                                  <div class="invalid-feedback">Please enter a valid 10-digit phone number.</div>
+                                </div>
+                                <div class="form-group">
+                                  <label for="pincode">Pin Code:</label>
+                                  <input type="text" class="form-control" id="pincode" name="pincode" required pattern="[0-9]{6}" />
+                                  <div class="invalid-feedback">Please enter a valid 6-digit pin code.</div>
+                                </div>
+                                <input type="submit" class="btn btn-primary"></input>
+                              </form>
+                              
+                        </div>
+                       
+                       
+                    </div>
+                 
+        </div>
+    </div>
 
+    </div>
+        
         <!-- Modal -->
 
         <%- include('./layouts/footerNavbar.ejs') -%>
@@ -309,6 +375,14 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
+                      function showModal() {
+                        $('#addressModal').modal('show');
+                    }
+
+                    function remove(){
+                        window.location.href = '/checkout'
+                    }
+                    
                     
 
                     function applyCoupon(total) {
@@ -345,8 +419,8 @@
                                             icon: 'success',
                                             timer: 1500
                                         });
-                                        $('#couponReloadDiv').load('/Proceed #couponReloadDiv')
-                                        $('#reloadDiv').load('/Proceed #reloadDiv')
+                                        // $('#couponReloadDiv').load('/Proceed #couponReloadDiv')
+                                        // $('#reloadDiv').load('/Proceed #reloadDiv')
                                     }
                                 }
 
@@ -438,6 +512,7 @@
                         const address = document.querySelector('input[name = "selectedAddress"]:checked').value
                         const payment = document.querySelector('input[name = "payment"]:checked').value
                         const total = document.getElementById('total').value
+                        const code = document.getElementById('code').value
 
 
                         $.ajax({
@@ -447,7 +522,7 @@
                                 selectedAddress: address,
                                 payment: payment,
                                 total: total,
-                                // code
+                                code
                             },
                             success: (response) => {
                                 if (response.success == true) {
@@ -497,12 +572,13 @@
                     }
 
                     function verifyPayment(payment, order) {
+                        const code = document.getElementById('code').value
                         $.ajax({
                             url: "/verifypayment",
                             method: 'post',
                             data: {
                                 payment,
-                                order
+                                order,code
                             },
                             success: (response) => {
                                 if (response.success == true) {

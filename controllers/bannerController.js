@@ -34,7 +34,7 @@ const postBanner = async (req, res) => {
             res.redirect('/admin/bannerLoad')
         } else {
             const imageArr = []
-            console.log(req.files);
+            
             if (req.files && req.files.length > 0) {
                 for (let i = 0; i < req.files.length; i++) {
                     const filePath = path.join(
@@ -48,7 +48,7 @@ const postBanner = async (req, res) => {
                     imageArr.push(req.files[i].filename);
                 }
             }
-            console.log(imageArr);
+          
             const banner = new bannerModel({
                 title: title,
                 description: bannerDescription,
@@ -60,7 +60,7 @@ const postBanner = async (req, res) => {
             })
             await banner.save()
             req.session.message = "saved"
-            res.redirect('/admin/bannerLoad')
+            res.redirect('/admin/addBanner')
         }
     } catch (error) {
         console.log(error.message);
@@ -93,10 +93,10 @@ const loadEditBanner = async (req, res) => {
 const editBanner = async (req, res) => {
     try {
         const {
-            banner_id, banner_title, banner_description, c
+            banner_id, banner_title, banner_description,banner_occassion
         } = req.body;
         const imageArr = []
-
+            
         if (req.files && req.files.length > 0) {
 
             for (let i = 0; i < req.files.length; i++) {
@@ -116,7 +116,7 @@ const editBanner = async (req, res) => {
                     $set: {
                         title: banner_title,
                         description: banner_description,
-                        occassion: banner_description,
+                        occassion: banner_occassion,
                         image: imageArr
                     }
                 })
@@ -129,8 +129,7 @@ const editBanner = async (req, res) => {
                     $set: {
                         title: banner_title,
                         description: banner_description,
-                        occassion: banner_description,
-                        image: imageArr
+                        occassion: banner_occassion,
                     }
                 }
             )
@@ -145,66 +144,7 @@ const editBanner = async (req, res) => {
 
 
 
-// try {
 
-//     const {
-//         product_id,
-//         product_name,
-//         product_quantity,
-//         product_price,
-//         product_category,
-//         product_description,
-//     } = req.body;
-
-
-//         let imageArra = [] 
-
-//     if (req.files && req.files.length > 0) {
-
-//         for (let i = 0; i < req.files.length; i++) {
-
-//             const filePath = path.join(__dirname,"../public/images",req.files[i].filename)
-
-//             await sharp(req.files[i].path)
-//                 .resize({ width: 250, height: 250 })
-//                 .toFile(filePath);
-//             imageArra.push(req.files[i].filename);
-//         }
-//     }
-//     console.log(imageArra);
-
-//     if (req.files.length) {
-//         await productModel.findByIdAndUpdate(
-//             { _id: product_id },
-//             {
-//                 $set: {
-//                     name: product_name,
-//                     price: product_price,
-//                     quantity: product_quantity,
-//                     category: product_category,
-//                     description: product_description,
-//                     image: imageArra,
-//                 }
-//             })
-//         res.redirect("/admin/products");
-//     } else {
-//         await productModel.findByIdAndUpdate(
-//             { _id: product_id },
-//             {
-//                 $set: {
-//                     name: product_name,
-//                     quantity: product_quantity,
-//                     price: product_price,
-//                     description: product_description,
-//                     category: product_category,
-//                 }
-//             }
-//         )
-//         res.redirect("/admin/products");
-//         }
-// } catch (error) {
-//     console.log(error.message);;
-// }
 module.exports = {
     loadBanner,
     addBanner,

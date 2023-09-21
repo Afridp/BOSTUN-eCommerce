@@ -8,6 +8,11 @@ const couponSchema = Schema({
         type : String,
         required : true
     },
+    user : {
+        type : Array,
+        ref :'user'
+    },
+    
 
     code: {
         type : String,

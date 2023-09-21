@@ -18,57 +18,57 @@ const loadCart = async (req, res) => {
             populate: [{
                 path: 'offer'
             },
-                {
+            {
                 path: 'category',
                 populate: {
                     path: 'offer'
                 },
             }]
         });
-      
+
 
         let total = 0
         let discountAmt = 0
         let originalAmts = 0
 
         if (cartData) {
-            console.log(cartData,"this is cart data");
+         
             cartData.items.forEach((product) => {
                 let itemPrice = product.price;
                 originalAmts += itemPrice * product.quantity
-                
+
                 // Check if there's an offer on the product
                 if (product.product_Id.offer) {
-                   
-                    const { percentage  } = product.product_Id.offer;
-                    
-                    itemPrice -= (itemPrice * percentage) / 100;
-                    
-                }else
 
-                // Check if there's an offer on the category
-                if ( product.product_Id.category.offer) {
-                    
-                    const { percentage } = product.product_Id.category.offer;
+                    const { percentage } = product.product_Id.offer;
+
                     itemPrice -= (itemPrice * percentage) / 100;
-                  
-                }
-                
+
+                } else
+
+                    // Check if there's an offer on the category
+                    if (product.product_Id.category.offer) {
+
+                        const { percentage } = product.product_Id.category.offer;
+                        itemPrice -= (itemPrice * percentage) / 100;
+
+                    }
+
                 let price = Math.floor(itemPrice)
 
                 total += price * product.quantity
 
-                
+
 
                 discountAmt = originalAmts - total
             });
         }
-               
 
-            
-    
 
-        res.render('shoppingCart', { user, userid, cartData, total , discountAmt,originalAmts,currentPage})
+
+
+
+        res.render('shoppingCart', { user, userid, cartData, total, discountAmt, originalAmts, currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -80,16 +80,16 @@ const addToCart = async (req, res) => {
         const { userid } = req.session
 
         const product = await productModel.findOne({ _id: productId }).populate({
-            path : 'offer',
-            match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
-        }) .populate({
-            path : 'category',
-            populate : {
-                path : 'offer',
-                match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            path: 'offer',
+            match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
+        }).populate({
+            path: 'category',
+            populate: {
+                path: 'offer',
+                match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
             }
         })
-       
+
         const cart = await cartModel.findOne({ userId: userid })
         // checking that this user has cart 
         // if(product.quantity>=cart.items.quantity){
@@ -102,17 +102,17 @@ const addToCart = async (req, res) => {
             if (existProduct) {
 
                 if (existProduct.quantity < product.quantity) {
-                    
+
                     let itemPrice = product.price;
 
                     // Check if there's an offer on the product
                     if (product.offer) {
-                        const { percentage  } = product.offer;
+                        const { percentage } = product.offer;
                         itemPrice -= (itemPrice * percentage) / 100;
                     }
-    
+
                     // Check if there's an offer on the category
-                   else if ( product.category.offer) {
+                    else if (product.category.offer) {
                         const { percentage } = product.category.offer;
                         itemPrice -= (itemPrice * percentage) / 100;
                     }
@@ -133,16 +133,16 @@ const addToCart = async (req, res) => {
 
                 // Check if there's an offer on the product
                 if (product.offer) {
-                    const { percentage  } = product.offer;
+                    const { percentage } = product.offer;
                     itemPrice -= (itemPrice * percentage) / 100;
                 }
 
                 // Check if there's an offer on the category
-               else if ( product.category.offer) {
+                else if (product.category.offer) {
                     const { percentage } = product.category.offer;
                     itemPrice -= (itemPrice * percentage) / 100;
                 }
-                let totalPrice = req.body.quantity * Math.ceil(itemPrice)
+                let totalPrice = Math.ceil(req.body.quantity * Math.ceil(itemPrice))
                 await cartModel.findOneAndUpdate({ userId: userid },
                     {
                         $push: {
@@ -165,12 +165,12 @@ const addToCart = async (req, res) => {
             let itemPrice = product.price
 
             if (product.offer) {
-                const { percentage  } = product.offer;
+                const { percentage } = product.offer;
                 itemPrice -= (itemPrice * percentage) / 100;
             }
 
             // Check if there's an offer on the category
-           else if ( product.category.offer) {
+            else if (product.category.offer) {
                 const { percentage } = product.category.offer;
                 itemPrice -= (itemPrice * percentage) / 100;
             }
@@ -219,43 +219,47 @@ const deleteItems = async (req, res) => {
 const loadCheckout = async (req, res) => {
     try {
 
-        
-        const { userid } = req.session;
+
+        const { userid} = req.session;
+
+        const { coupon } = req.query
+
         // const coupon = await couponModel.find({})
         // const moment = require("moment");
         // req.session.couponApplied = false;
         // req.session.discountAmount = 0;
+        const couponData = await couponModel.findOne({ code: coupon });
+        const coupons = await couponModel.find()
         const currentDate = new Date();
-        req.session.message = "";
+
         const cart = await cartModel.findOne({ userId: userid }).populate({
             path: "items.product_Id",
             populate: [{
                 path: 'offer'
             },
-                {
+            {
                 path: 'category',
                 populate: {
                     path: 'offer'
                 },
             }]
         });
-        
+
         let total = 0;
         let originalAmts = 0
         let subtotal = 0;
-        
+        // let message = ""
         if (cart) {
             cart.items.forEach((product) => {
                 let itemPrice = product.product_Id.price;
-                console.log(itemPrice,"haiaiiaiaiaiaia");
+
                 originalAmts += itemPrice * product.quantity
 
                 // Check if there's an offer on the product
                 if (product.product_Id.offer) {
                     const { percentage } = product.product_Id.offer;
-                    itemPrice -= (product.product_Id.price * percentage / 100 ) 
-                    console.log(itemPrice);
-                    console.log(product.quantity);
+                    itemPrice -= (product.product_Id.price * percentage / 100)
+
 
                 } else if (product.product_Id.category.offer) {
                     const { percentage } = product.product_Id.category.offer;
@@ -263,31 +267,52 @@ const loadCheckout = async (req, res) => {
 
                 }
 
+
+
                 total += Math.floor(itemPrice) * product.quantity;
-               
+                
             });
 
 
-           
-          
+            if (couponData) {
+                const usedUser = couponData.user.find((user) => user.toString() == userid)
+
+                if (usedUser) {
+                    // console.log("coupon used");
+                    // req.session.message = 'you have already used this coupon'
+                    return res.redirect('/checkout')
+                } else {
+
+                    total = total - couponData.value
+
+                }
+
+
+
+            }
+
+
+
+            // await Coupon.find({
+            //     expireDate: { $gte: new Date(currentDate) },
+            // });
+            const user = await userModel.findOne({ _id: userid });
+            let currentPage = 'shop';
+            res.render("checkout", {
+                // address: user,
+                cart: cart,
+                coupon: coupon,
+                couponData,
+                coupons,
+                // wallet: user.wallet,
+                currentDate: currentDate,
+                // moment: moment,
+
+                currentPage,
+                userid, user, total, originalAmts
+            });
         }
-        
-        const coupon = null
-        // await Coupon.find({
-        //     expireDate: { $gte: new Date(currentDate) },
-        // });
-        const user = await userModel.findOne({ _id: userid });
-        let currentPage = 'shop';
-        res.render("checkout", {
-            // address: user,
-            cart: cart,
-            coupon: coupon,
-            // wallet: user.wallet,
-            currentDate: currentDate,
-            // moment: moment,
-            currentPage,
-            userid, user, total,originalAmts
-        });
+
     } catch (error) {
         console.log(error.message);
     }
@@ -297,7 +322,7 @@ const qtyChanges = async (req, res) => {
     try {
         const { count } = req.body;
         const { productId } = req.body;
-        
+
 
         const cart = await cartModel.findOne({ userId: req.session.userid })
         // .populate({
@@ -313,51 +338,51 @@ const qtyChanges = async (req, res) => {
         //     }]
         // });
         const product = await productModel.findOne({ _id: productId }).populate(
-             'offer').
-            
+            'offer').
+
             populate({
-            path : 'category',
-            populate : {
-                path : 'offer',
-                
+                path: 'category',
+                populate: {
+                    path: 'offer',
+
+                }
             }
-        }
-        
-        )
+
+            )
         // console.log(cart);
         const items = cart.items;
         // console.log(items);
 
         const cartProduct = items.find(
             (product) => product.product_Id.toString() === productId);
-            console.log(cartProduct);
-            if (count == 1) {
-                
-                // console.log(cartProduct.quantity);
-                if (cartProduct.quantity < product.quantity) {
-                     let updatedPrice =  product.price;  // Initialize the updated price
-                    // console.log(updatedPrice,);
-                    
-                    // Check if there's an offer on the product
-                    if (product.offer) {
-                        // console.log(product.offer,"this is offer ");
-                        const { percentage } = product.offer;
-                        // console.log("haaaai");
-                        updatedPrice =updatedPrice - (product.price * percentage) / 100;
-                        // console.log(updatedPrice);
-                    }else if(product.category.offer){
-                        // console.log("haaaaihjghg");
-                        const { percentage } = product.category.offer
-                        updatedPrice-=(product.price*percentage)/100
-                    }
+     
+        if (count == 1) {
+
+            // console.log(cartProduct.quantity);
+            if (cartProduct.quantity < product.quantity) {
+                let updatedPrice = product.price;  // Initialize the updated price
+                // console.log(updatedPrice,);
+
+                // Check if there's an offer on the product
+                if (product.offer) {
+                    // console.log(product.offer,"this is offer ");
+                    const { percentage } = product.offer;
+                    // console.log("haaaai");
+                    updatedPrice = updatedPrice - (product.price * percentage) / 100;
                     // console.log(updatedPrice);
-                    // console.log("haai")
-                    await cartModel.updateOne(
+                } else if (product.category.offer) {
+                    // console.log("haaaaihjghg");
+                    const { percentage } = product.category.offer
+                    updatedPrice -= (product.price * percentage) / 100
+                }
+                // console.log(updatedPrice);
+                // console.log("haai")
+                await cartModel.updateOne(
                     { userId: req.session.userid, 'items.product_Id': productId },
                     {
                         $inc: {
                             'items.$.quantity': 1,
-                            'items.$.totalPrice': updatedPrice 
+                            'items.$.totalPrice': updatedPrice
                         }
                     }
                 );

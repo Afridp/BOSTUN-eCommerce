@@ -1,0 +1,279 @@
+<%- include('./layouts/header.ejs') -%>
+
+
+    <%- include('./layouts/navbar.ejs') -%>
+
+        <style>
+            /* Style for the Wishlist Section */
+            .wishlist-section {
+                padding: 50px 0;
+                background-color: #f7f7f7;
+            }
+
+            .wishlist-card {
+                background-color: #fff;
+                margin-bottom: 20px;
+                border: 1px solid #e5e5e5;
+                border-radius: 5px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                padding: 10px;
+            }
+
+            .wishlist-card img {
+                max-width: 100px;
+                height: auto;
+                margin-right: 20px;
+            }
+
+            .wishlist-card-details {
+                flex-grow: 1;
+            }
+
+            .wishlist-card-details h4 {
+                font-size: 18px;
+                margin: 0;
+            }
+
+            .wishlist-card-details p {
+                font-size: 16px;
+                color: #777;
+                margin: 10px 0;
+            }
+
+            .wishlist-card-actions {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .wishlist-card-actions button {
+                background-color: #ff6b6b;
+                color: #fff;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 10px;
+                transition: background-color 0.3s;
+            }
+
+            .wishlist-card-actions button:hover {
+                background-color: #e54545;
+            }
+
+            .table thead th {
+                border-bottom: none;
+            }
+        </style>
+
+
+        <!-- Breadcrumb Section Begin -->
+        <section class="breadcrumb-option">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="breadcrumb__text">
+                            <h4>Shopping Cart</h4>
+                            <div class="breadcrumb__links">
+                                <a href="./index.html">Home</a>
+
+                                <span>Whishlist</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Breadcrumb Section End -->
+
+        <!-- Wishlist Section Begin -->
+
+
+
+
+        <section class="wishlist_area">
+            <div class="container">
+                <div class="wishlist_inner">
+                    <% if (wishlist && wishlist.items.length> 0) { %>
+                        <div class="table-responsive">
+                            <table id="table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"><span class="text-dark">Image</span></th>
+                                        <th scope="col"><span class="text-dark">Name</span></th>
+                                        <th scope="col"><span class="text-dark">Price</span></th>
+                                        <th scope="col"><span class="text-dark">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% wishlist.items.forEach(item=> { %>
+                                        <tr id="<%= item.product_Id._id %>">
+                                            <td class="align-middle">
+                                                <img src="/images/<%= item.product_Id.image[0] %>"
+                                                    alt="<%= item.product_Id.name %>" class="img-fluid rounded-start" />
+                                            </td>
+                                            <td class="align-middle">
+                                                <%= item.product_Id.name %>
+                                            </td>
+                                            <td class="align-middle">₹<%= item.product_Id.price %>
+                                            </td>
+                                            <td class="align-middle">
+                                                <button class="btn btn-sm btn-primary"
+                                                    onclick="moveToCart('<%= item.product_Id._id %>')">
+                                                    Add to Cart
+                                                </button>
+                                                <button class="btn btn-sm btn-danger"
+                                                    onclick="deleteFromWishlist('<%= item.product_Id._id %>')">
+                                                    Remove
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } else { %>
+                            <h4>Your wishlist is empty.</h4>
+                            <% } %>
+                                <div id="emptyWishList" style="display: none" class="text-center">
+                                    <h4>Your wishlist is empty.</h4>
+                                </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Wishlist Section End -->
+
+
+
+        <%- include('./layouts/footerNavbar.ejs') -%>
+
+            <%- include('./layouts/footer.ejs') -%>
+                <script>
+
+                    const deleteFromWishlist = async (product_Id) => {
+                        const confirmed = window.confirm("Are you sure you want to remove this from Wishlist?");
+
+                        if (confirmed) {
+                            try {
+                                const deletedItem = await axios.put("/deleteFromWishlist", {
+                                    product_Id,
+                                });
+
+                                if (deletedItem.data.wishListLength === 0) {
+                                    document.getElementById("table").style.display = "none";
+                                    document.getElementById("emptyWishList").style.display = "block";
+                                } else {
+                                    // Handle successful deletion
+                                    const productElement = document.getElementById(product_Id);
+                                    if (productElement) {
+                                        productElement.style.display = "none";
+                                    }
+                                }
+                            } catch (error) {
+                                console.error("Error deleting item:", error);
+                                // Handle the error, e.g., show an error message to the user
+                            }
+                        }
+                    };
+
+                    // moveToCart = async (productId) => {
+                    //     event.preventDefault();
+                    //     Toastify({
+                    //         text: "Moved To Cart",
+                    //         duration: 1000,
+                    //         destination: "/addToCart",
+                    //         newWindow: false,
+                    //         close: false,
+                    //         gravity: "top",
+                    //         position: "right",
+                    //         stopOnFocus: false,
+                    //         style: {
+                    //             background: "#384aeb",
+                    //         },
+                    //     }).showToast();
+                    //     let quantity = 1;
+                    //     const quantityData = await axios.post("/addToCart", {
+                    //         quantity,
+                    //         productId,
+                    //     });
+                    //     if (quantityData.data.count) {
+                    //         document.getElementById("cartCount").innerHTML = quantityData.data.count;
+                    //     }
+                    //     return quantityData;
+                    // };
+
+
+                    const moveToCart = async (productId) => {
+                        event.preventDefault();
+                        try {
+                            // Show a notification that the item is moved to the cart
+                            Toastify({
+                                text: "Moved To Cart",
+                                duration: 1000,
+                                close: false,
+                                gravity: "top",
+                                position: "right",
+                                stopOnFocus: false,
+                                style: {
+                                    background: "#384aeb",
+                                },
+                            }).showToast();
+
+                            // Make a request to add the item to the cart
+                            const quantity = 1;
+                            const quantityData = await axios.post("/addToCart", {
+                                quantity,
+                                productId,
+                            });
+
+                            if (quantityData.data.count) {
+                                // Update the cart count in the UI
+                                document.getElementById("cartCount").innerHTML = quantityData.data.count;
+                            }
+
+                            // If the item is successfully added to the cart, you can update the wishlist here
+                            // For example, you can call a function to remove the item from the wishlist
+
+                            // Add your code here to update the wishlist
+                            // For instance, you can call a function to remove the item from the wishlist
+
+                            // After successfully adding to the cart, you may want to hide the item from the wishlist
+                            const wishlistItem = document.getElementById(productId);
+                            if (wishlistItem) {
+                                wishlistItem.style.display = "none";
+                            }
+                        } catch (error) {
+                            console.error(error.message);
+                            // Handle any errors here
+                        }
+                    };
+
+
+                    // const deleteFromWishlist = async (product_Id) => {
+                    //     swal({
+                    //       title: "Remove Product",
+                    //       text: "Are you sure you want to remove this from Wishlist?",
+                    //       icon: "warning",
+                    //       buttons: ["Cancel", "OK"],
+                    //       dangerMode: true,
+                    //     }).then(async (willDelete) => {
+                    //       if (willDelete) {
+                    //         const deletedItem = await axios.put("/deleteFromWishlist", {
+                    //           product_Id,
+                    //         });
+                    //         if (deletedItem) {
+                    //           document.getElementById(product_Id).style.display = "none";
+                    //           if (deletedItem.data.wishListLength === 0) {
+                    //             document.getElementById("table").style.display = "none";
+                    //             document.getElementById("emptyWishList").style.display = "block";
+                    //           }
+                    //         }
+                    //       }
+                    //     });
+                    //   };
+
+                </script>

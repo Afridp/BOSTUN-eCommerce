@@ -140,7 +140,7 @@ const editProduct = async (req, res) => {
 
 const productEditUpdated = async (req, res) => {
     try {
-        console.log("haaaa");
+       
         const {
             product_id,
             product_name,
@@ -149,7 +149,7 @@ const productEditUpdated = async (req, res) => {
             product_category,
             product_description,
         } = req.body;
-        console.log(product_name);
+        console.log(req.files,"this is file");
         
             let imageArra = [] 
 

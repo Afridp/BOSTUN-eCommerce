@@ -2,7 +2,9 @@ const userModel = require('../models/userModel')
 const catModel = require('../models/categoryModel')
 const productModel = require('../models/productModel')
 const bannerModel = require('../models/bannerModel')
+const whishlistModel = require('../models/whishlistModel')
 const dotenv = require('dotenv')
+const mongoose = require("mongoose");
 const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer")
 const userOtpVerification = require('../models/userOtpVerification')
@@ -195,7 +197,7 @@ const emailVerification = async (req, res) => {
 
                         await userOtpVerification.deleteMany({ _id: userId });
 
-                        res.redirect("/");
+                        res.redirect("/login");
                     }
                 }
             }
@@ -214,12 +216,12 @@ const loginLoad = async (req, res) => {
         let { message } = req.session
         req.session.message = ""
         let currentPage = 'login'
-        let {userid} = req.session
-        console.log(userid);
-        res.render('login', { message,currentPage,userid})
+        let { userid } = req.session
+
+        res.render('login', { message, currentPage, userid })
     } catch (error) {
         console.log(error.message);
-    } 
+    }
 }
 
 
@@ -240,7 +242,7 @@ const verifyLogin = async (req, res) => {
 
                 if (userData.is_verified === false) {
                     req.session.message = "email verification required"
-                    res.redirect('/login' )
+                    res.redirect('/login')
                 } else {
                     // console.log("hello");
                     req.session.userid = userData._id
@@ -254,7 +256,7 @@ const verifyLogin = async (req, res) => {
             }
         } else {
             // console.log("hai");
-            req.session.message =  "Oops.. User Is Not Registerd,Please register" 
+            req.session.message = "Oops.. User Is Not Registerd,Please register"
             res.redirect('/login')
         }
     } catch (error) {
@@ -268,10 +270,13 @@ const homeLoad = async (req, res) => {
         const { userid } = req.session;
 
         const user = await userModel.findOne({ _id: userid });
-        const banner = await bannerModel.find({status : true})
+        const banner = await bannerModel.find({ status: true })
         let currentPage = 'home'; // Define currentPage here
-        console.log(banner,"bannners");
-        res.render('index', { user, userid, currentPage,banner }); // Pass currentPage to the template
+        const bestSellers = await productModel.find().limit(8)
+
+        
+
+        res.render('index', { user, userid, currentPage, banner,bestSellers }); // Pass currentPage to the template
     } catch (error) {
         console.log(error.message);
     }
@@ -286,11 +291,11 @@ const shopLoad = async (req, res) => {
         // const user = await userModel.findOne({ _id: userid, })
         // const { cat, search } = req.query
         // console.log(req.body,"this body");
-        const { selectedCategories, selectedSize, selectedColors ,searchInput} = req.body
+        const { selectedCategories, selectedSize, selectedColors, searchInput } = req.body
         // const condition = { list: true }
-        
 
-        if(selectedCategories || selectedColors || selectedSize || searchInput){
+
+        if (selectedCategories || selectedColors || selectedSize || searchInput) {
             // console.log(selectedColors);
 
             if (selectedCategories) {
@@ -304,128 +309,128 @@ const shopLoad = async (req, res) => {
             if (selectedSize) {
                 isSizeIn = await productModel.find({ size: selectedSize })
                 if (isSizeIn) {
-                   req.session.size = selectedSize
+                    req.session.size = selectedSize
                 }
-                
+
             }
-            if(selectedColors){
-                isColorIn = await productModel.find({color:selectedColors})
-                if(isColorIn){
-                    req.session.color=selectedColors
+            if (selectedColors) {
+                isColorIn = await productModel.find({ color: selectedColors })
+                if (isColorIn) {
+                    req.session.color = selectedColors
                 }
-            } 
-            if(searchInput){
-                
-                isSerchIn = await productModel.find({ name : { $regex: searchInput, $options: 'i' }})
-                if(isSerchIn){
+            }
+            if (searchInput) {
+
+                isSerchIn = await productModel.find({ name: { $regex: searchInput, $options: 'i' } })
+                if (isSerchIn) {
                     console.log(isSerchIn);
-                    req.session.searchInput=searchInput
+                    req.session.searchInput = searchInput
                 }
             }
 
-            res.json({success:true})
-            
-        }else{
+            res.json({ success: true })
+
+        } else {
             // console.log("haaai");
-            
-            
-            
+
+
+
             // const product = await productModel.find({ list: true })
             const condition = { list: true }
             // console.log(req.session,'this is session');
-            if ( req.session ){
+            if (req.session) {
 
-                const { color,size,category,searchInput} = req.session
+                const { color, size, category, searchInput } = req.session
 
-                if(searchInput){
+                if (searchInput) {
                     // isSearchIn = await productModel.find({name : {$regex : searchInput ,$options:'i'} })
                     // if(isSearchIn){
-                        condition.name = {$regex : searchInput ,$options:'i'} 
-                    }
-                    delete req.session.searchInput;
+                    condition.name = { $regex: searchInput, $options: 'i' }
+                }
+                delete req.session.searchInput;
 
-                
-                if(category){
-                    if(category==='All'){
+
+                if (category) {
+                    if (category === 'All') {
                         condition.category
-                    }else{
-                    // console.log("hellllooooooooosdkjfhauklsdgfkjhasdfg");
-                    // let categorys = category.join(', ') 
-                    condition.category = category
+                    } else {
+                        // console.log("hellllooooooooosdkjfhauklsdgfkjhasdfg");
+                        // let categorys = category.join(', ') 
+                        condition.category = category
                     }
                 }
                 delete req.session.category;
 
 
-                if(color){
+                if (color) {
                     // let arrayAsString = color
-                    let queryConditions = { $in: color } ;
-                    isColorIn = await productModel.find({ color: queryConditions})
+                    let queryConditions = { $in: color };
+                    isColorIn = await productModel.find({ color: queryConditions })
                     // console.log(color,"this is color");
-                    if(isColorIn){
-                    condition.color = queryConditions
+                    if (isColorIn) {
+                        condition.color = queryConditions
                     }
                 }
 
                 delete req.session.color
 
-                if(size){
+                if (size) {
                     // let arrayAsString = size
                     // console.log(arrayAsString,"asdhfjkasdhfkjlasdhfkjl;sdfja;klsdf");
-                    let queryConditions = { $in: size } ;
+                    let queryConditions = { $in: size };
 
-                    isSizeIn = await productModel.find({size : queryConditions})
+                    isSizeIn = await productModel.find({ size: queryConditions })
                     // console.log(isSizeIn,"this is in or not");
-                    if(isSizeIn){
-                    condition.size = queryConditions
+                    if (isSizeIn) {
+                        condition.size = queryConditions
                     }
                 }
                 delete req.session.size
             }
 
-            const {userid} = req.session
+            const { userid } = req.session
             const user = await userModel.findOne({ _id: userid })
             // const { cat, search } = req.query
             // const { selectedCategories, selectedSize, selectedColors } = req.body
-        
-        // console.log(size)
-        // if (cat) {
-        //     condition.category = cat
-        // }
-        // if (search) {
-        //     condition.name = { $regex: search, $options: "i" };
-        // }
-        // if (size) {
-        //     isSizeIn = await productModel.find({ size: size })
-        //     if (isSizeIn) {
-        //         condition.size = size
-        //     }
 
-        // }
-        // console.log(condition,"this is condition");
+            // console.log(size)
+            // if (cat) {
+            //     condition.category = cat
+            // }
+            // if (search) {
+            //     condition.name = { $regex: search, $options: "i" };
+            // }
+            // if (size) {
+            //     isSizeIn = await productModel.find({ size: size })
+            //     if (isSizeIn) {
+            //         condition.size = size
+            //     }
 
-        const products = await productModel.find(condition).populate({
-            path : 'offer',
-            match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
-        }) .populate({
-            path : 'category',
-            populate : {
-                path : 'offer',
-                match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
-            }
-        })
-        const productsCount = await productModel.find({ list: true }).populate("category").count()
-        const count = await productModel.find(condition).populate("category").count()
-        const categories = await catModel.find({ list: true })
-        let currentPage = 'shop';
-        res.render('shop',
-            {
-                userid, user,
-                categories,
-                products,
-                currentPage,
-                count, productsCount
+            // }
+            // console.log(condition,"this is condition");
+
+            const products = await productModel.find(condition).populate({
+                path: 'offer',
+                match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
+            }).populate({
+                path: 'category',
+                populate: {
+                    path: 'offer',
+                    match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
+                }
             })
+            const productsCount = await productModel.find({ list: true }).populate("category").count()
+            const count = await productModel.find(condition).populate("category").count()
+            const categories = await catModel.find({ list: true })
+            let currentPage = 'shop';
+            res.render('shop',
+                {
+                    userid, user,
+                    categories,
+                    products,
+                    currentPage,
+                    count, productsCount
+                })
         }
 
     } catch (error) {
@@ -444,17 +449,17 @@ const showProductDetails = async (req, res) => {
 
 
         const product = await productModel.findById({ _id: id }).populate({
-            path : 'offer',
-            match :  { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
-        }) .populate({
-            path : 'category',
-            populate : {
-                path : 'offer',
-                match : { startingDate : { $lte : new Date() }, expiryDate : { $gte : new Date() }}
+            path: 'offer',
+            match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
+        }).populate({
+            path: 'category',
+            populate: {
+                path: 'offer',
+                match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
             }
         })
-    
-        res.render('productDetails', { userid, product, user,currentPage })
+
+        res.render('productDetails', { userid, product, user, currentPage })
 
     } catch (error) {
         console.log(error.message);
@@ -468,7 +473,7 @@ const loadProfile = async (req, res) => {
 
         const user = await userModel.findOne({ _id: userid })
         let currentPage = 'profile'
-        res.render('profile', { user, userid,currentPage })
+        res.render('profile', { user, userid, currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -476,10 +481,10 @@ const loadProfile = async (req, res) => {
 
 const manageAddress = async (req, res) => {
     try {
-        const { userid } = req.session 
+        const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
         let currentPage = 'profile'
-        res.render('address', { userid, user ,currentPage})
+        res.render('address', { userid, user, currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -490,19 +495,19 @@ const addAddress = async (req, res) => {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
         let currentPage = 'profile'
-        res.render('addAddress', { userid, user,currentPage })
+        res.render('addAddress', { userid, user, currentPage })
     } catch (error) {
         console.log(error.message);
     }
 }
 const loadLogout = async (req, res) => {
     try {
-      req.session.userid = null;
-      res.redirect("/");
+        req.session.userid = null;
+        res.redirect("/");
     } catch (error) {
-      console.log(error.message);
+        console.log(error.message);
     }
-  };
+};
 
 const postAddress = async (req, res) => {
     try {
@@ -540,7 +545,7 @@ const editaddress = async (req, res) => {
             { address: { $elemMatch: { _id: id } } }
         );
         let currentPage = 'profile'
-        res.render("editAddress", { userid, userAddress: userAddress, user,currentPage });
+        res.render("editAddress", { userid, userAddress: userAddress, user, currentPage });
     } catch (error) {
         console.log(error.message);
     }
@@ -588,7 +593,7 @@ const editProfile = async (req, res) => {
         const { userid } = req.session
         let currentPage = 'profile'
         const user = await userModel.findById({ _id: userid })
-        res.render('editProfile', { user, userid,currentPage })
+        res.render('editProfile', { user, userid, currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -597,7 +602,7 @@ const updateProfile = async (req, res) => {
     try {
         const { userid } = req.session
         const { name, mobile, email } = req.body
-        console.log(name);
+
         await userModel.updateOne({ _id: userid },
             {
                 $set: {
@@ -618,7 +623,7 @@ const changePassword = async (req, res) => {
         const { userid } = req.session
         let currentPage = 'profile'
         const user = await userModel.findById({ _id: userid })
-        res.render('changePassword', { user, userid,currentPage })
+        res.render('changePassword', { user, userid, currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -661,7 +666,7 @@ const lostPassEmailPage = async (req, res) => {
         const { message } = req.session
         req.session.message = ''
         let currentPage = 'login'
-        res.render('forgetPassEmail', { message ,currentPage})
+        res.render('forgetPassEmail', { message, currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -719,7 +724,7 @@ const forgetPassOtpEnterPage = async (req, res) => {
         let { message, otp, user } = req.session
         let currentPage = 'login'
         req.session.message = ''
-        res.render('forgPassOtpEnter', { message, otp, user,currentPage })
+        res.render('forgPassOtpEnter', { message, otp, user, currentPage })
 
     } catch (error) {
         console.log(error.message);
@@ -734,7 +739,7 @@ const postForgetPassOtpVerify = async (req, res) => {
             req.session.message = 'invalid otp,please try again'
             res.redirect('/forgPassOtpEnter')
         } else {
-            res.render('setNewPassword', { user,currentPage })
+            res.render('setNewPassword', { user, currentPage })
 
 
         }
@@ -758,9 +763,94 @@ const updateNewPassword = async (req, res) => {
 }
 
 
+const loadWhishlist = async (req, res) => {
+    try {
+        const { userid } = req.session
+        const user = await userModel.findById({ _id: userid })
+        const wishlist = await whishlistModel.findOne({ userId: userid }).populate(
+            "items.product_Id"
+        );
+
+        let currentPage = ''
+        res.render('whishlist', { currentPage, userid, user, wishlist })
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const addToWhishlist = async (req, res) => {
+    try {
+        const { userid } = req.session
+        const { id } = req.query
+        const userWhishlist = await whishlistModel.findOne({ userId: userid })
+
+        if (userWhishlist) {
+            const findProduct = await whishlistModel.findOne({
+                userId: userid,
+                "items.product_Id": new mongoose.Types.ObjectId(id),
+            });
+            console.log(findProduct, "product");
+            if (findProduct) {
+
+                await whishlistModel.findOneAndUpdate(
+                    {
+                        userId: userid,
+                        "items.product_Id": new mongoose.Types.ObjectId(id),
+                    },
+                    { new: true }
+                );
+            } else {
+
+                await whishlistModel.updateOne(
+                    { userId: userid },
+                    {
+                        $push: {
+                            items: {
+                                product_Id: new mongoose.Types.ObjectId(id),
+                            },
+                        },
+                    }
+                );
+            }
+        } else {
+            const makeWhishlist = new whishlistModel({
 
 
+                userId: userid,
+                items: [
+                    {
+                        product_Id: new mongoose.Types.ObjectId(id),
+                    },
+                ],
+            });
+            await makeWhishlist.save();
+        }
 
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+const deleteFromWishlist = async (req, res) => {
+    try {
+        const { userid } = req.session;
+        let { product_Id } = req.body;
+        let productId = new mongoose.Types.ObjectId(product_Id);
+        await whishlistModel.updateOne(
+            { userId: userid },
+            {
+                $pull: { items: { product_Id: productId } },
+            }
+        );
+        const wishList = await whishlistModel.findOne({ userId: userid });
+        res.status(201).json({
+            message: "success and modified",
+            wishListLength: wishList.items.length
+        });
+    } catch (error) {
+        console.log(error.message);
+    }
+}
 
 
 
@@ -811,7 +901,10 @@ module.exports = {
     forgetPassSendOtp,
     forgetPassOtpEnterPage,
     postForgetPassOtpVerify,
-    updateNewPassword
+    updateNewPassword,
+    loadWhishlist,
+    addToWhishlist,
+    deleteFromWishlist
 
 
 }

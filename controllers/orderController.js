@@ -19,8 +19,8 @@ const orders = async (req, res) => {
         //     minute: "numeric",
         //     timeZone: "Asia/Kolkata",
         // });
-        console.log(userid);
-
+     
+        let currentPage = 'profile'
         const user = await userModel.findById({ _id: userid })
         const orders = await orderModel.find({ user: userid })
             .populate("items")
@@ -28,7 +28,7 @@ const orders = async (req, res) => {
 
             // .sort({ createdAt: -1 });
 
-        res.render("orders", { orders,user,userid });
+        res.render("orders", { orders,user,userid,currentPage });
     } catch (error) {
        console.log(error.message);
     }
@@ -38,12 +38,12 @@ const viewOrdered = async (req, res) => {
   try {
     const { userid } = req.session;
     const { id } = req.query;
-    console.log(userid);
+    let currentPage = ''
     const user = await userModel.findById({ _id: userid })
     const order = await orderModel.findById({ _id: id })
       .populate("user")
       .populate("items.product_Id");
-    res.render("viewOrdered", { order: order,user,userid });
+    res.render("viewOrdered", { order: order,user,userid,currentPage });
   } catch (error) {
     console.log(error.message);
   }
@@ -97,9 +97,9 @@ const changeStatus = async (req, res) => {
 const orderItems = async(req,res)=>{
     try {
        const {id} = req.query
-       console.log(req.query);
+       
        const order = await orderModel.findById({_id:id}).populate('user').populate('items.product_Id')
-       console.log(order);
+
     res.json({success:true,order})
 
     } catch (error) {

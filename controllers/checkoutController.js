@@ -13,6 +13,31 @@ dotenv.config()
     key_secret:process.env.razorpay_secret_key
  })
 
+const addressAdd = async(req,res)=>{
+    try {
+        const {userid} = req.session
+        const {name,housename,city,state,pincode,phone}= req.body
+        await userModel.updateOne(
+            { _id: userid },
+            {
+                $push: {
+                    address: {
+                        name: name,
+                        housename: housename,
+                        city: city,
+                        state: state,
+                        phone: phone,
+                        pincode: pincode,
+                    },
+                },
+            },
+        )
+        res.redirect('/checkout')
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
 const loadEditAddAddress = async (req, res) => {
     try {
 
@@ -64,10 +89,10 @@ const placeOrder = async (req, res) => {
 
 
         const bodyaddress = req.body.selectedAddress
-        const total = req.body.total
+        const {total,code} = req.body
         const payment = req.body.payment
         const userid = req.session.userid
-
+        console.log(code);
 
         let status = payment == 'cod' ? 'placed' : 'pending'
 
@@ -80,7 +105,7 @@ const placeOrder = async (req, res) => {
           
         const date = new Date ()
         const orderDate = date.toLocaleString()
-        console.log(orderDate);
+        
      
         const delivery = new Date(date.getTime() + (10 * 24 * 60 * 60 * 1000));
 
@@ -102,8 +127,8 @@ const placeOrder = async (req, res) => {
         const orderid = orderData._id
 
         if (orderData.status === 'placed') {
-            await cartModel.deleteOne({ userId: req.session.userid })
-            //    await Coupon.findOneAndUpdate({ code: code }, { $push: { user: req.session.user_id } });
+            await cartModel.deleteOne({ userId:userid })
+               await couponModel.findOneAndUpdate({ code: code }, { $push: { user:userid } });
 
             for (let i = 0; i < cartProducts.length; i++) {
                 const product_Id = cartProducts[i].product_Id
@@ -124,7 +149,7 @@ const placeOrder = async (req, res) => {
                 receipt: '' + orderid,
             };
             
-            console.log(options);
+         
             instance.orders.create(options, function (err, order) {
 
                return res.json({ success:false ,order:order });
@@ -142,7 +167,8 @@ const verifyPayment = async(req,res)=>{
         const userData = await userModel.findOne({_id:req.session.userid})
         const cartData = await cartModel.findOne({userId:req.session.userid})
         const cartProducts = cartData.items
-
+        const {code} = req.body
+ 
         const details = req.body
         const crypto = require('crypto')
 
@@ -162,7 +188,7 @@ const verifyPayment = async(req,res)=>{
 
             await orderModel.findByIdAndUpdate({ _id: details.order.receipt }, { $set: { status: "placed" } })
             await cartModel.deleteOne({userId :userData._id})
-            // use coupon here 
+            await couponModel.findOneAndUpdate({ code: code }, { $push: { user: req.session.userid } });
             res.json({success:true, params:details.order.receipt  })
 
         }else{
@@ -190,11 +216,21 @@ const loadOrderPlaced = async (req, res) => {
 
 const couponCheck = async(req,res)=>{
     try {
-        const {couponCode,total} = req.body
+        const {couponCode} = req.body
+        const {userid} = req.session
+        
         const couponData = await couponModel.findOne({ code : couponCode })
-
+        const userData = await userModel.findById({_id :  userid}).populate('couponCode')
+        console.log(userData,"thus");
         if(couponData){
-            let totalAmount =  total - couponData.value
+           if(userData.couponCode.includes(couponCode)){
+             res.json({success:false})
+           }else{
+              await cartModel.findOneAndUpdate({userId:userid},
+                {$set:{couponCode:couponCode}}
+                )
+                res.json({success:true})
+           }
             
         }
 
@@ -208,5 +244,6 @@ module.exports = {
     placeOrder,
     loadOrderPlaced,
     verifyPayment,
-    couponCheck
+    couponCheck,
+    addressAdd
 }  
