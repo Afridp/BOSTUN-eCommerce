@@ -111,4 +111,7 @@ user_router.get('/addToWhishlist',auth.isLogin,userController.addToWhishlist)
 
 user_router.put('/deleteFromWishlist',auth.isLogin,userController.deleteFromWishlist)
 
+user_router.patch('/cancelOrder',auth.isLogin,userController.cancelOrder)
+
+
 module.exports = user_router;

@@ -86,7 +86,10 @@ const orderSchema = new mongoose.Schema({
     }],
     total:{
         type:Number
-    }
+    },
+    cancelReason: {
+        type: String,
+      },
 
 },
 {timestamps:true})

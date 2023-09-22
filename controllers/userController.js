@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer")
 const userOtpVerification = require('../models/userOtpVerification')
 const { assign } = require('nodemailer/lib/shared')
+const orderModel = require('../models/orderModel')
 
 dotenv.config();
 
@@ -274,9 +275,9 @@ const homeLoad = async (req, res) => {
         let currentPage = 'home'; // Define currentPage here
         const bestSellers = await productModel.find().limit(8)
 
-        
 
-        res.render('index', { user, userid, currentPage, banner,bestSellers }); // Pass currentPage to the template
+
+        res.render('index', { user, userid, currentPage, banner, bestSellers }); // Pass currentPage to the template
     } catch (error) {
         console.log(error.message);
     }
@@ -851,7 +852,33 @@ const deleteFromWishlist = async (req, res) => {
         console.log(error.message);
     }
 }
-
+const cancelOrder = async (req, res) => {
+    try {
+      const { orderId, cancelReason } = req.body;
+      let status1 = "waiting for approval";
+      const cancelOrder = await orderModel.updateOne(
+        { _id: orderId },
+        { $set: { status: status1, cancelReason: cancelReason } }
+      );
+      if (cancelOrder) {
+        const orders = await orderModel.findById({ _id: orderId });
+        for (let order of orders.items) {
+          await productModel.updateOne(
+            { _id: order.product },
+            { $inc: { quantity: order.quantity } }
+          );
+        }
+        res.status(201).json({
+          message: "Successfully updated and modified",
+          status: status1,
+        });
+      } else {
+        res.status(400).json({ message: "Seems like an error" });
+      }
+    } catch (error) {
+        console.log(error.message);
+    }
+  };
 
 
 
@@ -896,6 +923,7 @@ module.exports = {
     editProfile,
     updateProfile,
     changePassword,
+    cancelOrder,
     updatePassword,
     lostPassEmailPage,
     forgetPassSendOtp,

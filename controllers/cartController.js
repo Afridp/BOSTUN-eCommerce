@@ -386,6 +386,7 @@ const qtyChanges = async (req, res) => {
                         }
                     }
                 );
+               
                 res.json({ success: true });
             } else {
                 res.json({
