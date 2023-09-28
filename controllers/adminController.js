@@ -204,18 +204,19 @@ const loadDashboard = async (req, res) => {
 const salesReport = async(req,res)=>{
     try {
         const moment = require('moment')
-        // console.log(moment);
+       
 
         const firstOrder = await orderModel.find().sort({createdAt:1})
         const lastOreder = await orderModel.find().sort({createdAt:-1})
   
         const salesReport = await orderModel.find({status:"delivered"}).populate('user').sort({createdAt:-1})
   
-
+        console.log(salesReport);
         res.render('salesReport',{
              firstOrder:moment(firstOrder[0].createdAt).format("YYYY-MM-DD"),
              lastOrder:moment(lastOreder[0].createdAt).format("YYYY-MM-DD"),
              salesReport
+             
             })
         } catch (error) {
         console.log(error.message);

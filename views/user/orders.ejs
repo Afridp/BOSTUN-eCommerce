@@ -54,19 +54,16 @@
                                   <% } else if (order.status==='returned' ) { %>
                                     <p></p>
                                     <% } else { %>
-                                      <td class="cancel">
-                                        <button
-                                          class="btn btn-danger"
-                                          onclick="cancel('<%= order._id%>')"
-                                        >
-                                          Cancel
-                                        </button>
-                                      </td>
-                                      <% } %>
+                            <td class="cancel">
+                              <button class="btn btn-danger" onclick="cancel('<%= order._id%>')">
+                                Cancel
+                              </button>
                             </td>
+                            <% } %>
+                              </td>
 
 
-                            <!-- <span id="delete" style="display: none">order has been removed</span> -->
+                              <!-- <span id="delete" style="display: none">order has been removed</span> -->
                           </tr>
                           <% }}else{ %>
                             <h6>There is no order in the list</h6>
@@ -85,27 +82,18 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Cancel Reason</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
+
           </div>
           <form onsubmit="event.preventDefault(); cancelOrder();">
             <div class="modal-body">
               <label for="cancelTextArea">Enter the cancel reason:</label>
-              <textarea
-                id="cancelTextArea"
-                class="form-control"
-                rows="4"
-                required
-              ></textarea>
+              <textarea id="cancelTextArea" class="form-control" rows="4" required></textarea>
             </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                onclick="refreshOrderPage()">Close</button>
+
             </div>
           </form>
         </div>
@@ -183,7 +171,7 @@
     <%- include('./layouts/footerNavbar.ejs') -%>
 
       <%- include('./layouts/footer.ejs') -%>
-      <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>    
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
         <script>
           let currentOrderId;
           const cancel = (orderId) => {
@@ -237,4 +225,10 @@
               });
             }
           };
+
+
+          function refreshOrderPage() {
+            // Reload the current page
+            location.reload();
+          }
         </script>

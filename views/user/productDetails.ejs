@@ -106,6 +106,8 @@
                                                 <% } %>
 
 
+
+
                                                     <p>
                                                         <%= product.description %>
                                                     </p>
@@ -342,9 +344,9 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
-                    
-                    
-                
+
+
+
 
                     document.addEventListener("DOMContentLoaded", () => {
                         const colorOptions = document.querySelectorAll(".color-box");
@@ -396,21 +398,7 @@
                                 quantity: quantity
                             };
                             const response = await axios.post("/addToCart", data);
-                            // if(response.data.success){
-                            // Toastify({
-                            //     text: "Added To Cart",
-                            //     duration: 1000,
-                            //     destination: '/shoppingCart',
-                            //     newWindow: false,
-                            //     close: false,
-                            //     gravity: "top",
-                            //     position: "right",
-                            //     stopOnFocus: false,
-                            //     style: {
-                            //         background: "#384aeb",
-                            //     }
-                            // }).showToast();
-                            // }
+                 
                             if (response.data.success) {
                                 Swal.fire({
                                     title: "Success",

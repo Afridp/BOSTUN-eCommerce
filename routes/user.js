@@ -114,4 +114,5 @@ user_router.put('/deleteFromWishlist',auth.isLogin,userController.deleteFromWish
 user_router.patch('/cancelOrder',auth.isLogin,userController.cancelOrder)
 
 
+// user_router.get('/loadWallet',auth.isLogin,walletController.loadWallet)
 module.exports = user_router;

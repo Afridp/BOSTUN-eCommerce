@@ -9,66 +9,66 @@ const mongoose = require('mongoose')
 const loadCart = async (req, res) => {
     try {
         const { userid } = req.session
+        if (!userid) {
 
-        const user = await userModel.findById({ _id: userid })
-        let currentPage = 'shop';
+            res.redirect('/login')
+        } else {
+            const user = await userModel.findById({ _id: userid })
+            let currentPage = 'shop';
 
-        const cartData = await cartModel.findOne({ userId: user }).populate({
-            path: "items.product_Id",
-            populate: [{
-                path: 'offer'
-            },
-            {
-                path: 'category',
-                populate: {
+
+            const cartData = await cartModel.findOne({ userId: user }).populate({
+                path: "items.product_Id",
+                populate: [{
                     path: 'offer'
                 },
-            }]
-        });
+                {
+                    path: 'category',
+                    populate: {
+                        path: 'offer'
+                    },
+                }]
+            });
 
 
-        let total = 0
-        let discountAmt = 0
-        let originalAmts = 0
+            let total = 0
+            let discountAmt = 0
+            let originalAmts = 0
 
-        if (cartData) {
-         
-            cartData.items.forEach((product) => {
-                let itemPrice = product.price;
-                originalAmts += itemPrice * product.quantity
+            if (cartData) {
 
-                // Check if there's an offer on the product
-                if (product.product_Id.offer) {
+                cartData.items.forEach((product) => {
+                    let itemPrice = product.price;
+                    originalAmts += itemPrice * product.quantity
 
-                    const { percentage } = product.product_Id.offer;
+                    // Check if there's an offer on the product
+                    if (product.product_Id.offer) {
 
-                    itemPrice -= (itemPrice * percentage) / 100;
+                        const { percentage } = product.product_Id.offer;
 
-                } else
-
-                    // Check if there's an offer on the category
-                    if (product.product_Id.category.offer) {
-
-                        const { percentage } = product.product_Id.category.offer;
                         itemPrice -= (itemPrice * percentage) / 100;
 
-                    }
+                    } else
 
-                let price = Math.floor(itemPrice)
+                        // Check if there's an offer on the category
+                        if (product.product_Id.category.offer) {
 
-                total += price * product.quantity
+                            const { percentage } = product.product_Id.category.offer;
+                            itemPrice -= (itemPrice * percentage) / 100;
+
+                        }
+
+                    let price = Math.floor(itemPrice)
+
+                    total += price * product.quantity
 
 
 
-                discountAmt = originalAmts - total
-            });
+                    discountAmt = originalAmts - total
+                });
+            }
+            res.render('shoppingCart', { user, userid, cartData, total, discountAmt, originalAmts, currentPage })
         }
-
-
-
-
-
-        res.render('shoppingCart', { user, userid, cartData, total, discountAmt, originalAmts, currentPage })
     } catch (error) {
         console.log(error.message);
     }
@@ -78,31 +78,59 @@ const addToCart = async (req, res) => {
     try {
         const { productId } = req.body
         const { userid } = req.session
-
-        const product = await productModel.findOne({ _id: productId }).populate({
-            path: 'offer',
-            match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
-        }).populate({
-            path: 'category',
-            populate: {
+        if (!userid) {
+            res.redirect('/login')
+        } else {
+            const product = await productModel.findOne({ _id: productId }).populate({
                 path: 'offer',
                 match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
-            }
-        })
+            }).populate({
+                path: 'category',
+                populate: {
+                    path: 'offer',
+                    match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
+                }
+            })
 
-        const cart = await cartModel.findOne({ userId: userid })
-        // checking that this user has cart 
-        // if(product.quantity>=cart.items.quantity){
+            const cart = await cartModel.findOne({ userId: userid })
+            // checking that this user has cart 
+            // if(product.quantity>=cart.items.quantity){
 
 
-        if (cart) {
+            if (cart) {
 
-            const existProduct = cart.items.find((x) => x.product_Id.toString() === productId)
+                const existProduct = cart.items.find((x) => x.product_Id.toString() === productId)
 
-            if (existProduct) {
+                if (existProduct) {
 
-                if (existProduct.quantity < product.quantity) {
+                    if (existProduct.quantity < product.quantity) {
 
+                        let itemPrice = product.price;
+
+                        // Check if there's an offer on the product
+                        if (product.offer) {
+                            const { percentage } = product.offer;
+                            itemPrice -= (itemPrice * percentage) / 100;
+                        }
+
+                        // Check if there's an offer on the category
+                        else if (product.category.offer) {
+                            const { percentage } = product.category.offer;
+                            itemPrice -= (itemPrice * percentage) / 100;
+                        }
+                        await cartModel.findOneAndUpdate({ userId: userid, 'items.product_Id': productId },
+                            {
+                                $inc: {
+                                    'items.$.quantity': req.body.quantity,
+                                    'items.$.totalPrice': req.body.quantity * Math.ceil(itemPrice)
+
+                                }
+                            }
+                        )
+                    } else {
+                        return res.json({ limited: true })
+                    }
+                } else {
                     let itemPrice = product.price;
 
                     // Check if there's an offer on the product
@@ -116,22 +144,28 @@ const addToCart = async (req, res) => {
                         const { percentage } = product.category.offer;
                         itemPrice -= (itemPrice * percentage) / 100;
                     }
-                    await cartModel.findOneAndUpdate({ userId: userid, 'items.product_Id': productId },
+                    let totalPrice = Math.ceil(req.body.quantity * Math.ceil(itemPrice))
+                    await cartModel.findOneAndUpdate({ userId: userid },
                         {
-                            $inc: {
-                                'items.$.quantity': req.body.quantity,
-                                'items.$.totalPrice': req.body.quantity * Math.ceil(itemPrice)
-
+                            $push: {
+                                items: {
+                                    product_Id: req.body.productId,
+                                    quantity: req.body.quantity,
+                                    price: product.price,
+                                    totalPrice: totalPrice
+                                }
                             }
                         }
                     )
-                } else {
-                    return res.json({ limited: true })
-                }
-            } else {
-                let itemPrice = product.price;
 
-                // Check if there's an offer on the product
+                }
+
+            } else {
+
+
+                // don't have cart so we create
+                let itemPrice = product.price
+
                 if (product.offer) {
                     const { percentage } = product.offer;
                     itemPrice -= (itemPrice * percentage) / 100;
@@ -142,52 +176,21 @@ const addToCart = async (req, res) => {
                     const { percentage } = product.category.offer;
                     itemPrice -= (itemPrice * percentage) / 100;
                 }
-                let totalPrice = Math.ceil(req.body.quantity * Math.ceil(itemPrice))
-                await cartModel.findOneAndUpdate({ userId: userid },
-                    {
-                        $push: {
-                            items: {
-                                product_Id: req.body.productId,
-                                quantity: req.body.quantity,
-                                price: product.price,
-                                totalPrice: totalPrice
-                            }
-                        }
-                    }
-                )
 
+                const cartData = new cartModel({
+                    userId: req.session.userid,
+                    items: [{
+                        product_Id: new mongoose.Types.ObjectId(productId),
+                        quantity: req.body.quantity,
+                        price: product.price,
+                        totalPrice: itemPrice
+                    }]
+                })
+
+                await cartData.save()
             }
-
-        } else {
-
-
-            // don't have cart so we create
-            let itemPrice = product.price
-
-            if (product.offer) {
-                const { percentage } = product.offer;
-                itemPrice -= (itemPrice * percentage) / 100;
-            }
-
-            // Check if there's an offer on the category
-            else if (product.category.offer) {
-                const { percentage } = product.category.offer;
-                itemPrice -= (itemPrice * percentage) / 100;
-            }
-
-            const cartData = new cartModel({
-                userId: req.session.userid,
-                items: [{
-                    product_Id: new mongoose.Types.ObjectId(productId),
-                    quantity: req.body.quantity,
-                    price: product.price,
-                    totalPrice: itemPrice
-                }]
-            })
-
-            await cartData.save()
+            res.json({ success: true })
         }
-        res.json({ success: true })
     } catch (error) {
         console.log(error.message);
     }
@@ -220,7 +223,7 @@ const loadCheckout = async (req, res) => {
     try {
 
 
-        const { userid} = req.session;
+        const { userid } = req.session;
 
         const { coupon } = req.query
 
@@ -270,7 +273,7 @@ const loadCheckout = async (req, res) => {
 
 
                 total += Math.floor(itemPrice) * product.quantity;
-                
+
             });
 
 
@@ -355,7 +358,7 @@ const qtyChanges = async (req, res) => {
 
         const cartProduct = items.find(
             (product) => product.product_Id.toString() === productId);
-     
+
         if (count == 1) {
 
             // console.log(cartProduct.quantity);
@@ -386,7 +389,7 @@ const qtyChanges = async (req, res) => {
                         }
                     }
                 );
-               
+
                 res.json({ success: true });
             } else {
                 res.json({

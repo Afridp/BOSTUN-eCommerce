@@ -1,0 +1,17 @@
+<%- include('./layouts/header.ejs') -%>
+
+
+    <%- include('./layouts/navbar.ejs') -%>
+    <h1>Welcome to Your Wallet</h1>
+    <p>Your current balance: $<%= walletData.balance %></p>
+  
+    <h2>Transaction History</h2>
+    <ul>
+      <% walletData.transactions.forEach((transaction, index) => { %>
+        <li><%= transaction.description %> - $<%= transaction.amount %></li>
+      <% }); %>
+    </ul>
+
+<%- include('./layouts/footerNavbar.ejs') -%>
+
+<%- include('./layouts/footer.ejs') -%>

@@ -285,131 +285,115 @@ const homeLoad = async (req, res) => {
 
 const shopLoad = async (req, res) => {
     try {
-        // const categories = await catModel.find({ list: true })
+        let { selectedCategories, selectedSize, selectedColors, searchInput, pageno, minPrice, maxPrice } = req.body
 
-        // const product = await productModel.find({ list: true })
-        // const { userid } = req.session
-        // const user = await userModel.findOne({ _id: userid, })
-        // const { cat, search } = req.query
-        // console.log(req.body,"this body");
-        const { selectedCategories, selectedSize, selectedColors, searchInput } = req.body
-        // const condition = { list: true }
-
-
-        if (selectedCategories || selectedColors || selectedSize || searchInput) {
-            // console.log(selectedColors);
-
+        // console.log(pageno,"haaai");
+        if (selectedCategories || selectedColors || selectedSize || searchInput || pageno || minPrice || maxPrice) {
             if (selectedCategories) {
                 req.session.category = selectedCategories
-                // console.log(req.session.category);
-
             }
-            // if (search) {
-            //     condition.name = { $regex: search, $options: "i" };
-            // }
+
             if (selectedSize) {
-                isSizeIn = await productModel.find({ size: selectedSize })
+                let isSizeIn = await productModel.find({ size: selectedSize })
                 if (isSizeIn) {
                     req.session.size = selectedSize
                 }
-
             }
             if (selectedColors) {
-                isColorIn = await productModel.find({ color: selectedColors })
+                let isColorIn = await productModel.find({ color: selectedColors })
                 if (isColorIn) {
                     req.session.color = selectedColors
                 }
             }
             if (searchInput) {
-
-                isSerchIn = await productModel.find({ name: { $regex: searchInput, $options: 'i' } })
+                let isSerchIn = await productModel.find({ name: { $regex: searchInput, $options: 'i' } })
                 if (isSerchIn) {
-                    console.log(isSerchIn);
+
                     req.session.searchInput = searchInput
                 }
             }
+            if (pageno) {
+                req.session.pageno = pageno
+            }
 
+            if (minPrice && maxPrice) {
+                let productsInRange = await productModel.find({
+                    price: {
+                        $gte: minPrice, // Greater than or equal to minPrice
+                        $lte: maxPrice, // Less than or equal to maxPrice
+                    },
+                });
+                if (productsInRange) {
+                    req.session.minPrice = minPrice
+                    req.session.maxPrice = maxPrice
+                }
+            }
             res.json({ success: true })
-
         } else {
-            // console.log("haaai");
-
-
-
-            // const product = await productModel.find({ list: true })
             const condition = { list: true }
-            // console.log(req.session,'this is session');
+
+
+
+
+            let skip = 0
             if (req.session) {
-
-                const { color, size, category, searchInput } = req.session
-
+                const { color, size, category, searchInput, pageno, minPrice, maxPrice } = req.session
+             
                 if (searchInput) {
-                    // isSearchIn = await productModel.find({name : {$regex : searchInput ,$options:'i'} })
-                    // if(isSearchIn){
+
                     condition.name = { $regex: searchInput, $options: 'i' }
                 }
                 delete req.session.searchInput;
-
-
                 if (category) {
                     if (category === 'All') {
                         condition.category
                     } else {
-                        // console.log("hellllooooooooosdkjfhauklsdgfkjhasdfg");
-                        // let categorys = category.join(', ') 
                         condition.category = category
                     }
                 }
                 delete req.session.category;
-
-
                 if (color) {
-                    // let arrayAsString = color
                     let queryConditions = { $in: color };
-                    isColorIn = await productModel.find({ color: queryConditions })
-                    // console.log(color,"this is color");
+                    let isColorIn = await productModel.find({ color: queryConditions })
                     if (isColorIn) {
                         condition.color = queryConditions
                     }
                 }
-
+            
                 delete req.session.color
-
                 if (size) {
-                    // let arrayAsString = size
-                    // console.log(arrayAsString,"asdhfjkasdhfkjlasdhfkjl;sdfja;klsdf");
                     let queryConditions = { $in: size };
-
-                    isSizeIn = await productModel.find({ size: queryConditions })
-                    // console.log(isSizeIn,"this is in or not");
+                    let isSizeIn = await productModel.find({ size: queryConditions })
                     if (isSizeIn) {
                         condition.size = queryConditions
                     }
                 }
                 delete req.session.size
+     
+                if (minPrice && maxPrice) {
+                    let queryConditions = {
+                        $gte: minPrice, // Greater than or equal to minPrice
+                        $lte: maxPrice // Less than or equal to maxPrice
+                    }
+                    let isPrizeIn = await productModel.find({ price: queryConditions })
+                    if (isPrizeIn) {
+                        condition.price = queryConditions
+                    }
+                }
+                delete req.session.minPrice
+                delete req.session.maxPrice
+                if (pageno) {
+                    let page = (pageno == undefined || pageno === 1) ? 1 : pageno
+                    skip = (page === 1) ? 0 : (page - 1) * 6;
+                }
+                delete req.session.pageno
+
             }
+
+
 
             const { userid } = req.session
             const user = await userModel.findOne({ _id: userid })
-            // const { cat, search } = req.query
-            // const { selectedCategories, selectedSize, selectedColors } = req.body
-
-            // console.log(size)
-            // if (cat) {
-            //     condition.category = cat
-            // }
-            // if (search) {
-            //     condition.name = { $regex: search, $options: "i" };
-            // }
-            // if (size) {
-            //     isSizeIn = await productModel.find({ size: size })
-            //     if (isSizeIn) {
-            //         condition.size = size
-            //     }
-
-            // }
-            // console.log(condition,"this is condition");
-
             const products = await productModel.find(condition).populate({
                 path: 'offer',
                 match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
@@ -419,21 +403,23 @@ const shopLoad = async (req, res) => {
                     path: 'offer',
                     match: { startingDate: { $lte: new Date() }, expiryDate: { $gte: new Date() } }
                 }
-            })
-            const productsCount = await productModel.find({ list: true }).populate("category").count()
+            }).skip(skip).limit(6)
+
+            const productsCount = await productModel.find(condition).populate("category").count()
+            let totalPages = Math.ceil(productsCount / 6)
             const count = await productModel.find(condition).populate("category").count()
             const categories = await catModel.find({ list: true })
-            let currentPage = 'shop';
+            const currentPage = 'shop';
             res.render('shop',
                 {
                     userid, user,
                     categories,
                     products,
                     currentPage,
-                    count, productsCount
+                    count, productsCount,
+                    totalPages
                 })
         }
-
     } catch (error) {
         console.log(error.message);
     }
@@ -854,31 +840,31 @@ const deleteFromWishlist = async (req, res) => {
 }
 const cancelOrder = async (req, res) => {
     try {
-      const { orderId, cancelReason } = req.body;
-      let status1 = "waiting for approval";
-      const cancelOrder = await orderModel.updateOne(
-        { _id: orderId },
-        { $set: { status: status1, cancelReason: cancelReason } }
-      );
-      if (cancelOrder) {
-        const orders = await orderModel.findById({ _id: orderId });
-        for (let order of orders.items) {
-          await productModel.updateOne(
-            { _id: order.product },
-            { $inc: { quantity: order.quantity } }
-          );
+        const { orderId, cancelReason } = req.body;
+        let status1 = "waiting for approval";
+        const cancelOrder = await orderModel.updateOne(
+            { _id: orderId },
+            { $set: { status: status1, cancelReason: cancelReason } }
+        );
+        if (cancelOrder) {
+            const orders = await orderModel.findById({ _id: orderId });
+            for (let order of orders.items) {
+                await productModel.updateOne(
+                    { _id: order.product },
+                    { $inc: { quantity: order.quantity } }
+                );
+            }
+            res.status(201).json({
+                message: "Successfully updated and modified",
+                status: status1,
+            });
+        } else {
+            res.status(400).json({ message: "Seems like an error" });
         }
-        res.status(201).json({
-          message: "Successfully updated and modified",
-          status: status1,
-        });
-      } else {
-        res.status(400).json({ message: "Seems like an error" });
-      }
     } catch (error) {
         console.log(error.message);
     }
-  };
+};
 
 
 

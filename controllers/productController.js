@@ -148,6 +148,8 @@ const productEditUpdated = async (req, res) => {
             product_price,
             product_category,
             product_description,
+            product_color,
+            product_size,
         } = req.body;
         console.log(req.files,"this is file");
         
@@ -177,6 +179,8 @@ const productEditUpdated = async (req, res) => {
                         quantity: product_quantity,
                         category: product_category,
                         description: product_description,
+                        size:product_size,
+                        color:product_color,
                         image: imageArra,
                     }
                 })
@@ -191,6 +195,8 @@ const productEditUpdated = async (req, res) => {
                         price: product_price,
                         description: product_description,
                         category: product_category,
+                        size:product_size,
+                        color:product_color
                     }
                 }
             )

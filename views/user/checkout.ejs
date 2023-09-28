@@ -175,52 +175,7 @@
      
 
 
-                                <% if (coupon) { %>
-                                    <h5 class="mt-3 mb-5 mx-3">
-                                        <span style="color: green;"><%= coupon %></span> Coupon Applied
-                                        <a href="#" onclick="remove()" class="text-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </h5>
-                                    
-                                    <input type="hidden" name="code" id="code" value="<%= coupon %>">
-                                    <% } else { %>
-
-                                        <div id="couponReloadDiv">
-
-                                            <div class="cart__discount">
-                                                <h6>Discount codes</h6>
-                                                <form>
-                                                    <input type="text" placeholder="Coupon code" name="coupon">
-                                                    <button type="submit">Apply</button>
-                                                </form>
-                                                <input type="hidden" name="code" id="code" value="<%= coupon %>">
-                                            </div>
-                                            
-                                            <% if(coupons) {%>
-                                            <div class="text-center">
-                                                <div class="dropdown">
-                                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="codeDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        Coupons for you
-                                                    </button>
-                                                    
-                                                    <div class="dropdown-menu sub-menu" aria-labelledby="dropdownMenuButton">
-
-                                                        <% for (const i in coupons) { %>
-                                                            <a class="dropdown-item" href="#"><%= coupons[i].code %></a>
-                                                        <% } %>
-                                                    </div>
-                                                </div>
-                                                
-                                                
-                                            </div>
-                                            <% } %>
-                                     
-
-
-
-                                        <% } %>
-
+                               
 
 
 
@@ -276,6 +231,56 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <% if (coupon) { %>
+                                                <h5 class="mt-3 mb-5 mx-3">
+                                                    <span style="color: green;"><%= coupon %></span> Coupon Applied
+                                                    <a href="#" onclick="remove()" class="text-danger">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </h5>
+                                                
+                                                <input type="hidden" name="code" id="code" value="<%= coupon %>">
+                                                <% } else { %>
+            
+                                                    <div id="couponReloadDiv">
+            
+                                                        <div class="cart__discount">
+                                                            <h6>Discount codes</h6>
+                                                            <form>
+                                                                <input type="text" placeholder="Coupon code" name="coupon">
+                                                                <button type="submit">Apply</button>
+                                                            </form>
+                                                            <input type="hidden" name="code" id="code" value="<%= coupon %>">
+                                                        </div>
+                                                        
+                                                        <% if(coupons) {%>
+                                                            <div class="text-center">
+                                                                <div class="dropdown">
+                                                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="codeDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                        Coupons for you
+                                                                    </button>
+                                                                    
+                                                                    <div class="dropdown-menu sub-menu" aria-labelledby="dropdownMenuButton">
+                
+                                                                        <% for (const i in coupons) { %>
+                                                                            <a class="dropdown-item" href="#"><%= coupons[i].code %></a>
+                                                                        <% } %>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                
+                                                            </div>
+                                                         
+                                                        <% } %>
+                                                        
+                                                        
+                                                 
+            
+            
+            
+                                                    <% } %>
+            
                                             <div class="cart__total">
                                                 <h6>Summary</h6>
                                                 <ul>

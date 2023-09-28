@@ -90,25 +90,35 @@
 
 
         <script>
-          const deleteAddress = async (addId) => {
-            try {
-              event.preventDefault();
-              swal({
-                title: "Remove Address",
-                text: "Are you sure you want to remove this address?",
-                icon: "warning",
-                buttons: ["Cancel", "OK"],
-                dangerMode: true,
-              }).then(async (willDelete) => {
-                if (willDelete) {
+          function deleteAddress(addId) {
+
+            event.preventDefault();
+            console.log("hiii");
+
+            swal.fire({
+              title: "Remove Address",
+              text: "Are you sure you want to remove this address?",
+              icon: "warning",
+              buttons: ["Cancel", "OK"],
+              dangerMode: true,
+            }).then(async (willDelete) => {
+              if (willDelete) {
+                try {
                   let addressId = await axios.put("/deleteAddress", { addId });
                   if (addressId) {
                     document.getElementById("deleteLi").style.display = "none";
+                  } else {
+                    // Show an error message if the deletion operation fails
+                    swal("Error", "Failed to delete the address.", "error");
                   }
+                } catch (error) {
+                  // Handle any other errors that may occur
+                  console.error(error.message);
+                  swal("Error", "An error occurred while deleting the address.", "error");
                 }
-              });
-            } catch (error) {
-              console.log(error.message);
-            }
+              }
+            });
+
           };
+
         </script>

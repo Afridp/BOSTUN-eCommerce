@@ -2,6 +2,9 @@
 
     <%- include('./layouts/navbar.ejs') -%>
 
+
+
+
         <!-- Breadcrumb Section Begin -->
         <section class="breadcrumb-option">
             <div class="container">
@@ -175,6 +178,25 @@
 
                                     </div>
 
+                                    <div class="card">
+                                        <div class="card-heading">
+                                            <a data-toggle="collapse" data-target="#collapsePrice">Price Range</a>
+                                        </div>
+                                        <div id="collapsePrice" class="collapse show" data-parent="#accordionExample">
+                                            <div class="card-body">
+                                                <div class="shop__sidebar__price">
+                                                    <label for="minPrice">Min Price:</label>
+                                                    <input type="number" id="minPrice" placeholder="Min Price">
+                                                    <br>
+                                                    <label for="maxPrice">Max Price:</label>
+                                                    <input type="number" id="maxPrice" placeholder="Max Price">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
                                     <div class="apply-button">
                                         <button id="applyFiltersButton" class="apply-button-style">Apply
                                             Filters</button>
@@ -187,77 +209,91 @@
 
                     </div>
 
-                    <div class="col-lg-9" id="reloadDiv">
-                        <div class="shop__product__option">
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-sm-6">
-                                    <div class="shop__product__option__left">
-                                        <p>Showing <%= count %> of <%=productsCount %> results</p>
-                                    </div>
-                                </div>
-                                <!-- <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="shop__product__option__right">
-                                    <p>Sort by Price:</p>
-                                    <select>
-                                        <option value="">Low To High</option>
-                                        <option value="">₹0 - ₹55</option>
-                                        <option value="">₹55 - ₹100</option>
-                                    </select>
-                                </div>
-                            </div> -->
-                            </div>
-                        </div>
-
-
-
-                        <div class="row">
-                            <% products.forEach(product=> { %>
-                                <div class="col-lg-4 col-md-6 col-sm-6">
-
-                                    <div class="product__item">
-
-
-                                        <a href="/productDetails?id=<%= product._id %>">
-                                            <img src="/images/<%= product.image[1] %>" alt="">
-
-                                        </a>
-
-
-                                        <div class="product__item__text">
-                                            <h6>
-                                                <%= product.name %>
-                                            </h6>
-                                            
-                                            <% if ( product.offer){ var discount = (product.price * product.offer.percentage / 100).toFixed(0)  } else if ( product.category.offer ) {var discount = ( product.price * product.category.offer.percentage / 100 ).toFixed(0) } %>
-                                            
-                                            <% if ( product.offer ) { %>
-                                                <p class="mb-0"><del>₹ <%= product.price %></del></p>
-                                                <h5 class="mb-0">₹ <%= product.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
-                                            <%} else if ( product.category.offer ) { %>
-                                                <p class="mb-0"><del>₹ <%= product.price %></del></p>
-                                                <h5 class="mb-0 fw-700">₹ <%= product.price - discount %> <span class="badge badge-success"> Save ₹ <%= discount %> </span></h5>
-                                                <% } else { %>
-                                                <h5>₹ <%= product.price %> </h5>
-                                            <% } %>
-                                          
-
-
+                    <div class="col-lg-9">
+                        <div class="col-lg-12" id="reloadDiv">
+                            <div class="shop__product__option">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="shop__product__option__left">
+                                            <p>Showing <%= count %> of <%=productsCount %> results</p>
                                         </div>
                                     </div>
+                                    <!-- <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="shop__product__option__right">
+                                        <p>Sort by Price:</p>
+                                        <select>
+                                            <option value="">Low To High</option>
+                                            <option value="">₹0 - ₹55</option>
+                                            <option value="">₹55 - ₹100</option>
+                                        </select>
+                                    </div>
+                                </div> -->
                                 </div>
-                                <% }) %>
-                        </div>
+                            </div>
 
 
-                        <!-- pagination area -->
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="product__pagination">
-                                    <a class="active" href="#">1</a>
-                                    <a href="#">2</a>
-                                    <a href="#">3</a>
-                                    <span>...</span>
-                                    <a href="#">21</a>
+
+                            <div class="row">
+                                <% products.forEach(product=> { %>
+                                    <div class="col-lg-4 col-md-6 col-sm-6">
+
+                                        <div class="product__item">
+
+
+                                            <a href="/productDetails?id=<%= product._id %>">
+                                                <img src="/images/<%= product.image[1] %>" alt="">
+
+                                            </a>
+
+
+                                            <div class="product__item__text">
+                                                <h6>
+                                                    <%= product.name %>
+                                                </h6>
+
+                                                <% if ( product.offer){ var discount=(product.price *
+                                                    product.offer.percentage / 100).toFixed(0) } else if (
+                                                    product.category.offer ) {var discount=( product.price *
+                                                    product.category.offer.percentage / 100 ).toFixed(0) } %>
+
+                                                    <% if ( product.offer ) { %>
+                                                        <p class="mb-0"><del>₹ <%= product.price %></del></p>
+                                                        <h5 class="mb-0">₹ <%= product.price - discount %> <span
+                                                                    class="badge badge-success"> Save ₹ <%= discount %>
+                                                                </span></h5>
+                                                        <%} else if ( product.category.offer ) { %>
+                                                            <p class="mb-0"><del>₹ <%= product.price %></del></p>
+                                                            <h5 class="mb-0 fw-700">₹ <%= product.price - discount %>
+                                                                    <span class="badge badge-success"> Save ₹ <%=
+                                                                            discount %>
+                                                                    </span></h5>
+                                                            <% } else { %>
+                                                                <h5>₹ <%= product.price %>
+                                                                </h5>
+                                                                <% } %>
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                            </div>
+
+
+                            <!-- pagination area -->
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="product__pagination">
+
+
+                                        <% for (let i=1 ; i <=totalPages ; i++) { %>
+                                            <a href="#" onclick="pagination('<%= i %>')">
+                                                <%= i %>
+                                            </a>
+                                            <% } %>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -272,90 +308,23 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
-                    // // Assuming you have an array to store the selected values
-                    // let selectedCategories = [];
 
-                    // // Get all the category checkboxes
-                    // const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+   
 
-                    // // Loop through the checkboxes and check for the checked ones
-                    // categoryCheckboxes.forEach(checkbox => {
-                    //     if (checkbox.checked) {
-                    //         selectedCategories.push(checkbox.value);
-                    //     }
-                    // });
+                    function pagination(pageno) {
 
-
-                    // // Assuming you have an array to store the selected values
-                    // let selectedSize = [];
-
-                    // // Get all the category checkboxes
-                    // const sizeCheckboxes = document.querySelectorAll('.category-checkbox');
-
-                    // // Loop through the checkboxes and check for the checked ones
-                    // sizeCheckboxes.forEach(checkbox => {
-                    //     if (checkbox.checked) {
-                    //         selectedSize.push(checkbox.value);
-                    //     }
-                    // });
-
-
-
-                    // // Assuming you have an array to store the selected values
-                    // let selectedColor = [];
-
-                    // // Get all the category checkboxes
-                    // const colorCheckboxes = document.querySelectorAll('.category-checkbox');
-
-                    // // Loop through the checkboxes and check for the checked ones
-                    // colorCheckboxes.forEach(checkbox => {
-                    //     if (checkbox.checked) {
-                    //         selectedColor.push(checkbox.value);
-                    //     }
-                    // });
-
-                    const searchForm = document.getElementById('searchForm')
-                    searchForm.addEventListener('submit', function (event) {
-                        event.preventDefault(); // Prevent the form from submitting the traditional way
-                        // Your search logic will go here
-                        const searchInput = document.getElementById('searchInput').value
-                        console.log(searchInput)
-                        applyFilters(null,null,null,searchInput)
-                    });
-                    // console.log(searchForm);
-                    document.getElementById('applyFiltersButton').addEventListener('click', function () {
-                        // Get the selected category checkbox
+                       
                         const selectedCategoryCheckbox = document.querySelector('input[name="selectedCategory"]:checked');
                         const selectedCategories = selectedCategoryCheckbox ? selectedCategoryCheckbox.value : null;
-                        // console.log(selectedCategories);
 
-                        // Get all the checked size checkboxes
                         const selectedSizeCheckboxes = document.querySelectorAll('.size-checkbox:checked');
                         const selectedSize = Array.from(selectedSizeCheckboxes).map(checkbox => checkbox.value);
-                        // console.log(selectedSize);
 
-                        // Get all the checked color checkboxes
                         const selectedColorCheckboxes = document.querySelectorAll('.color-checkbox:checked');
                         const selectedColors = Array.from(selectedColorCheckboxes).map(checkbox => checkbox.value);
-                        // console.log(selectedColors);
 
-                        // Call your function and pass the selected categories, sizes, and colors
-                        if (selectedCategories || selectedColors.length > 0 || selectedSize.length > 0) {
-                            applyFilters(selectedCategories, selectedSize, selectedColors);
-                        }
-                    });
-
-                    function applyFilters(selectedCategories, selectedSize, selectedColors, searchInput) {
-                        // Swal.fire({
-                        //     title: 'Are you sure?',
-                        //     text: "You want to delete!",
-                        //     icon: 'warning',
-                        //     showCancelButton: true,
-                        //     confirmButton: '#3085d6',
-                        //     cancelButton: '#d33',
-                        //     confirmButtonText: 'Yes, remove!'
-                        // }).then((result) => {
-                        //     if (result.isConfirmed) {
+                        const minPrice = document.getElementById("minPrice").value
+                        const maxPrice = document.getElementById("maxPrice").value
                         $.ajax({
 
                             url: '/shop',
@@ -363,8 +332,7 @@
                                 selectedCategories,
                                 selectedSize,
                                 selectedColors,
-                                searchInput
-
+                                pageno,minPrice,maxPrice
                             },
                             method: 'post',
                             success: (response) => {
@@ -372,14 +340,92 @@
 
                                     $('#reloadDiv').load('/shop #reloadDiv'
 
-                                        // Swal.fire({
-                                        //     title: 'Deleted!',
-                                        //     text: 'Your item has been deleted.',
-                                        //     icon: 'success',
-                                        //     timer: 1500,
-                                        //     showConfirmButton: false
-                                        // });
-                                        // }
+                                    );
+                                }
+                            },
+
+                            error: (error) => {
+
+                                console.log(error);
+
+                            }
+                        });
+
+
+                    }
+
+
+
+
+                    // for applying search
+                    const searchForm = document.getElementById('searchForm')
+                    searchForm.addEventListener('submit', function (event) {
+                        event.preventDefault();
+
+                        const selectedCategoryCheckbox = document.querySelector('input[name="selectedCategory"]:checked');
+                        const selectedCategories = selectedCategoryCheckbox ? selectedCategoryCheckbox.value : null;
+
+                        const selectedSizeCheckboxes = document.querySelectorAll('.size-checkbox:checked');
+                        const selectedSize = Array.from(selectedSizeCheckboxes).map(checkbox => checkbox.value);
+
+                        const selectedColorCheckboxes = document.querySelectorAll('.color-checkbox:checked');
+                        const selectedColors = Array.from(selectedColorCheckboxes).map(checkbox => checkbox.value);
+
+                        const minPrice = document.getElementById("minPrice").value
+                        const maxPrice = document.getElementById("maxPrice").value
+
+                        const searchInput = document.getElementById('searchInput').value
+                        applyFilters(selectedCategories, selectedSize, selectedColors, searchInput,minPrice,maxPrice)
+                    });
+
+
+
+
+
+                    // for applying filter
+                    document.getElementById('applyFiltersButton').addEventListener('click', function () {
+
+                        const selectedCategoryCheckbox = document.querySelector('input[name="selectedCategory"]:checked');
+                        const selectedCategories = selectedCategoryCheckbox ? selectedCategoryCheckbox.value : null;
+
+                        const selectedSizeCheckboxes = document.querySelectorAll('.size-checkbox:checked');
+                        const selectedSize = Array.from(selectedSizeCheckboxes).map(checkbox => checkbox.value);
+
+                        const selectedColorCheckboxes = document.querySelectorAll('.color-checkbox:checked');
+                        const selectedColors = Array.from(selectedColorCheckboxes).map(checkbox => checkbox.value);
+
+
+                        const minPrice = document.getElementById("minPrice").value;
+                        const maxPrice = document.getElementById("maxPrice").value
+
+                   
+                    
+
+                        if (selectedCategories || selectedColors.length > 0 || selectedSize.length > 0 || minPrice || maxPrice) {
+                            applyFilters(selectedCategories, selectedSize, selectedColors,null,minPrice,maxPrice);
+                        }
+                    });
+
+
+
+                    function applyFilters(selectedCategories, selectedSize, selectedColors, searchInput,minPrice,maxPrice) {
+
+                        $.ajax({
+
+                            url: '/shop',
+                            data: {
+                                selectedCategories,
+                                selectedSize,
+                                selectedColors,
+                                searchInput,
+                                minPrice,maxPrice
+                            },
+                            method: 'post',
+                            success: (response) => {
+                                if (response.success) {
+
+                                    $('#reloadDiv').load('/shop #reloadDiv'
+
                                     );
                                 }
                             },
@@ -393,71 +439,7 @@
                     }
 
 
-                        // Here you can use the selectedCategories and selectedColors
-                        // to perform your filter logic and update content
-                        // For example, you can console.log the selected values
-                        // console.log('Selected Categories:', selectedCategories);
-                        // console.log('selectedSize:',selectedSize);
-                        // console.log('Selected Colors:', selectedColors);
 
-                        // Add your filter logic here
 
 
                 </script>
-
-                <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseTwo">Branding</a>
-                                    </div>
-                                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__brand">
-                                                <ul>
-                                                    <li><a href="#">Louis Vuitton</a></li>
-                                                    <li><a href="#">Chanel</a></li>
-                                                    <li><a href="#">Hermes</a></li>
-                                                    <li><a href="#">Gucci</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-
-                <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
-                                    </div>
-                                    <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__price">
-                                                <ul>
-                                                    <li><a href="#">₹0.00 -   ₹50.00</a></li>
-                                                    <li><a href="#">₹50.00 -  ₹100.00</a></li>
-                                                    <li><a href="#">₹100.00 - ₹150.00</a></li>
-                                                    <li><a href="#">₹150.00 - ₹200.00</a></li>
-                                                    <li><a href="#">₹200.00 - ₹250.00</a></li>
-                                                    <li><a href="#">250.00+</a></li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
-
-                <!-- <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseSix">Tags</a>
-                                    </div>
-                                    <div id="collapseSix" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <div class="shop__sidebar__tags">
-                                                <a href="#">Product</a>
-                                                <a href="#">Bags</a>
-                                                <a href="#">Shoes</a>
-                                                <a href="#">Fashio</a>
-                                                <a href="#">Clothing</a>
-                                                <a href="#">Hats</a>
-                                                <a href="#">Accessories</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->

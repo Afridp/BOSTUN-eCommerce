@@ -3,97 +3,145 @@
     <%- include('./layouts/sidebar.ejs') -%>
 
         <%- include('./layouts/topbar.ejs') -%>
+            <style>
+              /* Style for the tooltip container */
+.tooltip {
+  position: absolute;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 10px;
+  max-width: 200px;
+  z-index: 1;
+  display: none; /* Initially hidden */
+  top: 100%; /* Position below the link */
+  left: 0; /* Align with the link */
+}
 
+/* Style to position the tooltip above the link */
+.tooltip::before {
+  content: "";
+  position: absolute;
+  bottom: -10px; /* Adjust to position above or below the link */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #f9f9f9 transparent transparent transparent;
+}
+
+            </style>
             <!-- card-header end// -->
             <section class="content-main">
                 <div class="content-header">
                     <h2 class="">Orders</h2>
                 </div>
                 <div class="card mb-4">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="myTable" class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#ID</th>
-                                    <th scope="col">User Name</th>
-                                    <th scope="col">Payment Method</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col" class="t">Orders</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="myTable" class="table table-hover">
                                 <% for(let order=0;order<orders.length;order++){%>
+                                    <thead>
+                                        <tr>
+                                            <th>#ID</th>
+                                            <th scope="col">User Name</th>
+                                            <th scope="col">Payment Method</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col" class="t">Orders</th>
+                                            <th scope="col">Status</th>
+                                            <% if( orders[order].status=="waiting for approval" ) {%>
+                                                <th scope="col">Reason</th>
+                                                <% } %>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
 
-                                    <tr>
-                                        <td>
-                                            <%= order+1 %>
-                                        </td>
-                                        <td><b>
-                                                <%= orders[order].user.name %>
-                                            </b></td>
-                                        <td>
-                                            <%= orders[order].payment %>
-                                        </td>
-                                        <td>
-                                            <%= orders[order].totalAmount %>
-                                        </td>
-                                        <!-- <td><span class="badge rounded-pill alert-warning">
+
+                                        <tr>
+                                            <td>
+                                                <%= order+1 %>
+                                            </td>
+                                            <td><b>
+                                                    <%= orders[order].user.name %>
+                                                </b></td>
+                                            <td>
+                                                <%= orders[order].payment %>
+                                            </td>
+                                            <td>
+                                                <%= orders[order].totalAmount %>
+                                            </td>
+                                            <!-- <td><span class="badge rounded-pill alert-warning">
                                             <%= orders[order].status %>
                                         </span></td> -->
-                                        <td>
-                                            <%= orders[order].date %>
-                                        </td>
-                                        <td>
-                                            <a href="#" onclick="showModal('<%= orders[order]._id %>')"
-                                                data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                                class="btn btn-md rounded font-sm show-items">Items</a>
+                                            <td>
+                                                <%= orders[order].date %>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showModal('<%= orders[order]._id %>')"
+                                                    data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                                                    class="btn btn-md rounded font-sm show-items">Items</a>
 
 
-                                        </td>
-                                        <td>
-                                            <!-- <div class="dropdown">
+                                            </td>
+                                            <td>
+                                                <!-- <div class="dropdown">
                                                 <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a> -->
 
-                                            <select onchange="orderStatus(this.value, '<%= orders[order]._id %>')"
-                                                class="form-select statusSelector" name="statusSelector"
-                                                id="statusSelector<%= orders[order]._id %>">
-                                                <option value="canceled" <% if(orders[order].status==='canceled' ){ %>
-                                                    selected
-                                                    <% } %>>Canceled
-                                                </option>
-                                                <option value="placed" <% if(orders[order].status==='placed' ){ %>
-                                                    selected<% } %>>Placed</option>
-                                                <option value="pending" <% if(orders[order].status==='pending' ){ %>
-                                                    selected
-                                                    <% } %>>Pending
-                                                </option>
-                                                <option value="delivered" <% if(orders[order].status==='delivered' ){ %>
-                                                    selected<% } %>>Delivered
-                                                </option>
-                                                <option value="dispatched" <% if(orders[order].status==='dispatched' ){
-                                                    %>
-                                                    selected<% } %>>Dispatched
-                                                </option>
-                                                <option value="returned" <% if(orders[order].status==='returned' ){ %>
-                                                    selected
-                                                    <% } %>>Returned
-                                                </option>
-                                            </select>
-                                        </td>
-                                        <!-- </div> -->
-                                        <!-- dropdown //end -->
-                                    </tr>
+                                                <select onchange="orderStatus(this.value, '<%= orders[order]._id %>')"
+                                                    class="form-select statusSelector" name="statusSelector"
+                                                    id="statusSelector<%= orders[order]._id %>">
+                                                    <option value="canceled" <% if(orders[order].status==='canceled' ){
+                                                        %>
+                                                        selected
+                                                        <% } %>>Canceled
+                                                    </option>
+                                                    <option value="placed" <% if(orders[order].status==='placed' ){ %>
+                                                        selected<% } %>>Placed</option>
+                                                    <option value="pending" <% if(orders[order].status==='pending' ){ %>
+                                                        selected
+                                                        <% } %>>Pending
+                                                    </option>
+                                                    <option value="delivered" <% if(orders[order].status==='delivered'
+                                                        ){ %>
+                                                        selected<% } %>>Delivered
+                                                    </option>
+                                                    <option value="dispatched" <% if(orders[order].status==='dispatched'
+                                                        ){ %>
+                                                        selected<% } %>>Dispatched
+                                                    </option>
+                                                    <option value="returned" <% if(orders[order].status==='returned' ){
+                                                        %>
+                                                        selected
+                                                        <% } %>>Returned
+                                                    </option>
+                                                    <option value="waitingForApproval" <% if
+                                                        (orders[order].status==='waiting for approval' ) { %> selected
+                                                        <% } %>>
+                                                            req:Canceled
+                                                    </option>
+
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <% if (orders[order].status === "waiting for approval") { %>
+                                                  <a href="#" class="see-why-link">See Why</a>
+                                                  <div class="tooltip">
+                                                    <%= orders[order].cancelreason %>
+                                                  </div>
+                                                <% } %>
+                                              </td>
+                                              
+                                            <!-- </div> -->
+                                            <!-- dropdown //end -->
+                                        </tr>
+                                    </tbody>
                                     <% } %>
-                            </tbody>
-                        </table>
+                            </table>
+                        </div>
+                        <!-- table-responsive //end -->
                     </div>
-                    <!-- table-responsive //end -->
-                </div>
-                <!-- card-body end// -->
+                    <!-- card-body end// -->
                 </div>
                 <!-- card end// -->
                 <!-- <div class="pagination-area mt-15 mb-50">
@@ -110,7 +158,7 @@
                         </ul>
                     </nav>
                 </div> -->
-            </div>
+                </div>
             </section>
 
 
@@ -163,6 +211,22 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
+
+                    // Get references to the "See Why" links and tooltip containers
+                    const seeWhyLinks = document.querySelectorAll('.see-why-link');
+                    const tooltips = document.querySelectorAll('.tooltip');
+
+                    // Add a click event listener to each "See Why" link
+                    seeWhyLinks.forEach((seeWhyLink, index) => {
+                        seeWhyLink.addEventListener('click', function (event) {
+                            event.preventDefault();
+
+                            // Toggle the visibility of the corresponding tooltip
+                            const tooltip = tooltips[index];
+                            tooltip.style.display = tooltip.style.display === 'none' ? 'block' : 'none';
+                        });
+                    });
+
                     const orderStatus = async (status, orderId) => {
                         try {
                             const updatedStatus = await axios.patch('/admin/changeStatus', { status, orderId })
@@ -270,30 +334,30 @@
 
 
 
-                // // Add a click event listener to all buttons with the class 'show-items'
-                // $('.show-items').on('click', function () {
-                // // Get the order ID from the data attribute
-                // var orderId = $(this).data('orderid');
-                // console.log("helllolsdjkfhsjkdfh");
-                // console.log(orderId);
-                // // Use AJAX to fetch the order items
-                // $.ajax({
-                // url: '/admin/OrderItems', // Replace with your actual API endpoint
-                // method: 'GET',
-                // data: { orderId: orderId },
-                // success: function (response) {
-                // // Populate the modal with the order items
-                // var modalContent = $('#myModal .modal-content');
-                // modalContent.empty(); // Clear previous content
-                // modalContent.append(response);
+                    // // Add a click event listener to all buttons with the class 'show-items'
+                    // $('.show-items').on('click', function () {
+                    // // Get the order ID from the data attribute
+                    // var orderId = $(this).data('orderid');
+                    // console.log("helllolsdjkfhsjkdfh");
+                    // console.log(orderId);
+                    // // Use AJAX to fetch the order items
+                    // $.ajax({
+                    // url: '/admin/OrderItems', // Replace with your actual API endpoint
+                    // method: 'GET',
+                    // data: { orderId: orderId },
+                    // success: function (response) {
+                    // // Populate the modal with the order items
+                    // var modalContent = $('#myModal .modal-content');
+                    // modalContent.empty(); // Clear previous content
+                    // modalContent.append(response);
 
-                // // Display the modal
-                // $('#myModal').css('display', 'block');
-                // },
-                // error: function (error) {
-                // console.error('Error fetching order items:', error);
-                // }
-                // });
-                // });
+                    // // Display the modal
+                    // $('#myModal').css('display', 'block');
+                    // },
+                    // error: function (error) {
+                    // console.error('Error fetching order items:', error);
+                    // }
+                    // });
+                    // });
 
                 </script>
