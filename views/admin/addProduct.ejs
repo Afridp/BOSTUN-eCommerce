@@ -59,18 +59,22 @@
                                             <div class="mb-4">
                                                 <label class="form-label">Size</label>
                                                 <div class="row gx-2">
-                                                    <select class="form-select" id="product_size" name="product_size[]" multiple required>
-                                                        <!-- <option value="" selected disabled>Select a size</option> -->
-                                                        <option value="XS">XS</option>
-                                                        <option value="S">S</option>
-                                                        <option value="M">M</option>
-                                                        <option value="L">L</option>
-                                                        <option value="XL">XL</option>
-                                                        <!-- Add more size options as needed -->
-                                                    </select>
+                                                    <!-- Replace the select element with checkboxes -->
+                                                    <input type="checkbox" id="sizeXS" name="product_size[]" value="XS">
+                                                    <label for="sizeXS">XS</label><br>
+                                                    <input type="checkbox" id="sizeS" name="product_size[]" value="S">
+                                                    <label for="sizeS">S</label><br>
+                                                    <input type="checkbox" id="sizeM" name="product_size[]" value="M">
+                                                    <label for="sizeM">M</label><br>
+                                                    <input type="checkbox" id="sizeL" name="product_size[]" value="L">
+                                                    <label for="sizeL">L</label><br>
+                                                    <input type="checkbox" id="sizeXL" name="product_size[]" value="XL">
+                                                    <label for="sizeXL">XL</label><br>
+                                                    <!-- Add more size options as needed -->
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                         
                                     </div>
 

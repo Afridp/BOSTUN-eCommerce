@@ -18,6 +18,7 @@ const fileStorageEngine = multer.diskStorage({
 
 });
 
-const upload = multer({ storage: fileStorageEngine });
+const maxSize = 20 * 1024 * 1024;
+const upload = multer({ storage: fileStorageEngine, limits : { fileSize : maxSize } });
 
 module.exports = upload;    

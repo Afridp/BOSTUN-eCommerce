@@ -9,7 +9,7 @@ dotenv.config()
 
 const credentials = {
     adminEmail: process.env.admin_email,
-    adminPassword: process.env.admin_Password
+    adminPassword: process.env.admin_password
 };
 
 const loadLogin = async (req, res) => {
