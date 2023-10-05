@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload and Crop</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Include your custom CSS file here -->
+    <link rel="shortcut icon" type="image/x-icon" href="/admin/imgs/theme/menswear.png" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center">Image Upload and Crop</h2>
+                <button type="button" class="btn btn-primary btn-block mt-3"
+                    onclick="document.getElementById('inputFile').click()">Add Image</button>
+                <div class="form-group inputDnD mt-3">
+                    <label class="sr-only" for="inputFile">File Upload</label>
+                    <input type="file" class="form-control-file text-primary font-weight-bold" id="inputFile"
+                        accept="image/*" onchange="readAndCropImage(this)" data-title="Drag and drop a file">
+                    <div id="error-message" style="display: none; color: red;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <!-- Crop part (left) -->
+            <div class="col-md-6">
+                <div class="container">
+                    <div class="image-container">
+                        <img id="croppedImage" src="" alt="Cropped Image">
+                    </div>
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-success btn-block"
+                            onclick="saveCroppedImage()">Crop</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cropped part (right) -->
+            <div class="col-md-6">
+                <div class="container">
+                    <div class="image-preview-container">
+                        <img id="croppedImagePreview" src="" alt="Cropped Image Preview">
+                    </div>
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-primary btn-block" id="saveButton">Save</button>
+                    </div>
+                    <!-- Hidden input to store the product ID -->
+                    <input type="text" value="<%= productId %>" id="product_Id" hidden>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Include your JavaScript file for functionality -->
+</body>
+
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+
+    function readUrl(input) {
+
+        if (input.files && input.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e) => {
+                let imgData = e.target.result;
+                let imgName = input.files[0].name;
+                input.setAttribute("data-title", imgName);
+                console.log(e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+
+    }
+
+    let cropper; // Declare the Cropper.js instance globally
+
+    function readAndCropImage(input) {
+        if (input.files && input.files[0]) {
+            const selectedFile = input.files[0];
+
+            // Check if the selected file is an image (you can extend this check for specific image formats)
+            if (selectedFile.type.startsWith('image/')) {
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    let imgData = e.target.result;
+                    let imgName = input.files[0].name;
+                    input.setAttribute("data-title", imgName);
+
+                    // Display the cropped image in a separate container
+                    let croppedImageContainer = document.getElementById("croppedImage");
+                    croppedImageContainer.src = imgData;
+
+                    // Initialize Cropper.js
+                    cropper = new Cropper(croppedImageContainer, {
+                        aspectRatio: 0, // You can adjust this ratio as needed
+                        viewMode: 0,
+                    });
+                };
+
+                reader.readAsDataURL(selectedFile);
+            } else {
+                // File is not an image, show an error message or take appropriate action
+                const errorMessage = "Please select a valid image file.";
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.innerText = errorMessage;
+                errorDiv.style.display = 'block';
+            }
+        }
+    }
+
+
+
+    function saveCroppedImage() {
+        // Get the cropped data (base64 encoded) from Cropper.js
+        const croppedData = cropper.getCroppedCanvas().toDataURL("image/jpeg");
+
+        // Create a new image element to display the cropped image
+
+
+        // Prepare the data to send to the server
+
+        // Display the cropped image in the "Cropped Image Preview" container
+        const croppedImagePreview = document.getElementById("croppedImagePreview");
+        let product_Id = document.getElementById('product_Id').value
+        croppedImagePreview.src = croppedData;
+        // Get the src attribute value of the image
+        const croppedImage = document.getElementById("croppedImagePreview");
+        const imageUrl = croppedImage.src;
+
+
+        let imageData = {
+            dataUrl: croppedData,
+            product_Id: product_Id
+        }
+        // Now, imageUrl contains the URL of the image
+
+        // Show the "Save" button
+        const saveButton = document.getElementById("saveButton");
+        // saveButton.style.display = "block";
+        saveButton.addEventListener("click", function () {
+            // You can use window.location.href to redirect to a specific route
+            // Replace '/your-save-route' with the actual route where you save the imag
+            // Send the cropped image data to the server using Axios
+            axios.post('/admin/uploadCropped', imageData)
+                .then(response => {
+                    // Check the response message
+                    if (response.data.message === "Image saved successfully") {
+                        // Redirect to the desired route
+                        alert("Image saved successfully");
+
+                        // Refresh the page
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    const errorMessage = error.response.data.message
+                    const errorDiv = document.getElementById('error-message');
+                    errorDiv.innerText = errorMessage;
+                    errorDiv.style.display = 'block'; //
+                });
+
+        })
+    }
+
+
+
+</script>

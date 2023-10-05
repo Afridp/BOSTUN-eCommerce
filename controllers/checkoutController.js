@@ -13,7 +13,7 @@ dotenv.config()
     key_secret:process.env.razorpay_secret_key
  })
 
-const addressAdd = async(req,res)=>{
+const addressAdd = async(req,res,next)=>{
     try {
         const {userid} = req.session
         const {name,housename,city,state,pincode,phone}= req.body
@@ -33,12 +33,12 @@ const addressAdd = async(req,res)=>{
             },
         )
         res.redirect('/checkout')
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const loadEditAddAddress = async (req, res) => {
+const loadEditAddAddress = async (req, res,next) => {
     try {
 
         const { userid } = req.session;
@@ -52,13 +52,13 @@ const loadEditAddAddress = async (req, res) => {
         );
         res.render('checkoutEditAddress', { userAddress: userAddress, userid, user })
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
-const postEditCheckAddress = async (req, res) => {
+const postEditCheckAddress = async (req, res,next) => {
     try {
         const { userid } = req.session;
         // const user = await userModel.findOne({ _id: userid })
@@ -77,14 +77,14 @@ const postEditCheckAddress = async (req, res) => {
             }
         )
         res.redirect("/checkout");
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
 
-const placeOrder = async (req, res) => {
+const placeOrder = async (req, res,next) => {
     try {
 
 
@@ -92,7 +92,7 @@ const placeOrder = async (req, res) => {
         const {total,code} = req.body
         const payment = req.body.payment
         const userid = req.session.userid
-        console.log(code);
+    
 
         let status = payment == 'cod' ? 'placed' : 'pending'
 
@@ -156,13 +156,13 @@ const placeOrder = async (req, res) => {
 
             })
         }
-    } catch (error) {
-        console.log(error.message)
+    } catch (err) {
+        next(err)
     }
 
 }
 
-const verifyPayment = async(req,res)=>{
+const verifyPayment = async(req,res,next)=>{
     try {
         const userData = await userModel.findOne({_id:req.session.userid})
         const cartData = await cartModel.findOne({userId:req.session.userid})
@@ -196,11 +196,11 @@ const verifyPayment = async(req,res)=>{
             res.json({ success: false }); 
         }
     } catch (error) {
-        console.log(error.message);
+        next(err)
     }
 }
 
-const loadOrderPlaced = async (req, res) => {
+const loadOrderPlaced = async (req, res,next) => {
     try {
         const userid = req.session.userid
         const id = req.params.id
@@ -209,12 +209,12 @@ const loadOrderPlaced = async (req, res) => {
         let currentPage = ''
         res.render('orderPlaced', { userid: req.session.userid, order: order, user,currentPage })
 
-    } catch (error) {
-        console.log(error.message)
+    } catch (err) {
+        next(err)
     }
 }
 
-const couponCheck = async(req,res)=>{
+const couponCheck = async(req,res,next)=>{
     try {
         const {couponCode} = req.body
         const {userid} = req.session
@@ -234,8 +234,8 @@ const couponCheck = async(req,res)=>{
             
         }
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 module.exports = {

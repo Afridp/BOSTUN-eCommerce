@@ -55,13 +55,23 @@ admin_router.get('/products',isAdminLogin,productController.loadProducts)
 
 admin_router.get('/addProduct',isAdminLogin,productController.addProductPage)
 
-admin_router.post('/addProduct',isAdminLogin,upload.array("product_img",4),productController.addProduct)
+admin_router.post('/addProduct',isAdminLogin,productController.addProduct)
+
+admin_router.get('/addImages',isAdminLogin,productController.addImages)
+
+admin_router.post('/addAndListProduct',isAdminLogin,productController.addAndListProduct)
 
 admin_router.get('/productEdit',isAdminLogin,productController.editProduct)
 
-admin_router.post('/productEdit',isAdminLogin,upload.array("product_img",4),productController.productEditUpdated)
+admin_router.post('/uploadCropped',productController.imageCropped)
+
+admin_router.post('/productEdit',isAdminLogin,productController.productEditUpdated)
+
+admin_router.put('/deleteImage',isAdminLogin,productController.deleteImages)
 
 admin_router.patch('/listProduct',isAdminLogin,productController.listProduct)
+
+admin_router.get('/errorPage',productController.errorImage)
 
 // order mange
 

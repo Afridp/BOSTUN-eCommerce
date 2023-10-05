@@ -3,7 +3,41 @@
     <%- include('./layouts/navbar.ejs') -%>
 
 
+        <style>
+         
 
+            /* Change the color when hovering over the anchor tag */
+            a.show-more-link:hover {
+                color: #e5de18;
+                /* Change to your desired hover color */
+            }
+
+            /* Prevent link color change on click */
+            a.show-more-link {
+                color: #000000;
+                /* Use the inherited color (from the parent element) */
+                text-decoration: none;
+                /* Remove underline, if needed */
+            }
+
+
+            /* Style the container for the zoomable image */
+            .zoomable {
+                overflow: hidden;
+                position: relative;
+            }
+
+            /* Style the zoomed image */
+            .zoomable img {
+                transition: transform 0.3s ease-in-out;
+            }
+
+            /* Apply zoom effect on hover */
+            .zoomable:hover img {
+                transform: scale(1.7);
+                /* Adjust the scale factor as needed for zoom level */
+            }
+        </style>
 
         <!-- Shop Details Section Begin -->
         <section class="shop-details">
@@ -47,7 +81,7 @@
                                 <% for(let i=0 ; i < product.image.length ; i++) { %>
                                     <div class="tab-pane <% if (i === 0) { %>active<% } %>" id="tabs-<%= i + 1 %>"
                                         role="tabpanel">
-                                        <div class="product__details__pic__item">
+                                        <div class="product__details__pic__item zoomable">
                                             <img src="/images/<%= product.image[i] %>" alt="">
                                         </div>
                                     </div>
@@ -109,7 +143,20 @@
 
 
                                                     <p>
-                                                        <%= product.description %>
+                                                        <% if (product.description.length> 200) { %>
+                                                            <span id="shortDescription<%= product._id %>">
+                                                                <%= product.description.substring(0, 200) %>
+                                                            </span>
+                                                            <span id="fullDescription<%= product._id %>"
+                                                                style="display: none;">
+                                                                <%= product.description %>
+                                                            </span>
+                                                            <a href="#" class="show-more-link"
+                                                                onclick="toggleDescription('<%= product._id %>')">Show
+                                                                More</a>
+                                                            <% } else { %>
+                                                                <%= product.description %>
+                                                                    <% } %>
                                                     </p>
 
                                                     <div class="product__details__option">
@@ -344,8 +391,33 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
+                    document.querySelectorAll('.zoomable').forEach(container => {
+                        container.addEventListener('mousemove', function (e) {
+                            const img = this.querySelector('img');
+                            const boundingBox = img.getBoundingClientRect();
 
+                            const offsetX = (e.clientX - boundingBox.left) / boundingBox.width;
+                            const offsetY = (e.clientY - boundingBox.top) / boundingBox.height;
 
+                            img.style.transformOrigin = `${offsetX * 100}% ${offsetY * 100}%`;
+                        });
+                    });
+                    ;
+                    function toggleDescription(productId) {
+                        const shortDescription = document.getElementById("shortDescription" + productId);
+                        const fullDescription = document.getElementById("fullDescription" + productId);
+                        const showMoreLink = document.querySelector(`[onclick="toggleDescription('${productId}')"]`);
+
+                        if (shortDescription.style.display === "none") {
+                            shortDescription.style.display = "inline";
+                            fullDescription.style.display = "none";
+                            showMoreLink.innerHTML = "Show More";
+                        } else {
+                            shortDescription.style.display = "none";
+                            fullDescription.style.display = "inline";
+                            showMoreLink.innerHTML = "Show Less";
+                        }
+                    }
 
 
                     document.addEventListener("DOMContentLoaded", () => {
@@ -398,7 +470,7 @@
                                 quantity: quantity
                             };
                             const response = await axios.post("/addToCart", data);
-                 
+
                             if (response.data.success) {
                                 Swal.fire({
                                     title: "Success",

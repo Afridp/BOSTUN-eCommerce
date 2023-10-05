@@ -2,8 +2,8 @@ const dotenv = require('dotenv')
 dotenv.config()
 const mongoose = require("mongoose")
 mongoose.connect(process.env.MONGO)
-.then(()=>console.log("connected to database"))
-.catch(()=>console.log("error..!! failed to connect database"))
+  .then(() => console.log("connected to database"))
+  .catch(() => console.log("error..!! failed to connect database"))
 
 // const flash = require('connect-flash');
 const express = require('express');
@@ -11,27 +11,27 @@ const app = express();
 const session = require('express-session')
 const nocache = require("nocache")
 const path = require("path")
+const flash = require('connect-flash')
 // const moment = require('moment');
 
 // var logger = require('morgan');
-
+app.use(flash())
 app.set('view engine', 'ejs')
 
 
-// app.use(logger('dev'));
-app.use(express.json());
+// app.use(logger('dev'));  
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 // app.use(cookieParser());
-
 app.use(nocache())
 app.use(
-    session({
-        secret:'key',
-        saveUninitialized:true,
-        resave:true
-    })
-  )
+  session({
+    secret: 'key',
+    saveUninitialized: true,
+    resave: true
+  })
+)
 //   app.use(flash())
 
 // Date format
@@ -49,6 +49,9 @@ app.use('/admin', adminRouter);
 
 app.use('/', userRouter);
 
+// app.use((req, res) => {
+//   res.status(404).render("error404");
+// });
 
 
 
@@ -59,10 +62,8 @@ app.use('/', userRouter);
 
 
 
-
-
-app.listen(3000,()=>{
-    console.log("server running");
+app.listen(3000, () => {
+  console.log("server running");
 })
 
 

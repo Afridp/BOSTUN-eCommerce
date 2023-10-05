@@ -1,35 +1,49 @@
 const productModel = require('../models/productModel')
 const catModel = require('../models/categoryModel')
 const offerModel = require('../models/offerModel')
+
 const path = require('path')
+const fs = require('fs');
+// const fs = require('file-system')
 const sharp = require('sharp')
 const colorConvert = require('color-convert')
+const { log } = require('console')
 
-const loadProducts = async (req, res) => {
+const loadProducts = async (req, res, next) => {
     try {
-        
+        if (req.session.product_Id) {
+            delete req.session.product_Id
+        }
+
         const product = await productModel.find().populate("category").populate('offer')
-        const availableOffers = await offerModel.find({ expiryDate : { $gte : new Date() }})
+        const availableOffers = await offerModel.find({ expiryDate: { $gte: new Date() } })
 
-        res.render('products', { product ,availableOffers})
-    } catch (error) {
-        console.log(error.message);
+        res.render('products', { product, availableOffers, succ: req.flash('success') })
+    } catch (err) {
+        next(err)
     }
 }
 
-const addProductPage = async (req, res) => {
+const addProductPage = async (req, res, next) => {
     try {
-        let message = req.session.message
-        req.session.message = ""
+        let { product_Id } = req.session
+
+        if (product_Id) {
+
+            var product = await productModel.findOne({ _id: product_Id })
+
+        }
+
+
         const categories = await catModel.find()
-        // console.log(categories);
-        res.render('addProduct', { categories,message })
-    } catch (error) {
-        console.log(error.message);
+
+        res.render('addProduct', { categories, product })
+    } catch (err) {
+        next(err)
     }
 }
 
-const addProduct = async (req, res) => {
+const addProduct = async (req, res, next) => {
     try {
         const {
             product_name,
@@ -40,7 +54,7 @@ const addProduct = async (req, res) => {
             product_color,
             product_size,
         } = req.body
-        
+
         const existingProduct = await productModel.findOne({
 
             name: { $regex: new RegExp(`^${product_name}$`, "i") }
@@ -48,32 +62,6 @@ const addProduct = async (req, res) => {
         })
         if (!existingProduct) {
 
-
-            let imageArr = []
-
-            if (req.files && req.files.length > 0) {
-
-                for (let i = 0; i < req.files.length; i++) {
-
-                    const filePath = path.join(__dirname, "../public/images", req.files[i].filename);
-
-                    await sharp(req.files[i].path)
-
-                        .resize({ width: 250, height: 250 })
-
-                        .toFile(filePath);
-
-                    imageArr.push(req.files[i].filename);
-                }
-            }
-            // let productColor=[]
-            // product_color.forEach(element => {
-            //     let colorName = element
-            //     let hexCode = colorConvert.keyword.hex(colorName.toLowerCase())
-            //     console.log(hexCode);
-            //     productColor.push(hexCode)
-                
-            // });
 
             const product = new productModel({
                 name: product_name,
@@ -83,22 +71,95 @@ const addProduct = async (req, res) => {
                 category: product_category,
                 color: product_color,
                 size: product_size,
-                image: imageArr,
+                // image: imageArr,
                 stock: true,
+                list: false
             })
-            await product.save()
-            res.redirect('/admin/products')
+            await product.save()            // res.redirect('/admin/products')s
+            req.session.productId = product._id
+            res.status(200).json({ productId: product._id });
         } else {
-            req.session.message = "this product is already exist"
-            res.redirect('/admin/addProduct')
+            res.status(400).json({ message: "This product already exists." });
         }
-
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const listProduct = async (req, res) => {
+
+const addImages = async (req, res, next) => {
+    try {
+        let { productId } = req.query
+
+        res.render('imageAdd', { productId })
+    } catch (err) {
+        next(err)
+    }
+}
+
+
+const imageCropped = async (req, res, next) => {
+    try {
+        let { dataUrl, product_Id } = req.body
+        const product = await productModel.findOne({ _id: product_Id });
+        const imageCount = product.image.length;
+
+        if (imageCount < 4) {
+            const imageBuffer = Buffer.from(dataUrl.split(",")[1], 'base64'); // Decode the base64 data
+            const uniqueFileName = `${Date.now()}_image.jpg`;
+            const imagePath = path.join(__dirname, '../public/images', uniqueFileName);
+            fs.writeFileSync(imagePath, imageBuffer);
+            const filename = path.basename(imagePath);
+
+            await productModel.findByIdAndUpdate(
+                { _id: product_Id },
+                {
+                    $push: {
+                        image: filename
+                    }
+                }
+            );
+            res.status(200).json({ message: "Image saved successfully" });
+        } else {
+            req.session.product_Id = product_Id
+            res.status(400).json({ message: "Only four images allowed" })
+        }
+        req.session.product_Id = product_Id
+
+
+    } catch (err) {
+        next(err)
+    }
+}
+
+
+const errorImage = async (req, res, next) => {
+    try {
+        res.render('imageOnlyAllowed')
+    } catch (err) {
+        next(err)
+    }
+}
+
+
+
+const addAndListProduct = async (req, res, next) => {
+    try {
+        const { product_Id } = req.session
+        await productModel.findByIdAndUpdate({ _id: product_Id },
+
+            {
+                $set:
+                    { list: true }
+            })
+        req.flash('success', 'Product saved succesfully')
+        res.redirect('/admin/products')
+    } catch (err) {
+        next()
+    }
+}
+
+const listProduct = async (req, res, next) => {
     try {
         const { productId } = req.body;
         const product = await productModel.findById({ _id: productId })
@@ -114,33 +175,34 @@ const listProduct = async (req, res) => {
 
             res.status(201).json({ listSuccess: true });
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const editProduct = async (req, res) => {
+const editProduct = async (req, res, next) => {
     try {
         const { id } = req.query
 
-        const product = await productModel.findById({ _id: id });
+        const product = await productModel.findById({ _id: id }).populate("category")
         const category = await catModel.find();
-        // console.log(category);
+
+
         res.render("editProduct", {
             product_id: id,
             categories: category,
             product,
         })
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
-const productEditUpdated = async (req, res) => {
+const productEditUpdated = async (req, res, next) => {
     try {
-       
+
         const {
             product_id,
             product_name,
@@ -151,73 +213,100 @@ const productEditUpdated = async (req, res) => {
             product_color,
             product_size,
         } = req.body;
-        console.log(req.files,"this is file");
-        
-            let imageArra = [] 
+        console.log(product_id,
+            product_name,
+            product_quantity,
+            product_price,
+            product_category,
+            product_description,
+            product_color,
+            product_size,);
+        // console.log(req.files,"this is file");
 
-        if (req.files && req.files.length > 0) {
+        // let imageArra = []
 
-            for (let i = 0; i < req.files.length; i++) {
+        // if (req.files && req.files.length > 0) {
 
-                const filePath = path.join(__dirname,"../public/images",req.files[i].filename)
+        //     for (let i = 0; i < req.files.length; i++) {
 
-                await sharp(req.files[i].path)
-                    .resize({ width: 260, height: 260 })
-                    .toFile(filePath);
-                imageArra.push(req.files[i].filename);
-            }
-        }
-        console.log(imageArra);
+        //         const filePath = path.join(__dirname, "../public/images", req.files[i].filename)
 
-        if (req.files.length) {
-            await productModel.findByIdAndUpdate(
-                { _id: product_id },
-                {
-                    $set: {
-                        name: product_name,
-                        price: product_price,
-                        quantity: product_quantity,
-                        category: product_category,
-                        description: product_description,
-                        size:product_size,
-                        color:product_color,
-                        image: imageArra,
-                    }
-                })
-            res.redirect("/admin/products");
-        } else {
-            await productModel.findByIdAndUpdate(
-                { _id: product_id },
-                {
-                    $set: {
-                        name: product_name,
-                        quantity: product_quantity,
-                        price: product_price,
-                        description: product_description,
-                        category: product_category,
-                        size:product_size,
-                        color:product_color
-                    }
+        //         await sharp(req.files[i].path)
+
+        //             .toFile(filePath);
+        //         imageArra.push(req.files[i].filename);
+        //     }
+        // }
+
+        // if (req.files.length) {
+        //     await productModel.findByIdAndUpdate(
+        //         { _id: product_id },
+        //         {
+        //             $set: {
+        //                 name: product_name,
+        //                 price: product_price,
+        //                 quantity: product_quantity,
+        //                 category: product_category,
+        //                 description: product_description,
+        //                 size: product_size,
+        //                 color: product_color,
+        //                 image: imageArra,
+        //             }
+        //         })
+        //     res.redirect("/admin/products");
+        // } else/
+
+        await productModel.findByIdAndUpdate(
+            { _id: product_id },
+            {
+                $set: {
+                    name: product_name,
+                    quantity: product_quantity,
+                    price: product_price,
+                    description: product_description,
+                    category: product_category,
+                    size: product_size,
+                    color: product_color
                 }
-            )
-            res.redirect("/admin/products");
             }
-    } catch (error) {
-        console.log(error.message);;
+        )
+        res.redirect("/admin/products");
+
+    } catch (err) {
+        next(err)
     }
 
 }
 
+    const deleteImages = async (req, res, next) => {
+        try {
+            const { img, prdtId } = req.body;
+            fs.unlink(path.join(__dirname, "../public/images", img), () => { });
+            const deleted = await productModel.updateOne(
+                { _id: prdtId },
+                { $pull: { image: img } }
+            );
+            res.send({ success: true })
+        } catch (err) {
+            res.status(500).send({ success: false, error: err.message });
+            console.log(err.message);
+        }
+    }
 
+    module.exports = {
+        loadProducts,
+        addProductPage,
+        addProduct,
+        editProduct,
+        listProduct,
+        productEditUpdated,
+        addImages,
+        errorImage,
+        imageCropped,
+        addAndListProduct,
+        deleteImages
 
-module.exports = {
-    loadProducts,
-    addProductPage,
-    addProduct,
-    editProduct,
-    listProduct,
-    productEditUpdated
-}
+    }
 
 
 

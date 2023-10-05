@@ -7,7 +7,7 @@ const fileStorageEngine = multer.diskStorage({
 
         let ext = path.extname(file.originalname);
         if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg") {
-            return cb(new Error("Images Only Allowed"));
+            return res.redirect('/admin/errorPage')
         }
         cb(null, path.join(__dirname, "../public/uncroppedImages"));
     },
@@ -16,9 +16,9 @@ const fileStorageEngine = multer.diskStorage({
         cb(null, Date.now() + "--" + file.originalname);
     },
 
-});
+}); 
 
-const maxSize = 20 * 1024 * 1024;
-const upload = multer({ storage: fileStorageEngine, limits : { fileSize : maxSize } });
 
-module.exports = upload;    
+const upload = multer({ storage: fileStorageEngine });
+
+module.exports = upload;   

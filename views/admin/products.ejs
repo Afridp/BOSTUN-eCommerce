@@ -17,10 +17,14 @@
                     <div>
                         <h2 class="content-title card-title">Products List</h2>
                     </div>
-
-                    <div>
-                        <a href="/admin/addProduct" class="btn btn-primary btn-sm rounded">Add Products</a>
-                    </div>
+                    <% if( succ.length> 0 ) { %>
+                        <div class="">
+                            <h6 style="color: green;"> <%= succ %></h6>
+                        </div>
+                        <% } %>
+                            <div>
+                                <a href="/admin/addProduct" class="btn btn-primary btn-sm rounded">Add Products</a>
+                            </div>
 
                 </div>
 
@@ -46,8 +50,11 @@
                                                 <td width="25%">
 
                                                     <div class="left">
-                                                        <img src="/images/<%= product[i].image[0] %>"
-                                                            class="img-sm img-thumbnail" alt="Item" />
+                                                        <img
+                                                        src="/images/<%= product[i].image[0] %>"
+                                                        class="img-sm img-thumbnail"
+                                                        alt="Item"
+                                                      />
                                                     </div>
 
                                                     <div class="info pl-3">
@@ -69,14 +76,21 @@
                                                 </td>
 
                                                 <td>
-                                                    <% if (product[i].description.length > 50) { %>
-                                                    <span id="shortDescription<%= product[i]._id %>"><%= product[i].description.substring(0, 50) %></span>
-                                                    <span id="fullDescription<%= product[i]._id %>" style="display: none;"><%= product[i].description %></span>
-                                                    <a href="#" class="show-more-link" onclick="toggleDescription('<%= product[i]._id %>')">Show More</a>
-                                                    <% } else { %>
-                                                    <%= product[i].description %>
-                                                    <% } %>
-                                                  </td>
+                                                    <% if (product[i].description.length> 50) { %>
+                                                        <span id="shortDescription<%= product[i]._id %>">
+                                                            <%= product[i].description.substring(0, 50) %>
+                                                        </span>
+                                                        <span id="fullDescription<%= product[i]._id %>"
+                                                            style="display: none;">
+                                                            <%= product[i].description %>
+                                                        </span>
+                                                        <a href="#" class="show-more-link"
+                                                            onclick="toggleDescription('<%= product[i]._id %>')">Show
+                                                            More</a>
+                                                        <% } else { %>
+                                                            <%= product[i].description %>
+                                                                <% } %>
+                                                </td>
 
                                                 <td>
                                                     <span class="badge rounded-pill alert-success">

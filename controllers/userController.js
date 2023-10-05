@@ -10,7 +10,7 @@ const nodemailer = require("nodemailer")
 const userOtpVerification = require('../models/userOtpVerification')
 const { assign } = require('nodemailer/lib/shared')
 const orderModel = require('../models/orderModel')
-
+const crypto = require('crypto');
 dotenv.config();
 
 const securePassword = async (password) => {
@@ -18,30 +18,35 @@ const securePassword = async (password) => {
         // console.log(password);
         const passwordHash = await bcrypt.hash(password, 10)
         return passwordHash
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
 
     }
 }
 
+const generateRandomOTP = () => {
+    const otpLength = 4; // You can adjust the length of the OTP as needed
+    const otpBuffer = crypto.randomBytes(otpLength);
+    const otp = otpBuffer.toString('hex').slice(0, otpLength); // Convert to hexadecimal and take the first N characters
+    return otp;
+};
 
-
-const loadRegister = async (req, res) => {
+const loadRegister = async (req, res,next) => {
     try {
         let { message } = req.session
         req.session.message = ''
         res.render('registration', { message: message })
-    } catch (error) {
-        console.log(error.message)
+    } catch (err) {
+        next(err)
 
     }
 
 }
-const postRegister = async (req, res) => {
+const postRegister = async (req, res,next) => {
     try {
 
         const existingUser = await userModel.findOne({
-            $or: [{ email: req.body.email }, { mobile: req.body.number }]
+            $or: [{ email: req.body.email }, { mobile: req.body.mobile }]
         });
 
         if (existingUser) {
@@ -73,8 +78,8 @@ const postRegister = async (req, res) => {
                 res.render('registration', { message: "OOps..!Something went wrong.Please Retry" })
             }
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
@@ -91,13 +96,14 @@ const sendOtpEmailVerification = async (email, user_id) => {
                 pass: process.env.email_password
             }
         })
-        const otp = `${Math.floor(1000 + Math.random() * 9000)}`
+        const otp = generateRandomOTP(); 
+
         console.log(otp);
 
         const mailOptions = {
             from: 'afridp@gmail.com',
             to: email,
-            subject: 'Verify Your Email',
+            subject: 'Verify Your Email For Boston ',
             html: `${otp}`
         }
 
@@ -118,31 +124,32 @@ const sendOtpEmailVerification = async (email, user_id) => {
 
         return verified._id;
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const emailVerificationPage = async (req, res) => {
+const emailVerificationPage = async (req, res,next) => {
     try {
         const { message, otpVerification } = req.session;
         req.session.otpVerification = null
         req.session.message = ""
         res.render("emailVerification", { message, otp: otpVerification })
-    } catch (error) {
-        res.redirect(error.message);
+    } catch (err) {
+        nect(err)
     }
 }
 
 
 
-const emailVerification = async (req, res) => {
+const emailVerification = async (req, res,next) => {
     try {
         let { otp, userVerificationId } = req.body;
+       
         let userId = userVerificationId;
 
         const UserOTPVerificationRecords = await userOtpVerification.find({ _id: userId })
-
+     
         if (!userId || !otp) {
 
             await userModel.deleteMany({ _id: UserOTPVerificationRecords[0].userId });
@@ -174,18 +181,17 @@ const emailVerification = async (req, res) => {
 
                     const validOTP = await bcrypt.compare(otp, hashedOTP)
 
-
                     if (!validOTP) {
-                        await userModel.deleteMany({ _id: UserOTPVerificationRecords[0].userId });
+                       
 
                         req.session.otpVerification = userVerificationId;
-                        req.session.message = "Invalid OTP,Please register again";
+                        req.session.message = "Invalid OTP,Please try again";
 
-                        res.redirect("/emailVerification");
+                        res.redirect("/emailVerificationpage");
 
                     } else {
 
-
+                     
                         // const user = await userModel.findOne({ _id: session })
 
                         req.session.userId = UserOTPVerificationRecords[0].userId.toString();
@@ -203,8 +209,8 @@ const emailVerification = async (req, res) => {
                 }
             }
         }
-    } catch (error) {
-        res.redirect(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
@@ -212,7 +218,7 @@ const emailVerification = async (req, res) => {
 
 
 
-const loginLoad = async (req, res) => {
+const loginLoad = async (req, res,next) => {
     try {
         let { message } = req.session
         req.session.message = ""
@@ -220,13 +226,13 @@ const loginLoad = async (req, res) => {
         let { userid } = req.session
 
         res.render('login', { message, currentPage, userid })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
-const verifyLogin = async (req, res) => {
+const verifyLogin = async (req, res,next) => {
     try {
         const email = req.body.email;
         const password = req.body.password;
@@ -260,30 +266,30 @@ const verifyLogin = async (req, res) => {
             req.session.message = "Oops.. User Is Not Registerd,Please register"
             res.redirect('/login')
         }
-    } catch (error) {
-        console.log(error.message)
+    } catch (err) {
+        next(err)
 
     }
 }
 
-const homeLoad = async (req, res) => {
+const homeLoad = async (req, res,next) => {
     try {
         const { userid } = req.session;
 
         const user = await userModel.findOne({ _id: userid });
         const banner = await bannerModel.find({ status: true })
         let currentPage = 'home'; // Define currentPage here
-        const bestSellers = await productModel.find().limit(8)
-
+        const bestSellers = await productModel.find({list : true}).limit(8)
+        console.log(bestSellers);
 
 
         res.render('index', { user, userid, currentPage, banner, bestSellers }); // Pass currentPage to the template
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 };
 
-const shopLoad = async (req, res) => {
+const shopLoad = async (req, res,next) => {
     try {
         let { selectedCategories, selectedSize, selectedColors, searchInput, pageno, minPrice, maxPrice } = req.body
 
@@ -338,7 +344,7 @@ const shopLoad = async (req, res) => {
             let skip = 0
             if (req.session) {
                 const { color, size, category, searchInput, pageno, minPrice, maxPrice } = req.session
-             
+
                 if (searchInput) {
 
                     condition.name = { $regex: searchInput, $options: 'i' }
@@ -359,7 +365,7 @@ const shopLoad = async (req, res) => {
                         condition.color = queryConditions
                     }
                 }
-            
+
                 delete req.session.color
                 if (size) {
                     let queryConditions = { $in: size };
@@ -369,7 +375,7 @@ const shopLoad = async (req, res) => {
                     }
                 }
                 delete req.session.size
-     
+
                 if (minPrice && maxPrice) {
                     let queryConditions = {
                         $gte: minPrice, // Greater than or equal to minPrice
@@ -420,13 +426,13 @@ const shopLoad = async (req, res) => {
                     totalPages
                 })
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
-const showProductDetails = async (req, res) => {
+const showProductDetails = async (req, res,next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
@@ -448,55 +454,55 @@ const showProductDetails = async (req, res) => {
 
         res.render('productDetails', { userid, product, user, currentPage })
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
-const loadProfile = async (req, res) => {
+const loadProfile = async (req, res,next) => {
     try {
         const { userid } = req.session
 
         const user = await userModel.findOne({ _id: userid })
         let currentPage = 'profile'
         res.render('profile', { user, userid, currentPage })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const manageAddress = async (req, res) => {
+const manageAddress = async (req, res,next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
         let currentPage = 'profile'
         res.render('address', { userid, user, currentPage })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const addAddress = async (req, res) => {
+const addAddress = async (req, res,next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
         let currentPage = 'profile'
         res.render('addAddress', { userid, user, currentPage })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
-const loadLogout = async (req, res) => {
+const loadLogout = async (req, res,next) => {
     try {
         req.session.userid = null;
         res.redirect("/");
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 };
 
-const postAddress = async (req, res) => {
+const postAddress = async (req, res,next) => {
     try {
         const { userid } = req.session;
         const { name, housename, city, state, phone, pincode } = req.body;
@@ -516,12 +522,12 @@ const postAddress = async (req, res) => {
             },
         )
         res.redirect("/manageAddress");
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const editaddress = async (req, res) => {
+const editaddress = async (req, res,next) => {
     try {
 
         const { userid } = req.session;
@@ -533,12 +539,12 @@ const editaddress = async (req, res) => {
         );
         let currentPage = 'profile'
         res.render("editAddress", { userid, userAddress: userAddress, user, currentPage });
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const updateAddress = async (req, res) => {
+const updateAddress = async (req, res,next) => {
     try {
         const { userid } = req.session;
         // const user = await userModel.findOne({ _id: userid })
@@ -557,12 +563,12 @@ const updateAddress = async (req, res) => {
             }
         )
         res.redirect("/manageAddress");
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const deleteAddress = async (req, res) => {
+const deleteAddress = async (req, res,next) => {
     try {
         const { userid } = req.session;
         const { addId } = req.body;
@@ -571,21 +577,21 @@ const deleteAddress = async (req, res) => {
             { $pull: { address: { _id: addId } } }
         )
         res.status(201).json({ message: "success deleted" });
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
-const editProfile = async (req, res) => {
+const editProfile = async (req, res,next) => {
     try {
         const { userid } = req.session
         let currentPage = 'profile'
         const user = await userModel.findById({ _id: userid })
         res.render('editProfile', { user, userid, currentPage })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
-const updateProfile = async (req, res) => {
+const updateProfile = async (req, res,next) => {
     try {
         const { userid } = req.session
         const { name, mobile, email } = req.body
@@ -600,23 +606,23 @@ const updateProfile = async (req, res) => {
             })
 
         res.redirect('/profile')
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const changePassword = async (req, res) => {
+const changePassword = async (req, res,next) => {
     try {
         const { userid } = req.session
         let currentPage = 'profile'
         const user = await userModel.findById({ _id: userid })
         res.render('changePassword', { user, userid, currentPage })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const updatePassword = async (req, res) => {
+const updatePassword = async (req, res,next) => {
     try {
         const { userid } = req.session
         const { currentPassword, newPassword, confirmNewPassword } = req.body
@@ -631,7 +637,7 @@ const updatePassword = async (req, res) => {
                     { _id: userid },
                     { $set: { password: hashPassword } }
                 )
-                // req.flash("success","password has changed")
+                
                 res.redirect('/profile')
             } else {
                 req.session.message = "new password and confirm password didin't match"
@@ -642,34 +648,34 @@ const updatePassword = async (req, res) => {
             res.redirect('/changePassword')
         }
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 
 }
 
-const lostPassEmailPage = async (req, res) => {
+const lostPassEmailPage = async (req, res,next) => {
     try {
         const { message } = req.session
         req.session.message = ''
         let currentPage = 'login'
         res.render('forgetPassEmail', { message, currentPage })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const forgetPassSendOtp = async (req, res) => {
+const forgetPassSendOtp = async (req, res,next) => {
     try {
         const { email } = req.body
         const emailExist = await userModel.findOne({ email: email })
-        // console.log(email);
+       
 
         if (emailExist) {
 
             req.session.user = emailExist._id
 
-            const otps = `${Math.floor(1000 + Math.random() * 9000)}`
+            const otps = generateRandomOTP();
             //send OTP to the mail
             let transporter = nodemailer.createTransport({
                 service: 'gmail',
@@ -701,24 +707,24 @@ const forgetPassSendOtp = async (req, res) => {
             req.session.message = 'This Email Is not registered with Us,plaease register'
             res.redirect('/lostPassEmailPage');
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const forgetPassOtpEnterPage = async (req, res) => {
+const forgetPassOtpEnterPage = async (req, res,next) => {
     try {
         let { message, otp, user } = req.session
         let currentPage = 'login'
         req.session.message = ''
         res.render('forgPassOtpEnter', { message, otp, user, currentPage })
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const postForgetPassOtpVerify = async (req, res) => {
+const postForgetPassOtpVerify = async (req, res,next) => {
     try {
         const { otp, userOtp, user } = req.body;
         let currentPage = 'login'
@@ -730,12 +736,12 @@ const postForgetPassOtpVerify = async (req, res) => {
 
 
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const updateNewPassword = async (req, res) => {
+const updateNewPassword = async (req, res,next) => {
     try {
         const { user, newPassword, confirmPassword } = req.body
         // const userToUpdate = await userModel.findById({_id:user})
@@ -744,13 +750,13 @@ const updateNewPassword = async (req, res) => {
         await userModel.updateOne({ _id: user }, { $set: { password: hashedPassword } })
         res.redirect('/login')
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
-const loadWhishlist = async (req, res) => {
+const loadWhishlist = async (req, res,next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findById({ _id: userid })
@@ -760,12 +766,12 @@ const loadWhishlist = async (req, res) => {
 
         let currentPage = ''
         res.render('whishlist', { currentPage, userid, user, wishlist })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const addToWhishlist = async (req, res) => {
+const addToWhishlist = async (req, res,next) => {
     try {
         const { userid } = req.session
         const { id } = req.query
@@ -813,12 +819,12 @@ const addToWhishlist = async (req, res) => {
             await makeWhishlist.save();
         }
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const deleteFromWishlist = async (req, res) => {
+const deleteFromWishlist = async (req, res,next) => {
     try {
         const { userid } = req.session;
         let { product_Id } = req.body;
@@ -834,11 +840,11 @@ const deleteFromWishlist = async (req, res) => {
             message: "success and modified",
             wishListLength: wishList.items.length
         });
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
-const cancelOrder = async (req, res) => {
+const cancelOrder = async (req, res,next) => {
     try {
         const { orderId, cancelReason } = req.body;
         let status1 = "waiting for approval";
@@ -861,8 +867,8 @@ const cancelOrder = async (req, res) => {
         } else {
             res.status(400).json({ message: "Seems like an error" });
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 };
 

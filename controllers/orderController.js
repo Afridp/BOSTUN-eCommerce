@@ -4,7 +4,7 @@ const cartModel = require('../models/cartModel');
 const orderModel = require('../models/orderModel');
 
 
-const orders = async (req, res) => {
+const orders = async (req, res,next) => {
     try {
         const { userid } = req.session;
 
@@ -29,12 +29,12 @@ const orders = async (req, res) => {
             // .sort({ createdAt: -1 });
 
         res.render("orders", { orders,user,userid,currentPage });
-    } catch (error) {
-       console.log(error.message);
+    } catch (err) {
+       next(err)
     }
 };
 
-const viewOrdered = async (req, res) => {
+const viewOrdered = async (req, res,next) => {
   try {
     const { userid } = req.session;
     const { id } = req.query;
@@ -44,25 +44,26 @@ const viewOrdered = async (req, res) => {
       .populate("user")
       .populate("items.product_Id");
     res.render("viewOrdered", { order: order,user,userid,currentPage });
-  } catch (error) {
-    console.log(error.message);
+  } catch (err) {
+    next(err)
   }
 };
 
 // ADMIN SIDE
 
-const adminOrder = async (req,res)=>{
+const adminOrder = async (req,res,next)=>{
     try {
         const orders = await orderModel.find().populate("user")
-        
-        
-        res.render('orders',{orders})
-    } catch (error) {
-        console.log(error.message);
+    
+        const hasCancelReasonAndNotForCancellation = orders.some(order => order.cancelReason !== undefined && order.status === 'req:Canceled');
+console.log(hasCancelReasonAndNotForCancellation);
+        res.render('orders',{orders,hasCancelReasonAndNotForCancellation})
+    } catch (err) {
+        next(err)
     }
 }
 
-const changeStatus = async (req, res) => {
+const changeStatus = async (req, res,next) => {
     try {
       const { status, orderId } = req.body;
     //   const currentDate = new Date();
@@ -89,12 +90,12 @@ const changeStatus = async (req, res) => {
         );
       
       res.status(201).json({ success: true });
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      next(err)
     }
   };
 
-const orderItems = async(req,res)=>{
+const orderItems = async(req,res,next)=>{
     try {
        const {id} = req.query
        
@@ -102,8 +103,8 @@ const orderItems = async(req,res)=>{
 
     res.json({success:true,order})
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 

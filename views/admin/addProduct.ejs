@@ -3,7 +3,51 @@
     <%- include('./layouts/sidebar.ejs') -%>
 
         <%- include('./layouts/topbar.ejs') -%>
+            <style>
+                /* Style for the card body */
+                .card-body {
+                    padding: 20px;
+                }
 
+                /* Style for the image upload container */
+                .input-upload {
+                    margin-bottom: 20px;
+                }
+
+                /* Style for the image preview container */
+                .image-preview {
+                    text-align: center;
+                }
+
+                /* Style for the cropped image */
+                #cropped-image {
+                    max-width: 100%;
+                    /* Adjust the maximum width as needed */
+                    height: auto;
+                    border: 1px solid #ccc;
+                    margin-top: 10px;
+                }
+
+                /* Style for the crop button */
+                #crop-button {
+                    display: block;
+                    margin: 10px auto;
+                    padding: 10px 20px;
+                    background-color: #007BFF;
+                    /* Change the button color as needed */
+                    color: #fff;
+                    /* Change the text color as needed */
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                }
+
+                /* Style for the crop button on hover */
+                #crop-button:hover {
+                    background-color: #0056b3;
+                    /* Change the hover color as needed */
+                }
+            </style>
 
             <section class="content-main">
                 <div class="row">
@@ -16,18 +60,19 @@
 
                     <div class="col-lg-6">
                         <div class="card mb-4">
-                            <div class="card-header"> 
+                            <div class="card-header">
                                 <h4>Basic</h4>
                             </div>
 
                             <div class="card-body">
 
-                                <form action="/admin/addProduct" enctype="multipart/form-data" method="post">
+                                <form action="/admin/addAndListProduct" enctype="multipart/form-data" method="post">
                                     <div class="mb-4">
                                         <label for="product_name" class="form-label">Product Name</label>
 
                                         <input type="text" placeholder="Product Name" class="form-control"
                                             id="product_name" name="product_name" required />
+                                        <div id="error-message" style="display: none; color: red;"></div>
                                     </div>
 
                                     <!-- <div class="mb-4">
@@ -55,30 +100,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-4">
-                                                <label class="form-label">Size</label>
-                                                <div class="row gx-2">
-                                                    <!-- Replace the select element with checkboxes -->
-                                                    <input type="checkbox" id="sizeXS" name="product_size[]" value="XS">
-                                                    <label for="sizeXS">XS</label><br>
-                                                    <input type="checkbox" id="sizeS" name="product_size[]" value="S">
-                                                    <label for="sizeS">S</label><br>
-                                                    <input type="checkbox" id="sizeM" name="product_size[]" value="M">
-                                                    <label for="sizeM">M</label><br>
-                                                    <input type="checkbox" id="sizeL" name="product_size[]" value="L">
-                                                    <label for="sizeL">L</label><br>
-                                                    <input type="checkbox" id="sizeXL" name="product_size[]" value="XL">
-                                                    <label for="sizeXL">XL</label><br>
-                                                    <!-- Add more size options as needed -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        
-                                    </div>
 
-                                    <div class="row">
                                         <div class="col-lg-4">
                                             <div class="mb-4">
                                                 <label class="form-label">Quantity</label>
@@ -86,30 +108,125 @@
                                                     <input placeholder="Quantity" min="1" type="number"
                                                         id="product_quantity" class="form-control"
                                                         name="product_quantity" required />
-
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
+                                    <div class="row">
                                         <div class="col-lg-4">
                                             <div class="mb-4">
                                                 <label class="form-label">Color</label>
-                                                <div class="row gx-2">
-                                                    <select id="product_color" class="form-select" name="product_color[]" multiple required>
-                                                        <!-- <option value="" selected disabled>Select a color</option> -->
-                                                        <option value="red" style="color:red;">Red</option>
-                                                        <option value="blue" style="color: blue;">Blue</option> 
-                                                        <option value="green"style="color:green;">Green</option>
-                                                        <option value="yellow" style="color: yellow;">Yellow</option>
-                                                        <option value="white" style="color: white;">White</option> 
-                                                        <option value="black"style="color: black;">Black</option>
-                                                        <!-- Add more color options as needed -->
-                                                    </select>
+                                                <div class="row gx-2 color-checkboxes">
+                                                    <!-- Checkbox for Red -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorRed" name="product_color[]" value="red">
+                                                            <label class="form-check-label" for="colorRed"
+                                                                style="color:red;">Red</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Checkbox for Blue -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorBlue" name="product_color[]" value="blue">
+                                                            <label class="form-check-label" for="colorBlue"
+                                                                style="color: blue;">Blue</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorGreen" name="product_color[]" value="green">
+                                                            <label class="form-check-label" for="colorGreen"
+                                                                style="color: green;">Green</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorYellow" name="product_color[]" value="yellow">
+                                                            <label class="form-check-label" for="colorYellow"
+                                                                style="color: yellow;">Yellow</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorWhite" name="product_color[]" value="white">
+                                                            <label class="form-check-label" for="colorWhite"
+                                                                style="color: rgb(106, 101, 101);">White</label>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Repeat similar code for other colors -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorBlack" name="product_color[]" value="black">
+                                                            <label class="form-check-label" for="colorBlack"
+                                                                style="color: black;">Black</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                
-                                        
+
+
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Size</label>
+                                                <div class="row gx-2 size-checkboxes">
+                                                    <!-- Checkbox for XS -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeXS"
+                                                                name="product_size[]" value="XS">
+                                                            <label class="form-check-label" for="sizeXS">XS</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Checkbox for S -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeS"
+                                                                name="product_size[]" value="S">
+                                                            <label class="form-check-label" for="sizeS">S</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeM"
+                                                                name="product_size[]" value="M">
+                                                            <label class="form-check-label" for="sizeM">M</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeL"
+                                                                name="product_size[]" value="L">
+                                                            <label class="form-check-label" for="sizeL">L</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeXL"
+                                                                name="product_size[]" value="XL">
+                                                            <label class="form-check-label" for="sizeXL">XL</label>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Repeat similar code for other sizes -->
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="card mb-4">
@@ -121,7 +238,7 @@
 
                                                         <% for( let category of categories) { %>
 
-                                                            <option value="<%=category._id %>">
+                                                            <option id="product_category" value="<%=category._id %>">
                                                                 <%= category.name %>
                                                             </option>
 
@@ -136,27 +253,27 @@
                                         <div class="card mb-4">
                                             <div class="card-header">
                                                 <h4>Product Image</h4>
-                                            </div>
-                                            <div class="card-body">
+                                                <div class="card-body">
+                                                    <div class="input-upload">
+                                                        <a href="#" onclick="validateAndAddImages()"
+                                                            class="btn btn-primary">Add Images</a>
 
-                                                <div class="input-upload">
-                                                    <input id="product_img" name="product_img" accept="image/*"
-                                                        class="form-control" type="file" multiple />
+                                                        <!-- Display images if the product object has them -->
+                                                        <% if (product && product.image.length> 0) { %>
+                                                            <div class="image-container">
+                                                                <% product.image.forEach(image=> { %>
+                                                                    <img src="/images/<%= image %>"
+                                                                        alt="<%= product.name %>" class="product-image">
+                                                                    <% }) %>
+                                                            </div>
+                                                            <% } %>
+                                                    </div>
                                                 </div>
-
                                             </div>
                                         </div>
-                                        <%if(typeof message!==undefined){%>
-                                            <div>
-                                                <p class="text-center text-danger">
-                                                    <%= message %>
-                                                </p>
-                                            </div>
-                                            <%}%>
-
-                                                <div>
-                                                    <button class="btn btn-md rounded font-sm hover-up">Submit</button>
-                                                </div>
+                                        <div>
+                                            <button class="btn btn-md rounded font-sm hover-up">Submit</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -176,6 +293,100 @@
 
 
                 <script>
+
+                    function validateAndAddImages() {
+                        const productName = document.getElementById("product_name").value;
+                        const productDescription = document.getElementById("product_description").value;
+                        const productPrice = document.getElementById("product_price").value;
+                        const productQuantity = document.getElementById("product_quantity").value;
+                        // const selectedCategory = document.getElementById("product_category").value;
+                        const selectElement = document.querySelector('select[name="product_category"]');
+                        const selectedOption = selectElement.options[selectElement.selectedIndex];
+                        const selectedCategory = selectedOption.value;
+
+                        const selectedSizes = Array.from(document.querySelectorAll('input[name="product_size[]"]:checked')).map(input => input.value);
+                        const selectedColors = Array.from(document.querySelectorAll('input[name="product_color[]"]:checked')).map(input => input.value);
+                        const symbolPattern = /[!@#$%^&*()_+\=\[\]{};':"\\|<>\/?]+/;
+                        if (
+                            productName.trim() === "" ||
+                            productDescription.trim() === "" ||
+                            isNaN(productPrice) || // Check if productPrice is not a valid number
+                            isNaN(productQuantity) || // Check if productQuantity is not a valid number
+                            selectedCategory === "" || // Check if a category is not selected
+                            selectedSizes.length === 0 || // Check if no sizes are selected
+                            selectedColors.length === 0 || // Check if no colors are selected
+                            symbolPattern.test(productName) || // Check for symbols in product name
+                            symbolPattern.test(productDescription) // Check for symbols in product description
+                        ) {
+                            // Display an error message to the user
+                            alert("Please fill in all required fields with valid values. Symbols are not allowed in product name and description.");
+                        } else {
+
+                            const productData = {
+                                product_name: productName,
+                                product_description: productDescription,
+                                product_price: productPrice,
+                                product_quantity: productQuantity,
+                                product_category: selectedCategory,
+                                product_size: selectedSizes,
+                                product_color: selectedColors
+                            };
+
+                            axios.post('/admin/addProduct', productData)
+                                .then((response) => {
+
+                                    if (response.status == 200) {
+                                        const productId = response.data.productId;
+
+                                        window.location.href = `/admin/addImages?productId=${productId}`;
+
+                                    }
+                                    // } else if (response.status == 400) {
+                                    //     const errorMessage = response.data.message ;
+                                    //     console.log("haaai");
+                                    //     // Manipulate the DOM to display the error message
+                                    //     const errorDiv = document.getElementById('error-message');
+                                    //     errorDiv.innerText = errorMessage;
+                                    //     errorDiv.style.display = 'block'; // Show the error message
+                                    // }
+                                })
+                                .catch(error => {
+
+                                    const errorMessage = error.response.data.message
+                                    const errorDiv = document.getElementById('error-message');
+                                    errorDiv.innerText = errorMessage;
+                                    errorDiv.style.display = 'block'; //
+                                });
+
+
+
+
+                            // axios.post('/admin/addProduct', productData)
+                            //     .then(response => {
+                            //         // Handle the response if needed
+                            //         console.log(response.data);
+                            //         // Redirect to the new route (if it's a client-side route)
+                            //         window.location.href = '/admin/addImages';
+                            //     })
+                            //     .catch(error => {
+                            //         // Handle errors if necessary
+                            //         console.error(error);
+                            //     });
+                            // // All required fields are filled out correctly, make an Axios request to navigate to /admin/addImage
+                            // axios.get('/admin/addImages')
+                            //     .then(response => {
+                            //         // Handle the response if needed
+                            //         // console.log(response.data);
+                            //         // Redirect to the new route (if it's a client-side route)
+                            //         // window.location.href = '/admin/addImages';
+                            //     })
+                            //     .catch(error => {
+                            //         // Handle errors if necessary
+                            //         console.error(error);
+                            //     });
+                        }
+                    }
+
                     let product_name = document.getElementById("product_name");
                     let product_price = document.getElementById("product_price");
                     let product_quantity = document.getElementById("product_quantity");
@@ -208,8 +419,93 @@
                             product_quantity.setCustomValidity("");
                         }
                     });
+                    // // Initialize an array to store the cropper instances
+                    // const croppers = [];
 
-                    // Function to handle the file input change event
-                    // document.getElementById('product_img').addEventListener('change', handleFileSelect);
+                    // // Function to initialize the cropper for an image
+                    // function initCropper(image) {
+                    //     const cropper = new Cropper(image, {
+                    //         aspectRatio: 0, // Adjust the aspect ratio as needed
+                    //         viewMode: 0,    // Adjust the view mode as needed
+                    //     });
+
+                    //     croppers.push(cropper);
+
+                    //     // Add a "Save" button for this image
+                    //     const saveButton = document.createElement('button');
+                    //     saveButton.innerText = 'Save';
+                    //     saveButton.addEventListener('click', () => {
+                    //         saveCroppedImage(cropper);
+                    //     });
+
+                    //     const imageContainer = document.querySelector('.cropper-container');
+                    //     imageContainer.appendChild(saveButton);
+                    // }
+
+
+
+                    // // Function to save the cropped image
+                    // function saveCroppedImage(cropper) {
+                    //     const croppedCanvas = cropper.getCroppedCanvas();
+                    //     if (croppedCanvas) {
+                    //         // Create a data URL of the cropped image
+                    //         const croppedDataUrl = croppedCanvas.toDataURL('image/jpeg'); // Adjust format as needed
+
+                    //         // You can send 'croppedDataUrl' to the server for saving, or allow the user to download it
+                    //         const downloadLink = document.createElement('a');
+                    //         downloadLink.href = croppedDataUrl;
+                    //         downloadLink.download = 'cropped_image.jpg'; // Specify the desired file name
+                    //         downloadLink.click();
+                    //     }
+                    // }
+
+
+
+
+                    // // When a file is selected in the input, create a cropper for each image
+                    // document.getElementById('product_img').addEventListener('change', (e) => {
+                    //     const files = e.target.files;
+
+                    //     // Clear existing croppers and previews
+                    //     croppers.forEach((cropper) => cropper.destroy());
+                    //     croppers.length = 0;
+
+                    //     // Create a cropper for each selected image
+                    //     for (let i = 0; i < files.length; i++) {
+                    //         const image = new Image();
+                    //         image.src = URL.createObjectURL(files[i]);
+
+                    //         // Add the image to the cropper container
+                    //         const cropperContainer = document.querySelector('.cropper-container');
+                    //         cropperContainer.appendChild(image);
+
+                    //         // Initialize the cropper for the image
+                    //         initCropper(image);
+                    //     }
+                    // });
+
+
+
+
+
+
+
+                    // <!-- <div class="card-body">
+                    //                                 <div class="input-upload">
+                    //                                     <input id="product_img" name="product_img" accept="image/*"
+                    //                                         class="form-control" type="file" multiple />
+                    //                                 </div>
+                    //                             </div> -->
+
+
+
+
+
+
+
+
+
+
+
 
                 </script>

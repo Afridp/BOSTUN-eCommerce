@@ -29,17 +29,15 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   image: {
-    type: Array,
-    required: true,
+    type:  Array,
+    required : true
+
   },
   stock: {
-    type:Number,
-    required : true
+    type :Boolean
   },
   list: {
     type: Boolean,
-    default: true,
-    required: true,
   },
   offer:{
     type : mongoose.Schema.Types.ObjectId,

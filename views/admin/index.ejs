@@ -3,8 +3,15 @@
   <%- include('./layouts/sidebar.ejs') -%>
 
     <%- include('./layouts/topbar.ejs') -%>
+<style>
+  /* Define a custom class for fixed size cards */
+.fixed-card {
+    height: 170px; /* Adjust the height as per your preference */
+    overflow: hidden; /* Optional: Hide content if it overflows the fixed height */
+}
 
-
+</style>
+<div class="container">
       <section class="content-main">
         <div class="content-header">
           <div>
@@ -17,7 +24,7 @@
         </div>
         <div class="row">
           <div class="col-lg-3">
-            <div class="card card-body mb-4">
+            <div class="card card-body fixed-card">
               <article class="icontext">
                 <span class="icon icon-sm rounded-circle bg-primary-light"><i
                     class="text-primary material-icons md-monetization_on"></i></span>
@@ -32,7 +39,7 @@
             </div>
           </div>
           <div class="col-lg-3">
-            <div class="card card-body mb-4">
+            <div class="card card-body fixed-card">
               <article class="icontext">
                 <span class="icon icon-sm rounded-circle bg-success-light"><i
                     class="text-success material-icons md-local_shipping"></i></span>
@@ -47,7 +54,7 @@
             </div>
           </div>
           <div class="col-lg-3">
-            <div class="card card-body mb-4">
+            <div class="card card-body fixed-card">
               <article class="icontext">
                 <span class="icon icon-sm rounded-circle bg-warning-light"><i
                     class="text-warning material-icons md-qr_code"></i></span>
@@ -62,7 +69,7 @@
             </div>
           </div>
           <div class="col-lg-3">
-            <div class="card card-body mb-4">
+            <div class="card card-body fixed-card">
               <article class="icontext">
                 <span class="icon icon-sm rounded-circle bg-info-light"><i
                     class="text-info material-icons md-shopping_basket"></i></span>
@@ -78,53 +85,87 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-xl-8 col-lg-12">
-            <div class="card mb-4">
+          <div class="col-8">
+            <div class="card mb-5">
               <article class="card-body">
                 <h5 class="card-title">Sale statistics</h5>
                 <canvas id="myChart" height="120px"></canvas>
               </article>
             </div>
-            <div class="row">
-              <div class="col-lg-5">
-                <div class="card mb-4">
-                  <article class="card-body">
-                    <h5 class="card-title">New Members</h5>
-                    <%latestUsers.forEach(person=>{%>
-                      <div class="new-member-list">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                          <div class="d-flex align-items-center">
-                            <!-- <img
-                        src="/assets/imgs/people/avatar-4.png"
-                        alt=""
-                        class="avatar"
-                      /> -->
-                            <div>
-                              <h6>
-                                <%=person.name%>
-                              </h6>
-                              <p class="text-muted font-xs">
-                                <%=person.email%>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <%})%>
-                  </article>
-                </div>
+          </div>
+            <div class="col-4">
+              <div class="card mb-4">
+                <article class="card-body">
+                  <h5 class="card-title">Order Chart</h5>
+                  <div id="chart2"></div>
+                </article>
               </div>
             </div>
           </div>
-          <div class="col-xl-4 col-lg-12">
-            <div class="card mb-4">
-              <article class="card-body">
-                <h5 class="card-title">Order Chart</h5>
-                <div id="chart2"></div>
-              </article>
+           <div class="row">
+    <div class="col-12"> <!-- Change the width to col-lg-12 -->
+        <div class="card mb-4">
+            <header class="card-header">
+                <h4 class="card-title">New Members</h4>
+            </header>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-middle table-nowrap mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-center">
+                                    <div class="form-check align-middle">
+                                        <label class="form-check-label" for="transactionCheck01"></label>
+                                    </div>
+                                </th>
+                                <th class="align-middle" scope="col">Name</th>
+                                <th class="align-middle" scope="col">Email</th>
+                                <th class="align-middle" scope="col">Joined Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%latestUsers.forEach(person=>{%>
+                                <tr>
+                                    <td class="text-center">
+                                        <div class="form-check">
+                                            <label class="form-check-label" for="transactionCheck02"></label>
+                                        </div>
+                                    </td>
+                                    <td><a href="#" class="fw-bold">
+                                            <%=person.name%>
+                                        </a></td>
+                                    <td>
+                                        <%=person.email%>
+                                    </td>
+                                    <td>
+                                      <% 
+                                      // Assuming createdAt is a date object or a parsable date string
+                                      const createdAt = new Date(person.createdAt);
+                                      // Check if the timezone offset is 0 (GMT)
+                                      if (createdAt.getTimezoneOffset() === 0) { %>
+                                          <!-- If it's GMT, you can hide details or display a message -->
+                                          <span>Details hidden for GMT time</span>
+                                      <% } else { %>
+                                          <!-- Display the createdAt time -->
+                                          <%= createdAt.toISOString() %>
+                                      <% } %>
+                                    </td>
+                                </tr>
+                            <%})%>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
         </div>
+    </div>
+</div>
+
+          
+          
+          
+         
+
+
         <div class="card mb-4">
           <header class="card-header">
             <h4 class="card-title">Latest orders</h4>
@@ -181,6 +222,7 @@
           </div>
         </div>
       </section>
+    </div>
       <input type="hidden" value="<%= salesData[0]%>" id="jan" />
       <input type="hidden" value="<%= salesData[1]%>" id="feb" />
       <input type="hidden" value="<%= salesData[2]%>" id="mar" />

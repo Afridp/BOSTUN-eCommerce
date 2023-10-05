@@ -3,7 +3,7 @@ const catModel = require('../models/categoryModel')
 const offerModel = require('../models/offerModel')
 
 
-const loadCategories = async (req, res) => {
+const loadCategories = async (req, res,next) => {
     try {
         let message = req.session.message
         req.session.message = ""
@@ -12,12 +12,12 @@ const loadCategories = async (req, res) => {
         const availableOffers = await offerModel.find({ expiryDate : { $gte : new Date() }})
         
         res.render('categories', { message, category: categories ,availableOffers})
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const addCategory = async (req, res) => {
+const addCategory = async (req, res,next) => {
 
     try {
         const { category_name, category_description } = req.body
@@ -43,14 +43,14 @@ const addCategory = async (req, res) => {
             req.session.message = "This category is already Exist"
             res.redirect("/admin/categories")
         }
-    } catch (error) {
-        console.log(error.message)
+    } catch (err) {
+        next(err)
         res.redirect("/error500")
     }
 }
 
 
-const listingCategory = async (req, res) => {
+const listingCategory = async (req, res,next) => {
     try {
         const { categoryId } = req.body
 
@@ -66,22 +66,22 @@ const listingCategory = async (req, res) => {
             await catModel.updateOne({ _id: categoryId }, { $set: { list: true } })
             res.status(201).json({ message: false });
         }
-    } catch (error) {
-        console.log(error.message)
+    } catch (err) {
+        next(err)
     }
 }
 
-const editCategory = async(req,res)=>{
+const editCategory = async(req,res,next)=>{
     try {
         const {id} = req.query
         let category = await catModel.findById({_id:id})
         res.render('editCategory',{category})
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const updateCategory = async(req,res)=>{
+const updateCategory = async(req,res,next)=>{
     try {
         const { id, category_name, category_description } = req.body
 
@@ -93,8 +93,8 @@ const updateCategory = async(req,res)=>{
         
         res.redirect("/admin/categories");
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 

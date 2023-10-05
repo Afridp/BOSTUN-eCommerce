@@ -34,6 +34,11 @@
             .custom-btn:hover {
                 background-color: #0056b3;
             }
+            /* Increase the size of the radio buttons */
+
+
+            
+            
         </style>
 
         <!-- Breadcrumb Section Begin -->
@@ -59,7 +64,7 @@
         <section class="bg-white">
             <div class="container mt-5">
                 <div class="row">
-
+                    <input type="text" value="<%= user.name %>" id="userName" hidden>
                     <div class="col-lg-12 main-div">
                         <% if (cart && cart.items) { %>
                             <div class="shopping__cart__table">
@@ -68,6 +73,8 @@
                                         <tr>
                                             <th>Product</th>
                                             <th>Quantity</th>
+                                            <th>Size</th>
+                                            <th>Color</th>
                                             <th>Total</th>
                                             <th></th>
                                         </tr>
@@ -77,7 +84,7 @@
                                             <tr class="cart-item">
                                                 <td class="product__cart__item">
                                                     <div class="product__cart__item__pic">
-                                                        <img src="/Images/<%= cart.product_Id.image[1] %>" alt=""
+                                                        <img src="/images/<%= cart.product_Id.image[0] %>" alt=""
                                                             style="height: 100px; width: 100px;">
                                                     </div>
                                                     
@@ -130,6 +137,22 @@
                                                         value="<%= cart.quantity %>" readonly>
 
                                                 </td>
+                                                <td>
+                                                    <% for (let i = 0; i < cart.size.length; i++) { %>
+                                                        <strong><%= cart.size[i] %></strong>
+                                                        <% if (i < cart.size.length - 1) { %>, <% } %>
+                                                    <% } %>
+                                                </td>
+                                                
+                                                <td>
+                                                    <% for (let i = 0; i < cart.color.length; i++) { %>
+                                                        <strong><%= cart.color[i].charAt(0).toUpperCase() + cart.color[i].slice(1) %></strong>
+                                                        <% if (i < cart.color.length - 1) { %><br><% } %>
+                                                    <% } %>
+                                                </td>
+                                                
+                                                
+
                                                 <% if(cart){ %>
                                                     <% var totlAmt = 0 %>
                                                     <% var Price = 0 %>
@@ -203,7 +226,7 @@
                                                                                         name="selectedAddress" value="<%= address.name %>,
                                                                             <%= address.housename %>, <%= address.city %>, <%= address.pincode %> 
                                                                             <%= address.phone %>" id="address"
-                                                                                        required>
+                                                                                        required >
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-sm-8">
@@ -254,7 +277,7 @@
                                                             <input type="hidden" name="code" id="code" value="<%= coupon %>">
                                                         </div>
                                                         
-                                                        <% if(coupons) {%>
+                                                        <% if(coupons && coupons.length>0) {%>
                                                             <div class="text-center">
                                                                 <div class="dropdown">
                                                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="codeDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -307,7 +330,7 @@
                                                         <label for="paymentMethod1">RazorPay</label>
                                                     </li>
                                                 </ul>
-                                                <button onclick="placeOrder()" type="submit" class="primary-btn">Place
+                                                <button onclick="placeOrders()" type="submit" class="primary-btn">Place
                                                     order</button>
                                             </div>
                             </div>
@@ -320,6 +343,8 @@
             </div>
         </section>
 
+
+        
         <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -380,6 +405,9 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
+
+                    let name = document.getElementById('userName').value
+                    
                       function showModal() {
                         $('#addressModal').modal('show');
                     }
@@ -510,7 +538,47 @@
                     //         }
                     //     })
                     // }
+                        
+                    function placeOrders() {
+                        const addressRadios = document.getElementsByName('selectedAddress');
+                        const paymentRadios = document.getElementsByName('payment');
+                        let isAddressSelected = false;
+                        let isPaymentSelected = false;
 
+                        // Loop through address radio buttons to check if one is selected
+                        for (const radio of addressRadios) {
+                            if (radio.checked) {
+                                isAddressSelected = true;
+                                break; // Exit loop if one is selected
+                            }
+                        }
+
+                        // Loop through payment radio buttons to check if one is selected
+                        for (const radio of paymentRadios) {
+                            if (radio.checked) {
+                                isPaymentSelected = true;
+                                break; // Exit loop if one is selected
+                            }
+                        }
+
+                        // Validate address selection
+                        if (!isAddressSelected) {
+                            alert('Please select an address.'); // Display an error message for address
+                            return; // Prevent further execution of the function
+                        }
+
+                        // Validate payment selection
+                        if (!isPaymentSelected) {
+                            alert('Please select a payment method.'); // Display an error message for payment
+                            return; // Prevent further execution of the function
+                        }
+
+                        // If both address and payment methods are selected, proceed with placing the order
+                        if(isAddressSelected && isPaymentSelected){
+                            placeOrder()
+                        }
+                        // Add your code to place the order here
+                    }
 
                     function placeOrder() {
 
@@ -535,7 +603,7 @@
                                     const url = '/order-placed/' + param
                                     window.location.href = url
                                 } else {
-                                    console.log("haaaaai");
+                                  
                                     razorpayPayment(response.order)
                                 }
                             }
@@ -559,7 +627,7 @@
                                 verifyPayment(response, order)
                             },
                             "prefill": {
-                                "name": "skdjfklsd", //your customer's name
+                                "name": name, //your customer's name
                                 "email": "gaurav.kumar@example.com",
                                 "contact": "9000090000"
                             },

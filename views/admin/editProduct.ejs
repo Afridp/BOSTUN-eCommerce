@@ -3,7 +3,51 @@
     <%- include('./layouts/sidebar.ejs') -%>
 
         <%- include('./layouts/topbar.ejs') -%>
+            <style>
+                /* Style for the image container */
+                /* Style for the image container */
+                .image-container {
+                    position: relative;
+                    /* Set the container as relative */
+                    display: inline-block;
+                    margin-right: 10px;
+                    /* Add spacing between images */
+                    margin-bottom: 15px;
+                    /* Add spacing between image containers */
+                    text-align: right;
+                    /* Align text (the button) to the right */
+                }
 
+                /* Style for the image */
+                .image-container img {
+                    max-width: 100px;
+                    /* Adjust the maximum width as needed */
+                    height: auto;
+                    border: 1px solid #ccc;
+                    display: block;
+                    /* Ensure images don't interfere with text alignment */
+                }
+
+                /* Style for the "Remove" button */
+                .image-container .close-button {
+                    position: absolute;
+
+                    right: 5px;
+                    background: none;
+                    color: red;
+                    /* Change the color as needed */
+                    border: none;
+                    padding: 0;
+                    cursor: pointer;
+                    font-size: 25px;
+                }
+
+                /* Hover effect for the "Remove" button */
+                .image-container .close-button:hover {
+                    color: darkred;
+                    /* Change the color on hover as needed */
+                }
+            </style>
 
 
             <section class="content-main">
@@ -21,8 +65,11 @@
                             </div> -->
 
                             <div class="card-body">
-
-                                <form action="/admin/productEdit" enctype="multipart/form-data" method="post">
+                                <input id="product_color" type="text" class="form-control" name="product_color"
+                                    value="<%= product.color %>" hidden />
+                                <input id="product_size" type="text" class="form-control" name="product_size"
+                                    value="<%= product.size  %>" hidden />
+                                <form action="/admin/productEdit" method="post">
 
                                     <div class="mb-4">
                                         <input type="hidden" placeholder="product_id" class="form-control"
@@ -41,9 +88,12 @@
                                     <div class="mb-4">
                                         <label class="form-label">Product Description</label>
 
-                                        <textarea placeholder="Description" class="form-control" rows="4"
+                                        <textarea placeholder="Description" class="form-control" rows="1"
                                             id="product_description" name="product_description" required>
-                                                 <%=product.description  %></textarea>
+    <%= product.description ? product.description.trim() : '' %>
+</textarea>
+
+
                                     </div>
 
 
@@ -55,31 +105,10 @@
                                                 <div class="row gx-2">
                                                     <input min="1" placeholder="Price" type="text" class="form-control"
                                                         id="product_price" name="product_price"
-                                                        value="<%=product.price  %> " required />
+                                                        value="<%= product.price  %> " required />
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
-                                            <div class="mb-4">
-                                                <label class="form-label">Size</label>
-                                                <div class="row gx-2">
-                                                    <select class="form-select" id="product_size" name="product_size[]"
-                                                        multiple required>
-                                                        <!-- <option value="" selected disabled>Select a size</option> -->
-                                                        <option value="XS">XS</option>
-                                                        <option value="S">S</option>
-                                                        <option value="M">M</option>
-                                                        <option value="L">L</option>
-                                                        <option value="XL">XL</option>
-                                                        <!-- Add more size options as needed -->
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
                                         <div class="col-lg-4">
                                             <div class="mb-4">
                                                 <label class="form-label">Product Quantity</label>
@@ -87,25 +116,132 @@
                                                 <div class="row gx-2">
                                                     <input min="1" placeholder="Quantity" id="product_quantity"
                                                         type="text" class="form-control" name="product_quantity"
-                                                        value="<%=product.quantity  %>" required />
+                                                        value="<%=product.quantity %>" required />
                                                 </div>
                                             </div>
                                         </div>
+
+
+
+                                    </div>
+
+
+                                    <div class="row">
+
                                         <div class="col-lg-4">
                                             <div class="mb-4">
                                                 <label class="form-label">Color</label>
-                                                <div class="row gx-2">
-                                                    <select id="product_color" class="form-select"
-                                                        name="product_color[]" multiple required>
-                                                        <!-- <option value="" selected disabled>Select a color</option> -->
-                                                        <option value="red" style="color:red;">Red</option>
-                                                        <option value="blue" style="color: blue;">Blue</option>
-                                                        <option value="green" style="color:green;">Green</option>
-                                                        <option value="yellow" style="color: yellow;">Yellow</option>
-                                                        <option value="white" style="color: white;">White</option>
-                                                        <option value="black" style="color: black;">Black</option>
-                                                        <!-- Add more color options as needed -->
-                                                    </select>
+                                                <div class="row gx-2 color-checkboxes">
+
+
+
+                                                    <!-- Checkbox for Red -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorRed" name="product_color[]" value="red">
+                                                            <label class="form-check-label" for="colorRed"
+                                                                style="color:red;">Red</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Checkbox for Blue -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorBlue" name="product_color[]" value="blue">
+                                                            <label class="form-check-label" for="colorBlue"
+                                                                style="color: blue;">Blue</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorGreen" name="product_color[]" value="green">
+                                                            <label class=" form-check-label" for="colorGreen"
+                                                                style="color: green;">Green</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorYellow" name="product_color[]" value="yellow">
+                                                            <label class="form-check-label" for="colorYellow"
+                                                                style="color: yellow;">Yellow</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorWhite" name="product_color[]" value="white">
+                                                            <label class="form-check-label" for="colorWhite"
+                                                                style="color: rgb(106, 101, 101);">White</label>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Repeat similar code for other colors -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                id="colorBlack" name="product_color[]" value="black">
+                                                            <label class="form-check-label" for="colorBlack"
+                                                                style="color: black;">Black</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="col-lg-4">
+                                            <div class="mb-4">
+                                                <label class="form-label">Size</label>
+                                                <div class="row gx-2 size-checkboxes">
+                                                    <!-- Checkbox for XS -->
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeXS"
+                                                                name="product_size[]" value="XS">
+                                                            <label class="form-check-label" for="sizeXS">XS</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Checkbox for S -->
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeS"
+                                                                name="product_size[]" value="S">
+                                                            <label class="form-check-label" for="sizeS">S</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeM"
+                                                                name="product_size[]" value="M">
+                                                            <label class="form-check-label" for="sizeM">M</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeL"
+                                                                name="product_size[]" value="L">
+                                                            <label class="form-check-label" for="sizeL">L</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-auto">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="sizeXL"
+                                                                name="product_size[]" value="XL">
+                                                            <label class="form-check-label" for="sizeXL">XL</label>
+                                                        </div>
+                                                    </div>
+                                                    <!-- Repeat similar code for other sizes -->
                                                 </div>
                                             </div>
                                         </div>
@@ -119,41 +255,50 @@
 
                                                     <label class="form-label">Product Category</label>
 
+
                                                     <select class="form-select" name="product_category"
                                                         id="product_category" required>
-                                                        <% for( let category of categories) { %>
-
-                                                            <option value="<%=category._id %>">
-                                                                <%= category.name %>
+                                                        <% for (let category of categories) { %>
+                                                            <option value="<%= category._id %>" <% if
+                                                                (product.category.name===category.name) { %>selected<% }
+                                                                    %>>
+                                                                    <%= category.name %>
                                                             </option>
-
                                                             <% } %>
                                                     </select>
+
+
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
 
-                                    <div class="col-lg-12">
-                                        <div class="card mb-4">
-                                            <div class="card-header">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h4>Product Image</h4>
+                                        <button type="button" onclick="addImage()" class="btn btn-primary"
+                                            id="addImagBtn">Add</button>
+                                    </div>
 
-                                                <h4>Product Image</h4>
-
-                                            </div>
-
-                                            <div class="card-body">
-                                                <div class="input-upload">
-                                                    <% product.image.forEach((image)=> {%>
-                                                        <img id="product_img" src="/images/<%= image%>" alt="" />
-                                                        <% }) %>
-                                                            <input name="product_img" class="form-control" type="file"
-                                                                accept="image/*" onchange="viewImage(event)" multiple />
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <% product.image.forEach((image, index)=> { %>
+                                                <div class="col-3" id="pdtImage">
+                                                    <div class="image-container">
+                                                        <img class="img-fluid img-thumbnail"
+                                                            id="product_img_<%= index %>" src="/images/<%= image %>"
+                                                            alt="" />
+                                                        <a href="#"
+                                                            onclick="deleteImg(event, '<%= image %>', '<%= product._id %>')"
+                                                            class="btn btn-danger btn-sm delete-button mb-3 delete-image">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <% }) %>
                                         </div>
                                     </div>
+
                                     <div>
                                         <!-- <button class="btn btn-md rounded font-sm hover-up">
                                             Submit
@@ -172,15 +317,123 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
+
+                    const deleteImg = async (event, img, prdtId, index) => {
+                        try {
+                            event.preventDefault();
+                            const deleted = await axios.put("/admin/deleteImage", {
+                                img,
+                                prdtId,
+                            });
+                            if (deleted) {
+                                alert("Item has been removed");
+                                const imageContainer = event.target.parentNode.parentNode;
+                                imageContainer.style.display = "none";
+
+                                // Remove the entire div containing the image and delete button
+                                const parentDiv = imageContainer.parentNode;
+                                parentDiv.removeChild(imageContainer);
+                            }
+                        } catch (error) {
+                            console.log(error.message);
+                        }
+                    };
+
+                    function addImage() {
+                        let prdtId = document.getElementById('product_id').value
+                        const url = `/admin/addImages?productId=${prdtId}`;
+                        // Redirect to the constructed URL
+                        windowlocation.href = url;
+                    }
+
+
                     function viewImage(event) {
                         document.getElementById("product_img").src = URL.createObjectURL(
                             event.target.files[0]
                         );
+                        document.getElementById("product_img_input").value =
+                            event.target.files[0].name;
                     }
 
                     let product_name = document.getElementById("product_name");
                     let product_price = document.getElementById("product_price");
-                    let product_quantity = document.getElementById("product_quantity");
+                    let product_quantity = document.getElementById("product_quantity")
+                    const size = document.getElementById('product_size').value
+                    let select = size.split(',')
+                    const color = document.getElementById('product_color').value
+                    let colors = color.split(',')
+
+
+
+
+                    function checkCheckboxes(checkboxes, values) {
+                        checkboxes.forEach((checkbox) => {
+                            if (values.includes(checkbox.value)) {
+                                checkbox.checked = true;
+                            }
+                        });
+                    }
+
+                    // function checkCheckboxe(checkboxes,values) {
+                    //     checkboxes.forEach((checkbox) => {
+                    //         if (values.includes(checkbox.value)) {
+                    //             checkbox.checked = true;
+                    //         }
+                    //     });
+                    // }
+
+
+                    // const sizeContainer = document.querySelector('.size-checkboxes');
+
+                    // // Define your size options
+                    // const sizeOptions = ['XS', 'S', 'M', 'L', 'XL']; // Add more sizes as needed
+
+                    // Dynamically create checkboxes
+                    // sizeOptions.forEach((size) => {
+                    //     const checkboxDiv = document.createElement('div');
+                    //     checkboxDiv.classList.add('col-auto');
+
+                    //     const checkbox = document.createElement('input');
+                    //     checkbox.classList.add('form-check-input');
+                    //     checkbox.type = 'checkbox';
+                    //     checkbox.name = 'product_size[]';
+                    //     checkbox.value = size;
+                    //     checkbox.id = `size${size}`;
+
+                    //     const label = document.createElement('label');
+                    //     label.classList.add('form-check-label');
+                    //     label.htmlFor = `size${size}`;
+                    //     label.textContent = size;
+
+                    //     checkboxDiv.appendChild(checkbox);
+                    //     checkboxDiv.appendChild(label);
+                    //     sizeContainer.appendChild(checkboxDiv);
+                    // });
+
+                    // Get all size checkboxes
+                    const sizeCheckboxes = document.querySelectorAll('.size-checkboxes input[type="checkbox"]');
+                    const colorCheckboxes = document.querySelectorAll('.color-checkboxes input[type="checkbox"]');
+
+                    // Check size checkboxes based on product.size
+
+                    checkCheckboxes(sizeCheckboxes, select);
+                    checkCheckboxes(colorCheckboxes, colors);
+
+
+                    // Assuming product.category contains the selected category _id
+
+
+                    // Get the select element by its id
+                    const selectElement = document.getElementById('product_category').value
+
+                    // Loop through the options and set the selected attribute if the value matches
+                    for (let i = 0; i < selectElement.options.length; i++) {
+                        const option = selectElement.options[i];
+                        if (option.value === productCategory) {
+                            option.selected = true;
+                        }
+                    }
+
 
                     product_name.addEventListener("input", () => {
                         if (product_name.value.trim() == "") {
@@ -211,22 +464,22 @@
                             product_quantity.setCustomValidity("");
                         }
                     });
-                    console.log("haai") ;
 
-                    const productSize = null
 
-                    // Get a reference to the select element
-                    const selectElement = document.getElementById('product_size');
+                    // const productSize = null
 
-                    // Loop through each option
-                    for (let i = 0; i < selectElement.options.length; i++) {
-                        const option = selectElement.options[i];
+                    // // Get a reference to the select element
+                    // const selectElement = document.getElementById('product_size');
 
-                        // Check if the option value is in the productSize array
-                        if (productSize.includes(option.value)) {
-                            option.selected = true; // Set the selected attribute
-                        }
-                    }
+                    // // Loop through each option
+                    // for (let i = 0; i < selectElement.options.length; i++) {
+                    //     const option = selectElement.options[i];
+
+                    //     // Check if the option value is in the productSize array
+                    //     if (productSize.includes(option.value)) {
+                    //         option.selected = true; // Set the selected attribute
+                    //     }
+                    // }
 
 
                 </script>

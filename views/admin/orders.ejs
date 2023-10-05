@@ -4,31 +4,11 @@
 
         <%- include('./layouts/topbar.ejs') -%>
             <style>
-              /* Style for the tooltip container */
-.tooltip {
-  position: absolute;
-  background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  padding: 10px;
-  max-width: 200px;
-  z-index: 1;
-  display: none; /* Initially hidden */
-  top: 100%; /* Position below the link */
-  left: 0; /* Align with the link */
-}
-
-/* Style to position the tooltip above the link */
-.tooltip::before {
-  content: "";
-  position: absolute;
-  bottom: -10px; /* Adjust to position above or below the link */
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #f9f9f9 transparent transparent transparent;
-}
-
+                /* Style for the tooltip container */
+                .custom-tooltip {
+                    --bs-tooltip-bg: var(--bd-violet-bg);
+                    --bs-tooltip-color: var(--bs-white);
+                }
             </style>
             <!-- card-header end// -->
             <section class="content-main">
@@ -39,22 +19,23 @@
                     <div class="card-body">
                         <div class="table-responsive">
                             <table id="myTable" class="table table-hover">
-                                <% for(let order=0;order<orders.length;order++){%>
-                                    <thead>
-                                        <tr>
-                                            <th>#ID</th>
-                                            <th scope="col">User Name</th>
-                                            <th scope="col">Payment Method</th>
-                                            <th scope="col">Total</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col" class="t">Orders</th>
-                                            <th scope="col">Status</th>
-                                            <% if( orders[order].status=="waiting for approval" ) {%>
-                                                <th scope="col">Reason</th>
-                                                <% } %>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                                <thead>
+                                    <tr>
+                                        <th>#ID</th>
+                                        <th scope="col">User Name</th>
+                                        <th scope="col">Payment Method</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col" class="t">Orders</th>
+                                        <th scope="col">Status</th>
+                                        <% if(hasCancelReasonAndNotForCancellation){ %>
+
+                                            <th scope="col">Reason</th>
+                                            <% } %>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(let order=0;order<orders.length;order++){%>
 
 
 
@@ -124,19 +105,22 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <% if (orders[order].status === "waiting for approval") { %>
-                                                  <a href="#" class="see-why-link">See Why</a>
-                                                  <div class="tooltip">
-                                                    <%= orders[order].cancelreason %>
-                                                  </div>
-                                                <% } %>
-                                              </td>
-                                              
+                                                <% if (orders[order].status==="waiting for approval" ) { %>
+                                                    <a type="" class=""
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        data-bs-custom-class="custom-tooltip"
+                                                        data-bs-title=" <%= orders[order].cancelReason %>">
+                                                        See Why
+                                                </a>
+
+                                                    <% } %>
+                                            </td>
+
                                             <!-- </div> -->
                                             <!-- dropdown //end -->
+                                            <% } %>
                                         </tr>
-                                    </tbody>
-                                    <% } %>
+                                </tbody>
                             </table>
                         </div>
                         <!-- table-responsive //end -->
@@ -158,7 +142,10 @@
                         </ul>
                     </nav>
                 </div> -->
-                </div>
+
+                
+
+                        </div>
             </section>
 
 
@@ -211,21 +198,16 @@
             <%- include('./layouts/footer.ejs') -%>
 
                 <script>
+               
 
+
+                    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
                     // Get references to the "See Why" links and tooltip containers
                     const seeWhyLinks = document.querySelectorAll('.see-why-link');
                     const tooltips = document.querySelectorAll('.tooltip');
 
                     // Add a click event listener to each "See Why" link
-                    seeWhyLinks.forEach((seeWhyLink, index) => {
-                        seeWhyLink.addEventListener('click', function (event) {
-                            event.preventDefault();
-
-                            // Toggle the visibility of the corresponding tooltip
-                            const tooltip = tooltips[index];
-                            tooltip.style.display = tooltip.style.display === 'none' ? 'block' : 'none';
-                        });
-                    });
 
                     const orderStatus = async (status, orderId) => {
                         try {

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { array } = require("../middleware/uploadImage");
 
 
 const cartSchema = new mongoose.Schema({
@@ -25,6 +26,14 @@ const cartSchema = new mongoose.Schema({
         price : {
             type : Number,
             required: true
+        },
+        color : {
+            type : Array,
+            required : true
+        },
+        size : {
+            type :Array,
+            required : true
         },
 
         totalPrice : {

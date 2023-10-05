@@ -6,7 +6,7 @@ const cartModel = require('../models/cartModel')
 const mongoose = require('mongoose')
 
 
-const loadCart = async (req, res) => {
+const loadCart = async (req, res, next) => {
     try {
         const { userid } = req.session
         if (!userid) {
@@ -69,14 +69,15 @@ const loadCart = async (req, res) => {
             }
             res.render('shoppingCart', { user, userid, cartData, total, discountAmt, originalAmts, currentPage })
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const addToCart = async (req, res) => {
+const addToCart = async (req, res, next) => {
     try {
-        const { productId } = req.body
+        const { productId, selectedColor, selectedSize } = req.body
+        console.log(selectedColor, selectedSize);
         const { userid } = req.session
         if (!userid) {
             res.redirect('/login')
@@ -93,8 +94,7 @@ const addToCart = async (req, res) => {
             })
 
             const cart = await cartModel.findOne({ userId: userid })
-            // checking that this user has cart 
-            // if(product.quantity>=cart.items.quantity){
+
 
 
             if (cart) {
@@ -124,6 +124,10 @@ const addToCart = async (req, res) => {
                                     'items.$.quantity': req.body.quantity,
                                     'items.$.totalPrice': req.body.quantity * Math.ceil(itemPrice)
 
+                                },
+                                $push: {
+                                    'items.$.size': selectedSize,
+                                    'items.$.color': selectedColor
                                 }
                             }
                         )
@@ -151,6 +155,8 @@ const addToCart = async (req, res) => {
                                 items: {
                                     product_Id: req.body.productId,
                                     quantity: req.body.quantity,
+                                    size: [selectedSize],
+                                    color: [selectedColor],
                                     price: product.price,
                                     totalPrice: totalPrice
                                 }
@@ -182,6 +188,8 @@ const addToCart = async (req, res) => {
                     items: [{
                         product_Id: new mongoose.Types.ObjectId(productId),
                         quantity: req.body.quantity,
+                        size: [selectedSize],
+                        color: [selectedColor],
                         price: product.price,
                         totalPrice: itemPrice
                     }]
@@ -191,13 +199,13 @@ const addToCart = async (req, res) => {
             }
             res.json({ success: true })
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
 
-const deleteItems = async (req, res) => {
+const deleteItems = async (req, res, next) => {
     try {
         const { userid } = req.session
         const { productId } = req.body
@@ -214,12 +222,12 @@ const deleteItems = async (req, res) => {
                 })
         }
         res.json({ success: true })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const loadCheckout = async (req, res) => {
+const loadCheckout = async (req, res, next) => {
     try {
 
 
@@ -316,12 +324,12 @@ const loadCheckout = async (req, res) => {
             });
         }
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 };
 
-const qtyChanges = async (req, res) => {
+const qtyChanges = async (req, res, next) => {
     try {
         const { count } = req.body;
         const { productId } = req.body;
@@ -426,8 +434,8 @@ const qtyChanges = async (req, res) => {
         } else {
             res.json({ success: false, message: 'Invalid count value' });
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 };
 

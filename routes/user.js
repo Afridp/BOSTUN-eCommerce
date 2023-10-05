@@ -4,6 +4,7 @@ const userController=require('../controllers/userController')
 const cartController = require('../controllers/cartController')
 const checkoutController = require('../controllers/checkoutController')
 const orderController = require('../controllers/orderController')
+const errorHandler = require("../middleware/errorHandler");
 const auth = require('../middleware/userSession') 
 
 
@@ -113,6 +114,7 @@ user_router.put('/deleteFromWishlist',auth.isLogin,userController.deleteFromWish
 
 user_router.patch('/cancelOrder',auth.isLogin,userController.cancelOrder)
 
+// user_router.use(errorHandler);
 
 // user_router.get('/loadWallet',auth.isLogin,walletController.loadWallet)
 module.exports = user_router;

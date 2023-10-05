@@ -151,7 +151,7 @@ input:focus::-moz-placeholder {
   height: 100vh !important;
 }
 
-*:focus,
+/* *:focus,
 select:focus,
 .custom-select:focus,
 button:focus,
@@ -170,7 +170,7 @@ input[type=number]:focus,
   outline: none !important;
   -webkit-box-shadow: none;
           box-shadow: none;
-}
+} */
 
 .font-xxs {
   font-size: 10px;

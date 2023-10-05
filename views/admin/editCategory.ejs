@@ -34,9 +34,11 @@
 
                                     <div class="mb-4">
                                         <label class="form-label">Description</label>
-                                        <textarea  class="form-control"
-                                            name="category_description">
-                                                <%=category.description %></textarea>
+                                      
+                                                <textarea  class="form-control" rows="1"
+                                            id="product_description" name="category_description" required>
+    <%= category.description ? category.description.trim() : '' %>
+</textarea>
                                     </div>
                                     <div class="d-grid">
                                         <button type="submit" class="btn btn-primary">

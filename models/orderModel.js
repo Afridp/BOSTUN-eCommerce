@@ -1,5 +1,6 @@
 
 const mongoose = require('mongoose')
+const { array } = require('../middleware/uploadImage')
 
 const orderSchema = new mongoose.Schema({
 
@@ -58,6 +59,14 @@ const orderSchema = new mongoose.Schema({
         quantity: {
             type: Number,
             required: true
+        },
+        color : {
+            type :Array,
+            required: true
+        },
+        size : {
+            type : Array,
+            required : true
         },
 
         price: {

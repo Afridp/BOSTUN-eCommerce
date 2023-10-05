@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div>  -->
-        
+
             <!-- <div class="hero__items set-bg" data-setbg="/user/img/hero/hero-2.jpg">
                 <div class="container">
                     <div class="row">
@@ -51,7 +51,7 @@
                 </div>
             </div> -->
         </div>
-    </section>
+        </section>
         <section class="hero">
             <div class="hero__slider owl-carousel">
                 <% for (let i=0; i < banner.length; i++) { %>
@@ -78,7 +78,7 @@
                                             <a href="#"><i class="fa fa-twitter"></i></a>
                                             <a href="#"><i class="fa fa-pinterest"></i></a>
                                             <a href="#"><i class="fa fa-instagram"></i></a>
-                                        </div>      
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -213,9 +213,7 @@
                                 </div>
 
                                 <div class="product__item__text">
-                                    <h6>
-                                        <%= product.name %>
-                                    </h6>
+                                  
                                     <!-- <a href="#" class="add-cart">+ Add To Cart</a> -->
                                     <div class="rating">
                                         <% for (let i=0; i < product.rating; i++) { %>
@@ -225,14 +223,14 @@
                                                     <i class="fa fa-star-o"></i>
                                                     <% } %>
                                     </div>
-                                    <h5>₹<%= product.price.toFixed(2) %>
-                                    </h5>
+                                    
                                    
                                 </div>
                             </div>
                         </div>
                         <% }) %>
                 </div>
+
 
                 <!-- <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix hot-sales">
                     <div class="product__item">

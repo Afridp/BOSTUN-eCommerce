@@ -3267,7 +3267,7 @@ ol {
 	border-color: #000000;
 }
 
-.blog__details__comment form textarea {
+/* .blog__details__comment form textarea {
 	height: 120px;
 	width: 100%;
 	border: 1px solid #e1e1e1;
@@ -3280,9 +3280,9 @@ ol {
 	-webkit-transition: all, 0.3s;
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;
-}
+} */
 
-.blog__details__comment form textarea::-webkit-input-placeholder {
+/* .blog__details__comment form textarea::-webkit-input-placeholder {
 	color: #b7b7b7;
 }
 
@@ -3304,7 +3304,7 @@ ol {
 
 .blog__details__comment form textarea:focus {
 	border-color: #000000;
-}
+} */
 
 .blog__details__comment form button {
 	letter-spacing: 4px;
@@ -3393,7 +3393,7 @@ ol {
 	color: #b7b7b7;
 }
 
-.contact__form textarea {
+/* .contact__form textarea {
 	height: 150px;
 	width: 100%;
 	border: 1px solid #e1e1e1;
@@ -3423,7 +3423,7 @@ ol {
 
 .contact__form textarea::placeholder {
 	color: #b7b7b7;
-}
+} */
 
 .contact__form button {
 	letter-spacing: 4px;

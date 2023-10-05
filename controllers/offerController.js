@@ -5,18 +5,18 @@ const cartModel = require('../models/cartModel');
 const orderModel = require('../models/orderModel');
 const offerModel = require('../models/offerModel')
 
-const offerPage = async (req,res)=>{
+const offerPage = async (req,res,next)=>{
     try {
         let {message} = req.session
         req.session.message= ''
       
          res.render('addOffer',{message})
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const addOffer = async(req,res)=>{
+const addOffer = async(req,res,next)=>{
     try {
         const {name,startingDate,expiryDate,percentage} = req.body
 
@@ -38,12 +38,12 @@ const addOffer = async(req,res)=>{
          req.session.message="saved"
          res.redirect('/admin/offers')
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const applyProductOffer = async  (req,res) => {
+const applyProductOffer = async  (req,res,next) => {
     try {
 
         const { offerId, productId } = req.body
@@ -55,13 +55,13 @@ const applyProductOffer = async  (req,res) => {
          await productModel.find({_id:productId})
 
         res.json({ success : true})
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
 
     }
 }
 
-const removeProductOffer = async(req,res)=>{
+const removeProductOffer = async(req,res,next)=>{
     try {
         const { productId } = req.body
              await productModel.updateOne({ _id : productId },{
@@ -70,12 +70,12 @@ const removeProductOffer = async(req,res)=>{
                 }
             })
             res.json({ success : true })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const applycategoryOffer = async(req,res)=>{
+const applycategoryOffer = async(req,res,next)=>{
     try {
         const {offerId,categoryId}=req.body
         await catModel.updateOne({_id:categoryId },{
@@ -85,12 +85,12 @@ const applycategoryOffer = async(req,res)=>{
         })
         res.json({success:true})
 
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const removeCategoryOffer = async(req,res)=>{
+const removeCategoryOffer = async(req,res,next)=>{
     try {
         const { categoryId } = req.body
              await catModel.updateOne({ _id : categoryId },{
@@ -99,8 +99,8 @@ const removeCategoryOffer = async(req,res)=>{
                 }
             })
             res.json({ success : true })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 

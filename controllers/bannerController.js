@@ -2,27 +2,27 @@ const bannerModel = require('../models/bannerModel')
 const path = require('path')
 const sharp = require('sharp')
 
-const loadBanner = async (req, res) => {
+const loadBanner = async (req, res, next) => {
     try {
         const banner = await bannerModel.find()
 
         res.render('banner', { banner })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const addBanner = async (req, res) => {
+const addBanner = async (req, res, next) => {
     try {
         let { message } = req.session
         req.session.message = ''
         res.render('addBanner', { message })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const postBanner = async (req, res) => {
+const postBanner = async (req, res, next) => {
     try {
         const { title, bannerDescription, bannerOccassion } = req.body
 
@@ -34,7 +34,7 @@ const postBanner = async (req, res) => {
             res.redirect('/admin/bannerLoad')
         } else {
             const imageArr = []
-            
+
             if (req.files && req.files.length > 0) {
                 for (let i = 0; i < req.files.length; i++) {
                     const filePath = path.join(
@@ -48,7 +48,7 @@ const postBanner = async (req, res) => {
                     imageArr.push(req.files[i].filename);
                 }
             }
-          
+
             const banner = new bannerModel({
                 title: title,
                 description: bannerDescription,
@@ -62,41 +62,41 @@ const postBanner = async (req, res) => {
             req.session.message = "saved"
             res.redirect('/admin/addBanner')
         }
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const removeBanner = async (req, res) => {
+const removeBanner = async (req, res, next) => {
     try {
         const { bannerId } = req.body
         await bannerModel.findByIdAndDelete(bannerId)
 
         res.json({ success: true })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
     }
 }
 
-const loadEditBanner = async (req, res) => {
+const loadEditBanner = async (req, res, next) => {
     try {
         const { id } = req.query
         const banner = await bannerModel.findById({ _id: id })
 
         res.render('bannerEdit', { banner })
-    } catch (error) {
-        console.log(error.message);
+    } catch (err) {
+        next(err)
 
     }
 }
 
-const editBanner = async (req, res) => {
+const editBanner = async (req, res, next) => {
     try {
         const {
-            banner_id, banner_title, banner_description,banner_occassion
+            banner_id, banner_title, banner_description, banner_occassion
         } = req.body;
         const imageArr = []
-            
+
         if (req.files && req.files.length > 0) {
 
             for (let i = 0; i < req.files.length; i++) {
@@ -135,9 +135,9 @@ const editBanner = async (req, res) => {
             )
             res.redirect("/admin/bannerLoad");
         }
-        
-    } catch (error) {
-        console.log(error.message);
+
+    } catch (err) {
+        next(err)
     }
 }
 
