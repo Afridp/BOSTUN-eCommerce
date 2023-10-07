@@ -27,7 +27,7 @@ const loadProducts = async (req, res, next) => {
 const addProductPage = async (req, res, next) => {
     try {
         let { product_Id } = req.session
-
+        console.log(product_Id,"hjsdafsd");
         if (product_Id) {
 
             var product = await productModel.findOne({ _id: product_Id })
@@ -119,12 +119,13 @@ const imageCropped = async (req, res, next) => {
                     }
                 }
             );
+            req.session.product_Id = product_Id
             res.status(200).json({ message: "Image saved successfully" });
         } else {
             req.session.product_Id = product_Id
             res.status(400).json({ message: "Only four images allowed" })
         }
-        req.session.product_Id = product_Id
+        console.log("haaaaaijkdsfnsakjdfn");
 
 
     } catch (err) {

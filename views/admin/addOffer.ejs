@@ -43,13 +43,16 @@
 
                             <div class="form-group mb-4">
                               <label class="form-label" for="starting-date">Starting Date</label>
-                              <input type="date" class="form-control" id="starting-date" name="startingDate" required>
+                              <input type="date" class="form-control" id="starting-date" name="startingDate" required
+                                min="<?= date('Y-m-d'); ?>">
                             </div>
 
                             <div class="form-group mb-4">
-                              <label class="form-label" for="">Expiry Date</label>
-                              <input type="date" class="form-control" id="expiry-date" name="expiryDate" required>
+                              <label class="form-label" for="expiry-date">Expiry Date</label>
+                              <input type="date" class="form-control" id="expiry-date" name="expiryDate" required
+                                min="<?= date('Y-m-d'); ?>">
                             </div>
+
 
                             <div class="form-group mb-4">
                               <label for="percentage" class="form-label">Percentage</label>
@@ -80,60 +83,85 @@
 
 
         <script>
-          const formOffer = document.getElementById("offer-form")
-          formOffer.addEventListener("submit", (event) => {
-            console.log("haaaai this is event");
-            const errorContainer = document.getElementById('errorContainer')
-            const name = document.getElementById("offer-name").value.trim()
-            const startingDate = document.getElementById('starting-date').value.trim()
-            const expiryDate = document.getElementById('expiry-date').value.trim()
-            const percentage = document.getElementById('percentage').value.trim()
-            errorContainer.innerHTML = ""
-            errorContainer.style.display = 'none'
-            console.log(name);
-            const now = new Date()
-
-            if (!name || !startingDate || !expiryDate || !percentage) {
-              console.log(1);
-              event.preventDefault()
-              errorContainer.innerHTML = "All fields should be filled"
-              errorContainer.style.display = 'block'
-            }
-
-            if (name.length < 5) {
-              console.log(2);
-              event.preventDefault()
-              errorContainer.innerHTML = "Name should contains atleast 4 letters"
-              errorContainer.style.display = 'block'
-            }
-
-            const pattern = /^[a-zA-Z0-9]+$/
-            if (!pattern.test(name)) {
-              console.log(3);
-              event.preventDefault()
-              errorContainer.innerHTML = "Name should not contains symbols or spaces"
-              errorContainer.style.display = 'block'
-            }
-
-            if (startingDate > expiryDate || expiryDate < now) {
-              console.log(4);
-              event.preventDefault()
-              errorContainer.innerHTML = "Enter a valid date"
-              errorContainer.style.display = 'block'
-            }
-
-            if (percentage > 100 || percentage < 0) {
-              console.log(6);
-              event.preventDefault()
-              errorContainer.innerHTML = "Percentage cannot be greater than 100 or less than zero"
-              errorContainer.style.display = 'block'
-            }
-            console.log(7);
 
 
-          })
+          document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('offer-form');
+            form.addEventListener('submit', function (event) {
+              // Prevent the default form submission
+              event.preventDefault();
 
+              // Perform validation checks here
+              const offerName = document.getElementById('offer-name').value;
+              const nameRegex = /^[a-zA-Z\s]+$/; // Allow only letters and spaces
+              const startingDate = new Date(document.getElementById('starting-date').value);
+              const expiryDate = new Date(document.getElementById('expiry-date').value);
+              const percentage = parseInt(document.getElementById('percentage').value, 10);
 
+              // Validation checks
+              let isValid = true;
 
+              if (!nameRegex.test(offerName)) {
+                isValid = false;
+                document.getElementById('errorContainer').style.display = 'block';
+                document.getElementById('errorContainer').textContent = 'Offer Name should only contain letters and spaces.';
+              }
+
+              if (expiryDate < startingDate) {
+                isValid = false;
+                document.getElementById('errorContainer').style.display = 'block';
+                document.getElementById('errorContainer').textContent = 'Expiry Date cannot be earlier than Starting Date.';
+              }
+
+              if (percentage < 1 || percentage > 100) {
+                isValid = false;
+                document.getElementById('errorContainer').style.display = 'block';
+                document.getElementById('errorContainer').textContent = 'Percentage should be between 1 and 100.';
+              }
+
+              // If all validation checks pass, submit the form
+              if (isValid) {
+                form.submit();
+              }
+            });
+          });
+
+          document.addEventListener('DOMContentLoaded', function () {
+            const currentDate = new Date().toISOString().split('T')[0]; // Get the current date in "YYYY-MM-DD" format
+
+            document.getElementById('starting-date').setAttribute('min', currentDate);
+            document.getElementById('expiry-date').setAttribute('min', currentDate);
+          });
 
         </script>
+
+        <!-- // const formOffer = document.getElementById("offer-form")
+        // formOffer.addEventListener("submit", (event) => {
+        // console.log("haaaai this is event");
+        // const errorContainer = document.getElementById('errorContainer')
+        // const name = document.getElementById("offer-name").value.trim()
+        // const startingDate = document.getElementById('starting-date').value.trim()
+        // const expiryDate = document.getElementById('expiry-date').value.trim()
+        // const percentage = document.getElementById('percentage').value.trim()
+        // errorContainer.innerHTML = ""
+        // errorContainer.style.display = 'none'
+        // console.log(name);
+        // const now = new Date()
+
+        // if (!name || !startingDate || !expiryDate || !percentage) {
+        // console.log(1);
+        // event.preventDefault()
+        // errorContainer.innerHTML = "All fields should be filled"
+        // errorContainer.style.display = 'block'
+        // }
+
+        // if (name.length < 5) { // console.log(2); // event.preventDefault() //
+          errorContainer.innerHTML="Name should contains atleast 4 letters" // errorContainer.style.display='block' // }
+          // const pattern=/^[a-zA-Z0-9]+$/ // if (!pattern.test(name)) { // console.log(3); // event.preventDefault()
+          // errorContainer.innerHTML="Name should not contains symbols or spaces" //
+          errorContainer.style.display='block' // } // if (startingDate> expiryDate || expiryDate < now) { //
+            console.log(4); // event.preventDefault() // errorContainer.innerHTML="Enter a valid date" //
+            errorContainer.style.display='block' // } // if (percentage> 100 || percentage < 0) { // console.log(6); //
+              event.preventDefault() //
+              errorContainer.innerHTML="Percentage cannot be greater than 100 or less than zero" //
+              errorContainer.style.display='block' // } // console.log(7); // }) -->

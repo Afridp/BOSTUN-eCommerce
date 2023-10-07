@@ -282,7 +282,7 @@
 
                                     <div class="card-body">
                                         <div class="row">
-                                            <% product.image.forEach((image, index)=> { %>
+                                            <% product.image.forEach((image, index)=> { %>  
                                                 <div class="col-3" id="pdtImage">
                                                     <div class="image-container">
                                                         <img class="img-fluid img-thumbnail"
@@ -343,7 +343,7 @@
                         let prdtId = document.getElementById('product_id').value
                         const url = `/admin/addImages?productId=${prdtId}`;
                         // Redirect to the constructed URL
-                        windowlocation.href = url;
+                        window.location.href = url;
                     }
 
 

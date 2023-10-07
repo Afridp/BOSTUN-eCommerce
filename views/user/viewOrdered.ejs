@@ -2,62 +2,65 @@
 
   <%- include('./layouts/navbar.ejs') -%>
 
-<section class="vh-100 gradient-custom-2">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-md-10 col-lg-8 col-xl-6">
-        <div class="card card-stepper rounded-16 shadow-lg">
-          <div class="card-header p-4 bg-light">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <p class="text-muted mb-2">
-                  Order ID:
-                  <span class="fw-bold text-dark"><%= order._id %></span>
-                </p>
-                <p class="text-muted mb-0">
-                  Ordered On:
-                  <span class="fw-bold text-dark"><%= order.date %></span>
-                </p>
-                <p class="text-muted mb-0">
-                  Order Status:
-                  <span class="fw-bold"><%= order.status %></span>
-                </p>
+    <section class=" gradient-custom-2">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-md-10 col-lg-8 col-xl-6">
+            <div class="card card-stepper rounded-16 shadow-lg">
+              <div class="card-header p-4 bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <p class="text-muted mb-2">
+                      Order ID:
+                      <span class="fw-bold text-dark">
+                        <%= order._id %>
+                      </span>
+                    </p>
+                    <p class="text-muted mb-0">
+                      Ordered On:
+                      <span class="fw-bold text-dark">
+                        <%= order.date %>
+                      </span>
+                    </p>
+                    <p class="text-muted mb-0">
+                      Order Status:
+                      <span class="fw-bold">
+                        <%= order.status %>
+                      </span>
+                    </p>
+                  </div>
+                </div>
               </div>
+              <% order.items.forEach(element=> { %>
+                <div class="card-body p-4">
+                  <div class="d-flex flex-row mb-4 pb-2">
+                    <div class="flex-fill">
+                      <h5 class="font-weight-bold mb-3">
+                        <%= element.product_Id.name %>
+                      </h5>
+                      <p class="text-muted mb-2">
+                        Quantity: <span class="fw-bold">
+                          <%= element.quantity %>
+                        </span>
+                      </p>
+                      <h4 class="mb-3">₹<%= element.product_Id.price %>
+                      </h4>
+                    </div>
+                    <div>
+                      <img class="align-self-center img-fluid" src="/images/<%= element.product_Id.image[0] %>"
+                        width="150" alt="Product Image" />
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
             </div>
           </div>
-          <% order.items.forEach(element => { %>
-          <div class="card-body p-4">
-            <div class="d-flex flex-row mb-4 pb-2">
-              <div class="flex-fill">
-                <h5 class="font-weight-bold mb-3">
-                  <%= element.product_Id.name %>
-                </h5>
-                <p class="text-muted mb-2">
-                  Quantity: <span class="fw-bold"><%= element.quantity %></span>
-                </p>
-                <p class="text-muted mb-2">
-                  Quantity: <span class="fw-bold"><%= element.quantity %></span>
-                </p>
-                <h4 class="mb-3">₹<%= element.product_Id.price %></h4>
-              </div>
-              <div>
-                <img
-                  class="align-self-center img-fluid"
-                  src="/images/<%= element.product_Id.image[0] %>"
-                  width="150"
-                  alt="Product Image"
-                />
-              </div>
-            </div>
-          </div>
-          <% }) %>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
 
-<%- include('./layouts/footerNavbar.ejs') -%>
 
-<%- include('./layouts/footer.ejs') -%>
+    <%- include('./layouts/footerNavbar.ejs') -%>
+
+      <%- include('./layouts/footer.ejs') -%>

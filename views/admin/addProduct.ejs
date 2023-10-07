@@ -332,6 +332,8 @@
                                 product_color: selectedColors
                             };
 
+                           
+
                             axios.post('/admin/addProduct', productData)
                                 .then((response) => {
 
@@ -386,7 +388,10 @@
                             //     });
                         }
                     }
+      
 
+
+           
                     let product_name = document.getElementById("product_name");
                     let product_price = document.getElementById("product_price");
                     let product_quantity = document.getElementById("product_quantity");

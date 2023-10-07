@@ -782,7 +782,7 @@ const addToWhishlist = async (req, res,next) => {
                 userId: userid,
                 "items.product_Id": new mongoose.Types.ObjectId(id),
             });
-            console.log(findProduct, "product");
+        
             if (findProduct) {
 
                 await whishlistModel.findOneAndUpdate(
