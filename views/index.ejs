@@ -1,8 +1,4 @@
-<%- include('./layouts/header.ejs') -%>
 
-    <%- include('./layouts/sidebar.ejs') -%>
-
-        <%- include('./layouts/topbar.ejs') -%>
 
             <section class="content-main">
                 <div class="content-header">
@@ -29,13 +25,11 @@
                                             name="category_name" required />
                                     </div>
 
-                                    <%if(typeof message!=='undefined ' ){%>
-                                        <div>
-                                            <p class="text-center text-danger">
-                                                <%= message %>
-                                            </p>
-                                        </div>
-                                        <%}%>
+                            
+
+
+
+
 
                                             <div class="mb-4">
                                                 <label class="form-label">Description</label>
@@ -69,60 +63,9 @@
                                         <tbody>
 
                                             <tr>
-                                                <%if(category && category.length>0){for(let i=0;i
-                                                    <category.length;i++){%>
-                                                        </category.length>
-                                                        <td>
-                                                            <%= i+1 %>
-                                                        </td>
-                                                        <td><b>
-                                                                <%= category[i].name%>
-                                                            </b></td>
-
-                                                        <td>
-                                                            <%= category[i].description %>
-                                                        </td>
-                                                        <td>
-                                                            <% if( category[i].offer ){%>
-                                                                <%= category[i].offer.name %>( <%=
-                                                                        category[i].offer.percentage %>% )<%} else { %>
-                                                                            No
-                                                                            offers<% }%>
-                                                        </td>
-                                                        <td>
-                                                            <% if ( category[i].offer ){%>
-
-                                                                <button onclick="removeOffer('<%= category[i]._id %>')"
-                                                                    class="btn btn-sm btn-outline-warning rounded font-sm">
-                                                                    Remove offer </button>
-                                                                <% } else {%>
-                                                                    <button class="btn btn-sm btn-outline-primary rounded
-                                                    font-sm" onclick="showModal('<%= category[i]._id %>')"> Apply offer
-                                                                    </button>
-                                                                    <% }%>
-                                                        </td>
-                                                        <td class="text-end">
-                                                            <a href="/admin/editCategory?id=<%= category[i]._id %>"
-                                                                class="btn btn-sm btn-success rounded font-sm text-white mt-15">Edit</a>
-
-                                                            <button id="categId<%= category[i]._id %>"
-                                                                onclick="categoryList('<%= category[i]._id %>')"
-                                                                class="btn btn-sm btn-danger rounded font-sm mt-15 ms-2">
-                                                                <%if(category[i].list===true){%>
-                                                                    Unlist
-                                                                    <%}else{%>
-                                                                        List
-                                                                        <%}%>
-                                                            </button>
-                                                        </td>
-
-                                            </tr>
-
-
-
-                                            <%}}else{%>
+                                              
                                                 <h5>Categories not found</h5>
-                                                <%}%>
+                                               
 
                                         </tbody>
                                     </table>
@@ -145,37 +88,6 @@
 
 
 
-                                    <!-- <table class="table table-hover text-end">
-                                        <thead>
-                                            <tr>
-                                               
-                                                <th>ID</th>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                                <th class="text-end">Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                             
-                                                <td>21</td>
-                                                <td><b>Cake & Milk</b></td>
-                                                <td>Cake & Milk</td>
-                                                
-                                                <td class="text-end">
-
-                                                    
-                                                    <div class="dropdown">                                                      
-                                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="#">View detail</a>
-                                                            <a class="dropdown-item" href="#">Edit info</a>
-                                                            <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                        </div>                                          
-                                                    </div>
-
-                                                    <!-- dropdown //end -->
-                                    </td>
                                     </tr>
 
 

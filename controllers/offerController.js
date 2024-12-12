@@ -5,7 +5,7 @@ const cartModel = require('../models/cartModel');
 const orderModel = require('../models/orderModel');
 const offerModel = require('../models/offerModel')
 
-const offerPage = async (req,res,next)=>{
+const offerPage  = async (req,res,next)=>{
     try {
         let {message} = req.session
         req.session.message= ''

@@ -194,7 +194,7 @@ const editProduct = async (req, res, next) => {
             categories: category,
             product,
         })
-
+ 
     } catch (err) {
         next(err)
     }

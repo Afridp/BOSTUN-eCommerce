@@ -35,7 +35,7 @@ app.use(
 //   app.use(flash())
 
 // Date format
-const shortDateFormat = "MMM Do YY"
+
 
 // Middle ware for moment date
 // app.locals.moment = moment;

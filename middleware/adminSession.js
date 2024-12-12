@@ -1,4 +1,4 @@
-const isAdminLogin = async (req, res,next) => {
+const isAdminLogin = async (req, res, next) => {
     try {
         if (req.session.adminSession) {
             next();
