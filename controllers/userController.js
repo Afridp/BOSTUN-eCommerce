@@ -42,9 +42,9 @@ const loadRegister = async (req, res,next) => {
     }
 
 }
-const postRegister = async (req, res,next) => {
+const postRegister = async (req, res, next) => {
     try {
-
+   
         const existingUser = await userModel.findOne({
             $or: [{ email: req.body.email }, { mobile: req.body.mobile }]
         });
@@ -72,7 +72,7 @@ const postRegister = async (req, res,next) => {
 
                 req.session.otpVerification = otpVerification
 
-
+                req.session.successMessage = "Otp send success"
                 res.redirect("/emailVerificationpage");
             } else {
                 res.render('registration', { message: "OOps..!Something went wrong.Please Retry" })
@@ -131,12 +131,20 @@ const sendOtpEmailVerification = async (email, user_id) => {
 
 const emailVerificationPage = async (req, res,next) => {
     try {
-        const { message, otpVerification } = req.session;
-        req.session.otpVerification = null
-        req.session.message = ""
-        res.render("emailVerification", { message, otp: otpVerification })
+        const { successMessage,message, otpVerification } = req.session;
+        
+        //NOTE - commanded because to keep the otp verification details available when refreshing the page 
+        // req.session.otpVerification = null  
+        
+        if (req.session) {
+            req.session.message = "";
+            req.session.successMessage = "";
+        }
+        
+        
+        res.render("emailVerification", {successMessage, message, otp: otpVerification })
     } catch (err) {
-        nect(err)
+        next(err)
     }
 }
 
@@ -145,7 +153,7 @@ const emailVerificationPage = async (req, res,next) => {
 const emailVerification = async (req, res,next) => {
     try {
         let { otp, userVerificationId } = req.body;
-       
+        req.session.successMessage = null
         let userId = userVerificationId;
 
         const UserOTPVerificationRecords = await userOtpVerification.find({ _id: userId })
@@ -203,7 +211,7 @@ const emailVerification = async (req, res,next) => {
                         req.session.user_id = userDetails
 
                         await userOtpVerification.deleteMany({ _id: userId });
-
+                            req.session.successMessage = "Registered Successfully, Login to continue"
                         res.redirect("/login");
                     }
                 }
@@ -222,10 +230,12 @@ const loginLoad = async (req, res,next) => {
     try {
         let { message } = req.session
         req.session.message = ""
+        let successMessage = req.session.successMessage 
+        console.log(req.session.successMessage);
         let currentPage = 'login'
         let { userid } = req.session
 
-        res.render('login', { message, currentPage, userid })
+        res.render('login', { successMessage,message, currentPage, userid })
     } catch (err) {
         next(err)
     }
@@ -280,7 +290,7 @@ const homeLoad = async (req, res,next) => {
         const banner = await bannerModel.find({ status: true })
         let currentPage = 'home'; // Define currentPage here
         const bestSellers = await productModel.find({list : true}).limit(8)
-        console.log(bestSellers);
+        
 
 
         res.render('index', { user, userid, currentPage, banner, bestSellers }); // Pass currentPage to the template

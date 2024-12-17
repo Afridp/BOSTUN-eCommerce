@@ -698,83 +698,90 @@ ol {
 /*---------------------
   Banner
 -----------------------*/
-
-.blog {
-	padding-bottom: 55px;
+/* General Container Setup */
+/* General Container Setup */
+.banner__grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single column grid for smaller screens */
+    gap: 30px;
 }
 
 .banner__item {
-	position: relative;
-	overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns: text and image */
+    align-items: center;
+    gap: 20px;
 }
 
-.banner__item:hover .banner__item__text a:after {
-	width: 40px;
-	background: #e53637;
+/* Reverse Layout for First Section */
+.banner__item--reverse {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Ensure 2 columns */
 }
 
-.banner__item.banner__item--middle {
-	margin-top: -75px;
+.banner__item--reverse .banner__item__text {
+    order: 1; /* Text first */
 }
 
-.banner__item.banner__item--middle .banner__item__pic {
-	float: none;
+.banner__item--reverse .banner__item__pic1 {
+    order: 2; /* Image second */
 }
 
-.banner__item.banner__item--middle .banner__item__text {
-	position: relative;
-	top: 0;
-	left: 0;
-	max-width: 100%;
-	padding-top: 22px;
-}
-
-.banner__item.banner__item--last {
-	margin-top: 100px;
-}
-
-.banner__item__pic {
-	float: right;
-}
-
+/* Text and Image Styling */
 .banner__item__text {
-	max-width: 300px;
-	position: absolute;
-	left: 0;
-	top: 140px;
+    text-align: left;
+}
+
+.banner__item__pic1 img,
+.banner__item__pic2 img {
+    max-width: 100%;
+    display: block;
+}
+
+/* Responsive Design for Small Screens */
+@media (max-width: 768px) {
+    .banner__item,
+    .banner__item--reverse {
+        grid-template-columns: 1fr; /* Stack items vertically */
+        text-align: center;
+    }
+    .banner__item__text,
+    .banner__item__pic1,
+    .banner__item__pic2 {
+        order: unset; /* Reset the order to default for mobile */
+    }
 }
 
 .banner__item__text h2 {
-	color: #111111;
-	font-weight: 700;
-	line-height: 46px;
-	margin-bottom: 10px;
+    color: #111111;
+    font-weight: 700;
+    line-height: 46px;
+    margin-bottom: 10px;
 }
 
 .banner__item__text a {
-	display: inline-block;
-	color: #111111;
-	font-size: 13px;
-	font-weight: 700;
-	letter-spacing: 4px;
-	text-transform: uppercase;
-	padding: 3px 0;
-	position: relative;
+    display: inline-block;
+    color: #111111;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 3px 0;
+    position: relative;
 }
 
 .banner__item__text a:after {
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	width: 100%;
-	height: 2px;
-	background: #111111;
-	content: "";
-	-webkit-transition: all, 0.3s;
-	-o-transition: all, 0.3s;
-	transition: all, 0.3s;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: #111111;
+    content: "";
+    transition: all 0.3s;
 }
 
+/*  */
 /*---------------------
   Categories
 -----------------------*/

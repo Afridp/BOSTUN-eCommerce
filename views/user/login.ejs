@@ -103,6 +103,12 @@
                 <%}%>
                 <% } %>
 
+                <% if(typeof successMessage!=='undefined' ){ %>
+                    <p class="alert alert-success">
+                        <%=successMessage %>
+                    </p>
+                    <% } %>
+
                     <form action="" method="post">
                         <div class="form-group">
                             <input type="email" class="form-control" placeholder="Enter Email" name="email" id="email" required>

@@ -25,13 +25,17 @@
             background-image: url(/admin/imgs/login/2160x.webp);
             background-size: cover;
             background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            overflow-y: hidden;
         }
 
         .center-div {
-            height: 100vh;
+            height: 80vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 1
         }
 
         .btn.btn-success {
@@ -40,6 +44,11 @@
 
         form {
             padding: 0 2em;
+        }
+
+        h2 {
+            word-wrap: break-word;
+            /* Ensure text doesn't overflow */
         }
 
         #login.title>span {
@@ -51,22 +60,24 @@
 <body>
     <!-- navbar -->
 
-    <div class="container ">
+    <div class="container">
         <div class="row mt-3">
             <div class="col-lg-3 col-md-3">
                 <div class="header__logo" style="text-align: center;">
                     <a href="/views/user/index.ejs" style="text-decoration: none;">
-                        <h2 style="color: rgb(0, 100, 100); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; margin-top: 20px;">
+                        <h2
+                            style="color: rgb(0, 100, 100); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; margin-top: 20px;">
                             BOSTON_ADMIN
                         </h2>
                     </a>
                 </div>
             </div>
-            
-            
+        </div>
 
 
-            <!-- <div class="col-lg-6 col-md-6">
+
+
+        <!-- <div class="col-lg-6 col-md-6">
                 <nav class="header__menu mobile-menu">
                     <ul>
                         <li class="active"><a href="/index.ejs" style="color: rgb(255, 255, 255);">Home</a></li>
@@ -76,84 +87,86 @@
                     </ul>
                 </nav>
             </div> -->
-        </div>
         <div class="canvas__open"><i class="fa fa-bars"></i></div>
-    </div>
-    </header>
 
-    <!-- navbar end -->
 
-    <!-- login section -->
-    <div class="container center-div">
-        <div class="border py-5 px-3 col-lg-4 col-md-6 col-sm-8">
-            <div class="title pb-4 text-center">
-                <h2 class="font-weight-bold" style="color: rgb(255, 255, 255);"> Admin Login </h2>
-                <!-- <span style="font-size: small; color: #ffffff;">Log in for an existing account</span> -->
+        <!-- navbar end -->
 
-                
+        <!-- login section -->
+        <div class="container center-div ">
+            <div class="border py-5 px-3 col-lg-4 col-md-6 col-sm-8">
+                <div class="title pb-4 text-center">
+                    <h2 class="font-weight-bold" style="color: rgb(255, 255, 255);"> Admin Login </h2>
+                    <!-- <span style="font-size: small; color: #ffffff;">Log in for an existing account</span> -->
+
+
+                </div>
+
+
+
+                <% if (typeof message !=='undefined' ) { %>
+                    <%if(message==='' ){%>
+
+                        <h6>
+                            <%= message %>
+                        </h6>
+
+                        <%}else if(message==='invalid admin details' ){%>
+                            <div class="alert alert-danger">
+                                <p>
+                                    <%= message %>
+                                </p>
+                            </div>
+                            <%}%>
+                                <% } %>
+
+
+                                    <form action="" method="post">
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" placeholder="Enter Email"
+                                                name="email" id="email" required>
+                                            <p id="para1" style="color: rgb(211, 116, 7);"></p>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <input type="password" class="form-control" placeholder="Enter Password"
+                                                id="password" name="password" required>
+                                            <p id="para2" style="color: rgb(255, 132, 0);"></p>
+                                        </div>
+
+                                        <input type="submit" class="btn btn-success mt-3" value="Login"
+                                            onclick="show()">
+
+
             </div>
-
-            
-
-                <% if (typeof message !== 'undefined') { %>
-                <%if(message === ''){%>
-                 
-                    <h6>
-                      <%= message %>
-                    </h6>
-                  
-                <%}else if(message === 'invalid admin details'){%>
-                  <div class="alert alert-danger">
-                    <p>
-                      <%= message %>
-                    </p>
-                  </div>
-                <%}%>
-                <% } %>
-                 
-
-                    <form action="" method="post">
-                        <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Enter Email" name="email" id="email" required>
-                            <p id="para1" style="color: rgb(211, 116, 7);"></p>
-                        </div>
-                        <div class="form-group">
-                        
-                            <input type="password" class="form-control" placeholder="Enter Password" id="password" name="password" required>
-                            <p id="para2" style="color: rgb(255, 132, 0);"></p>
-                        </div>
-
-                        <input type="submit" class="btn btn-success mt-3" value="Login" onclick="show()">
-                        
-           
         </div>
+        <!-- login section end -->
+
+
+
+
     </div>
-    <!-- login section end -->
 
 
-
-    
-
-
-<script>
-    function show(){
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        const para1 = document.getElementById("para1");
-        const para2 = document.getElementById("para2");
-        if(email==""){
-            para1.innerText = "Enter your email"
-        }else if(!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)){
-            para1.innerText = "Enter a valid email"
+    <script>
+        function show() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const para1 = document.getElementById("para1");
+            const para2 = document.getElementById("para2");
+            if (email == "") {
+                para1.innerText = "Enter your email"
+            } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) {
+                para1.innerText = "Enter a valid email"
+            }
+            if (password == "") {
+                para2.innerText = "Enter your password"
+            }
         }
-        if(password==""){
-            para2.innerText = "Enter your password"
-        }
-    }
-</script>
-    
-                              
-                            
+    </script>
+
+
+
 </body>
 
 </html>

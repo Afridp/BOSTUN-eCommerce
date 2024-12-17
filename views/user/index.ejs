@@ -198,8 +198,8 @@
                                 <div class="product__item__pic ">
 
                                     <a href="/productDetails?id=<%= product._id %>">
-                                    <img src="/images/<%= product.image[1] %>" alt="">
-                                </a>
+                                        <img src="/images/<%= product.image[1] %>" alt="">
+                                    </a>
 
                                     <% if (product.isNew) { %>
                                         <span class="label">New</span>
@@ -213,7 +213,7 @@
                                 </div>
 
                                 <div class="product__item__text">
-                                  
+
                                     <!-- <a href="#" class="add-cart">+ Add To Cart</a> -->
                                     <div class="rating">
                                         <% for (let i=0; i < product.rating; i++) { %>
@@ -223,8 +223,8 @@
                                                     <i class="fa fa-star-o"></i>
                                                     <% } %>
                                     </div>
-                                    
-                                   
+
+
                                 </div>
                             </div>
                         </div>
@@ -481,43 +481,33 @@
         <!-- Banner Section Begin -->
         <section class="banner spad">
             <div class="container">
-                <div class="row">
-                    <div class="col-lg-7 offset-lg-4">
-                        <div class="banner__item">
-                            <div class="banner__item__pic1">
-                                <img src="user/img/banner/banner-1.jpg" alt="">
-                            </div>
-                            <div class="banner__item__text">
-                                <h2>Clothing Collections 2030</h2>
-                                <a href="#">Shop now</a>
-                            </div>
+                <div class="banner__grid">
+                    <!-- First Section -->
+                    <div class="banner__item banner__item--reverse">
+                        <div class="banner__item__text">
+                            <h2>Clothing Collections 2030</h2>
+                            <a href="#">Shop now</a>
+                        </div>
+                        <div class="banner__item__pic1">
+                            <img src="user/img/banner/banner-1.jpg" alt="">
                         </div>
                     </div>
-                    <!-- <div class="col-lg-5">
-                    <div class="banner__item banner__item--middle">
-                        <div class="banner__item__pic">
-                            <img src="/user/img/banner/banner-2.jpg" alt="">
+        
+                    <!-- Second Section -->
+                    <div class="banner__item">
+                        <div class="banner__item__pic2">
+                            <img src="user/img/banner/banner-3.jpg" alt="">
                         </div>
                         <div class="banner__item__text">
-                            <h2>Accessories</h2>
+                            <h2>Shoes Spring 2030</h2>
                             <a href="#">Shop now</a>
                         </div>
                     </div>
-                </div> -->
-                    <div class="col-lg-7">
-                        <div class="banner__item banner__item--last">
-                            <div class="banner__item__pic2">
-                                <img src="user/img/banner/banner-3.jpg" alt="">
-                            </div>
-                            <div class="banner__item__text">
-                                <h2>Shoes Spring 2030</h2>
-                                <a href="#">Shop now</a>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </section>
+        
         <!-- Banner Section End -->
 
 

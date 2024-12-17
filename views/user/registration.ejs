@@ -130,10 +130,11 @@
                         <div class="form-group">
                             <input type="password" class="form-control" placeholder="Enter Password" name="password"
                                 id="password" required>
+                            <small><input type="checkbox" onclick="togglePassword()"> Show Password</small>
                             <p id="para2" style="color: rgb(255, 2, 2);"></p>
                         </div>
 
-                        <input type="submit" class="btn btn-primary" value="Register" onclick="validateForm()">
+                        <input type="submit" class="btn btn-primary" value="Register" onclick="validateForm(event)">
 
             </form>
             <div class=" text-center pt-3">
@@ -224,7 +225,14 @@
 
                     <script>
 
-                        function validateForm(event) {
+                        function togglePassword() {
+                            const passwordField = document.getElementById("password");
+                            passwordField.type = passwordField.type === "password" ? "text" : "password";
+                        }
+
+
+                        function validateForm(e) {
+                            e.preventDefault()
                             // Get form input values
                             const name = document.getElementById("name").value;
                             const email = document.getElementById("email").value;
@@ -262,47 +270,32 @@
                                 document.getElementById("para3").textContent = "";
                             }
 
-                            // Validate password (assuming at least 6 characters required)
-                            // Check if the password is at least 6 characters long
+
+                            let passwordErrors = [];
                             if (password.length < 6) {
-                                document.getElementById("para2").textContent = "Password must be at least 6 characters long.";
+                                passwordErrors.push("Password must be at least 6 characters long.");
+                            }
+                            if (!/[A-Z]/.test(password)) {
+                                passwordErrors.push("Password must contain at least one uppercase letter.");
+                            }
+                            if (!/[a-z]/.test(password)) {
+                                passwordErrors.push("Password must contain at least one lowercase letter.");
+                            }
+                            if (!/\d/.test(password)) {
+                                passwordErrors.push("Password must contain at least one digit.");
+                            }
+                            if (!/[!@#$%^&*]/.test(password)) {
+                                passwordErrors.push("Password must contain at least one special character.");
+                            }
+
+                            if (passwordErrors.length > 0) {
+                                document.getElementById("para2").innerHTML = passwordErrors.join("<br>");
                                 isValid = false;
                             } else {
                                 document.getElementById("para2").textContent = "";
-
-                                // Check if the password contains at least one uppercase letter
-                                if (!/[A-Z]/.test(password)) {
-                                    document.getElementById("para2").textContent = "Password must contain at least one uppercase letter.";
-                                    isValid = false;
-                                } else {
-                                    document.getElementById("para2").textContent = "";
-                                }
-
-                                // Check if the password contains at least one lowercase letter
-                                if (!/[a-z]/.test(password)) {
-                                    document.getElementById("para2").textContent = "Password must contain at least one lowercase letter.";
-                                    isValid = false;
-                                } else {
-                                    document.getElementById("para2").textContent = "";
-                                }
-
-                                // Check if the password contains at least one digit
-                                if (!/\d/.test(password)) {
-                                    document.getElementById("para2").textContent = "Password must contain at least one digit.";
-                                    isValid = false;
-                                } else {
-                                    document.getElementById("para2").textContent = "";
-                                }
-
-                                // Check if the password contains at least one special character (e.g., !, @, #, etc.)
-                                if (!/[!@#$%^&*]/.test(password)) {
-                                    document.getElementById("para2").textContent = "Password must contain at least one special character.";
-                                    isValid = false;
-                                } else {
-                                    document.getElementById("para2").textContent = "";
-                                }
                             }
-                            console.log(isValid);
+
+
                             // Submit the form if all inputs are valid
                             if (isValid) {
                                 document.getElementById("registrationForm").submit();

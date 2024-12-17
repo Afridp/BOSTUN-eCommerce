@@ -83,28 +83,33 @@
 
     <!-- navbar end -->
 
-<div class="container center-div">
-    <div class="border  py-5 px-3 col-lg-4 col-md-6 col-sm-8">
-        <div class="title pb-4 text-center">
-            <h2 class="font-weight-bold" style="color: rgb(255, 255, 255);">Otp Verification </h2>
-            <span style="font-size: small; color: #ffffff;">Enter the code we have send on your
-                <b class="text-primary">Email Address</b></span>
+    <div class="container center-div">
+        <div class="border  py-5 px-3 col-lg-4 col-md-6 col-sm-8">
+            <div class="title pb-4 text-center">
+                <h2 class="font-weight-bold" style="color: rgb(255, 255, 255);">Otp Verification </h2>
+                <span style="font-size: small; color: #ffffff;">Enter the code we have send on your
+                    <b class="text-primary">Email Address</b></span>
 
                 <% if(typeof message!=='undefined' ){ %>
                     <p class="text-danger">
-                      <%=message %>
+                        <%=message %>
                     </p>
                     <% } %>
-         
+                    <% if(typeof successMessage!=='undefined' ){ %>
+                        <p class="text-success">
+                            <%=successMessage %>
+                        </p>
+                        <% } %>
+
             </div>
 
             <form action="/emailVerification" method="post">
                 <input type="text" name="userVerificationId" value="<%= otp %>" hidden />
                 <input class="form-control" type="text" name="otp" />
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
-              </form>
+            </form>
 
-                <!-- <form action="" method="post" id="registration-form">
+            <!-- <form action="" method="post" id="registration-form">
                     <div class="form-group">
                         <input type="text" class="form-control" placeholder="Enter username" name="name" id="name">
                         <p id="para4" style="color: rgb(211, 116, 7);"></p>
@@ -130,89 +135,87 @@
 
                 </form> -->
 
-        <!-- <div class=" text-center pt-3">
+            <!-- <div class=" text-center pt-3">
                         <span style="font-size:medium; color: #000000;">Already have an account? </span>
                         <a href="/login" style="color: #4705d7;"">Login Here</a>
         </div> -->
+        </div>
     </div>
-</div>
 
 
 
-<!-- Footer Section Begin -->
-<footer class=" footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="footer__about">
-                    <div class="footer__logo">
+    <!-- Footer Section Begin -->
+    <footer class=" footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="footer__about">
+                        <div class="footer__logo">
 
-                        <h2
-                            style="color: rgb(0, 100, 100); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif  ;">
-                            <b>BOSTON</b>
-                        </h2>
+                            <h2
+                                style="color: rgb(0, 100, 100); font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif  ;">
+                                <b>BOSTON</b>
+                            </h2>
+                        </div>
+                        <p>The customer is at the heart of our unique business model, which
+                            includes
+                            design.
+                        </p>
+                        <a href="#"><img src="img/payment.png" alt=""></a>
                     </div>
-                    <p>The customer is at the heart of our unique business model, which
-                        includes
-                        design.
-                    </p>
-                    <a href="#"><img src="img/payment.png" alt=""></a>
+                </div>
+                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Shopping</h6>
+                        <ul>
+                            <li><a href="#">Clothing Store</a></li>
+                            <li><a href="#">Trending Shoes</a></li>
+                            <li><a href="#">Accessories</a></li>
+                            <li><a href="#">Sale</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>Shopping</h6>
+                        <ul>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Payment Methods</a></li>
+                            <li><a href="#">Delivary</a></li>
+                            <li><a href="#">Return & Exchanges</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>NewLetter</h6>
+                        <div class="footer__newslatter">
+                            <p>Be the first to know about new arrivals, look books, sales &
+                                promos!</p>
+                            <form action="#">
+                                <input type="text" placeholder="Your email">
+                                <button type="submit"><span class="icon_mail_alt"></span></button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
-                <div class="footer__widget">
-                    <h6>Shopping</h6>
-                    <ul>
-                        <li><a href="#">Clothing Store</a></li>
-                        <li><a href="#">Trending Shoes</a></li>
-                        <li><a href="#">Accessories</a></li>
-                        <li><a href="#">Sale</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-6">
-                <div class="footer__widget">
-                    <h6>Shopping</h6>
-                    <ul>
-                        <li><a href="#">Contact Us</a></li>
-                        <li><a href="#">Payment Methods</a></li>
-                        <li><a href="#">Delivary</a></li>
-                        <li><a href="#">Return & Exchanges</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
-                <div class="footer__widget">
-                    <h6>NewLetter</h6>
-                    <div class="footer__newslatter">
-                        <p>Be the first to know about new arrivals, look books, sales &
-                            promos!</p>
-                        <form action="#">
-                            <input type="text" placeholder="Your email">
-                            <button type="submit"><span
-                                    class="icon_mail_alt"></span></button>
-                        </form>
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="footer__copyright__text">
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        <p>Copyright ©
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>2020
+                            All rights reserved | This template is made with <i class="fa fa-heart-o"
+                                aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        </p>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <div class="footer__copyright__text">
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    <p>Copyright ©
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>2020
-                        All rights reserved | This template is made with <i
-                            class="fa fa-heart-o" aria-hidden="true"></i> by <a
-                            href="https://colorlib.com" target="_blank">Colorlib</a>
-                    </p>
-                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                </div>
-            </div>
-        </div>
-    </div>
     </footer>
     <!-- Footer Section End -->
 
@@ -232,51 +235,51 @@
                 document.getElementById("myform").submit();
             }
         }
-        
-    function show(){
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
-        const name = document.getElementById("name").value;
-        const number = document.getElementById("number").value;
 
-        const para1 = document.getElementById("para1");
-        const para2 = document.getElementById("para2");
-        const para3 = document.getElementById("para3");
-        const para4 = document.getElementById("para4");
+        function show() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const name = document.getElementById("name").value;
+            const number = document.getElementById("number").value;
 
-        if(email==""){
-            para1.innerText = "Enter your email"
-        }else if(!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)){
-            para1.innerText = "Enter a valid email"
+            const para1 = document.getElementById("para1");
+            const para2 = document.getElementById("para2");
+            const para3 = document.getElementById("para3");
+            const para4 = document.getElementById("para4");
+
+            if (email == "") {
+                para1.innerText = "Enter your email"
+            } else if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) {
+                para1.innerText = "Enter a valid email"
+            }
+
+            if (name == "") {
+                para4.innerText = "Enter a valid name"
+            } else if (!/^[a-zA-Z]+$/.test(name)) {
+                para4.innerText = "Name can only contain letters"
+            }
+
+            if (number == "") {
+                para3.innerText = "Enter a valid number"
+            } else if (!/^\d{10}$/.test(number)) {
+                para3.innerText = "Mobile can only contain digits"
+            }
+
+            if (password == "") {
+                para2.innerText = "Enter your password"
+            }
+
         }
 
-        if(name==""){
-            para4.innerText = "Enter a valid name"
-        }else if(!/^[a-zA-Z]+$/.test(name)){
-            para4.innerText = "Name can only contain letters"
-        }
+        document.getElementById('registration-form').addEventListener('submit', function (event) {
 
-        if(number=="") {
-            para3.innerText= "Enter a valid number"
-        } else if(!/^\d{10}$/.test(number)){
-            para3.innerText= "Mobile can only contain digits"
-        }
-            
-        if(password==""){
-            para2.innerText = "Enter your password"
-        }
-    
-    }
-        
-        document.getElementById('registration-form').addEventListener('submit', function(event) {
-        
-        event.preventDefault();
+            event.preventDefault();
 
-        alert('Registration successful!'); 
+            alert('Registration successful!');
 
-        
-        event.target.submit();
-    });
+
+            event.target.submit();
+        });
     </script>
 </body>
 

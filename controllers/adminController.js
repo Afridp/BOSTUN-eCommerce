@@ -36,7 +36,8 @@ const verifyLogin = async (req, res, next) => {
     try {
         let { email, password } = req.body
         let { adminEmail, adminPassword } = credentials
-
+        console.log(adminEmail, adminPassword, "this is env");
+        console.log(email, password, "this is body");
         if (adminEmail === email && adminPassword === password) {
 
             req.session.adminSession = adminEmail;
@@ -201,7 +202,7 @@ const loadDashboard = async (req, res, next) => {
     }
 };
 
-const salesReport = async (req, res,next) => {
+const salesReport = async (req, res, next) => {
     try {
         const moment = require('moment')
 
@@ -211,7 +212,7 @@ const salesReport = async (req, res,next) => {
 
         const salesReport = await orderModel.find({ status: "delivered" }).populate('user').sort({ createdAt: -1 })
 
-      
+
         res.render('salesReport', {
             firstOrder: moment(firstOrder[0].createdAt).format("YYYY-MM-DD"),
             lastOrder: moment(lastOreder[0].createdAt).format("YYYY-MM-DD"),
@@ -223,7 +224,7 @@ const salesReport = async (req, res,next) => {
     }
 };
 
-const datePicker = async (req, res,next) => {
+const datePicker = async (req, res, next) => {
     try {
         const { startDate, endDate } = req.body
         const startDateObj = new Date(startDate);
