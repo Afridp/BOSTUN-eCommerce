@@ -31,7 +31,7 @@ const generateRandomOTP = () => {
     return otp;
 };
 
-const loadRegister = async (req, res,next) => {
+const loadRegister = async (req, res, next) => {
     try {
         let { message } = req.session
         req.session.message = ''
@@ -44,7 +44,7 @@ const loadRegister = async (req, res,next) => {
 }
 const postRegister = async (req, res, next) => {
     try {
-   
+
         const existingUser = await userModel.findOne({
             $or: [{ email: req.body.email }, { mobile: req.body.mobile }]
         });
@@ -96,7 +96,7 @@ const sendOtpEmailVerification = async (email, user_id) => {
                 pass: process.env.email_password
             }
         })
-        const otp = generateRandomOTP(); 
+        const otp = generateRandomOTP();
 
         console.log(otp);
 
@@ -129,20 +129,20 @@ const sendOtpEmailVerification = async (email, user_id) => {
     }
 }
 
-const emailVerificationPage = async (req, res,next) => {
+const emailVerificationPage = async (req, res, next) => {
     try {
-        const { successMessage,message, otpVerification } = req.session;
-        
+        const { successMessage, message, otpVerification } = req.session;
+
         //NOTE - commanded because to keep the otp verification details available when refreshing the page 
         // req.session.otpVerification = null  
-        
+
         if (req.session) {
             req.session.message = "";
             req.session.successMessage = "";
         }
-        
-        
-        res.render("emailVerification", {successMessage, message, otp: otpVerification })
+
+
+        res.render("emailVerification", { successMessage, message, otp: otpVerification })
     } catch (err) {
         next(err)
     }
@@ -150,14 +150,14 @@ const emailVerificationPage = async (req, res,next) => {
 
 
 
-const emailVerification = async (req, res,next) => {
+const emailVerification = async (req, res, next) => {
     try {
         let { otp, userVerificationId } = req.body;
         req.session.successMessage = null
         let userId = userVerificationId;
 
         const UserOTPVerificationRecords = await userOtpVerification.find({ _id: userId })
-     
+
         if (!userId || !otp) {
 
             await userModel.deleteMany({ _id: UserOTPVerificationRecords[0].userId });
@@ -190,7 +190,7 @@ const emailVerification = async (req, res,next) => {
                     const validOTP = await bcrypt.compare(otp, hashedOTP)
 
                     if (!validOTP) {
-                       
+
 
                         req.session.otpVerification = userVerificationId;
                         req.session.message = "Invalid OTP,Please try again";
@@ -199,7 +199,7 @@ const emailVerification = async (req, res,next) => {
 
                     } else {
 
-                     
+
                         // const user = await userModel.findOne({ _id: session })
 
                         req.session.userId = UserOTPVerificationRecords[0].userId.toString();
@@ -211,7 +211,7 @@ const emailVerification = async (req, res,next) => {
                         req.session.user_id = userDetails
 
                         await userOtpVerification.deleteMany({ _id: userId });
-                            req.session.successMessage = "Registered Successfully, Login to continue"
+                        req.session.successMessage = "Registered Successfully, Login to continue"
                         res.redirect("/login");
                     }
                 }
@@ -226,23 +226,23 @@ const emailVerification = async (req, res,next) => {
 
 
 
-const loginLoad = async (req, res,next) => {
+const loginLoad = async (req, res, next) => {
     try {
         let { message } = req.session
         req.session.message = ""
-        let successMessage = req.session.successMessage 
+        let successMessage = req.session.successMessage
         console.log(req.session.successMessage);
         let currentPage = 'login'
         let { userid } = req.session
 
-        res.render('login', { successMessage,message, currentPage, userid })
+        res.render('login', { successMessage, message, currentPage, userid })
     } catch (err) {
         next(err)
     }
 }
 
 
-const verifyLogin = async (req, res,next) => {
+const verifyLogin = async (req, res, next) => {
     try {
         const email = req.body.email;
         const password = req.body.password;
@@ -282,15 +282,15 @@ const verifyLogin = async (req, res,next) => {
     }
 }
 
-const homeLoad = async (req, res,next) => {
+const homeLoad = async (req, res, next) => {
     try {
         const { userid } = req.session;
 
         const user = await userModel.findOne({ _id: userid });
         const banner = await bannerModel.find({ status: true })
         let currentPage = 'home'; // Define currentPage here
-        const bestSellers = await productModel.find({list : true}).limit(8)
-        
+        const bestSellers = await productModel.find({ list: true }).limit(8)
+
 
 
         res.render('index', { user, userid, currentPage, banner, bestSellers }); // Pass currentPage to the template
@@ -299,7 +299,7 @@ const homeLoad = async (req, res,next) => {
     }
 };
 
-const shopLoad = async (req, res,next) => {
+const shopLoad = async (req, res, next) => {
     try {
         let { selectedCategories, selectedSize, selectedColors, searchInput, pageno, minPrice, maxPrice } = req.body
 
@@ -442,7 +442,7 @@ const shopLoad = async (req, res,next) => {
 }
 
 
-const showProductDetails = async (req, res,next) => {
+const showProductDetails = async (req, res, next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
@@ -470,7 +470,7 @@ const showProductDetails = async (req, res,next) => {
 }
 
 
-const loadProfile = async (req, res,next) => {
+const loadProfile = async (req, res, next) => {
     try {
         const { userid } = req.session
 
@@ -482,7 +482,7 @@ const loadProfile = async (req, res,next) => {
     }
 }
 
-const manageAddress = async (req, res,next) => {
+const manageAddress = async (req, res, next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
@@ -493,7 +493,7 @@ const manageAddress = async (req, res,next) => {
     }
 }
 
-const addAddress = async (req, res,next) => {
+const addAddress = async (req, res, next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findOne({ _id: userid })
@@ -503,7 +503,7 @@ const addAddress = async (req, res,next) => {
         next(err)
     }
 }
-const loadLogout = async (req, res,next) => {
+const loadLogout = async (req, res, next) => {
     try {
         req.session.userid = null;
         res.redirect("/");
@@ -512,7 +512,7 @@ const loadLogout = async (req, res,next) => {
     }
 };
 
-const postAddress = async (req, res,next) => {
+const postAddress = async (req, res, next) => {
     try {
         const { userid } = req.session;
         const { name, housename, city, state, phone, pincode } = req.body;
@@ -537,7 +537,7 @@ const postAddress = async (req, res,next) => {
     }
 }
 
-const editaddress = async (req, res,next) => {
+const editaddress = async (req, res, next) => {
     try {
 
         const { userid } = req.session;
@@ -554,7 +554,7 @@ const editaddress = async (req, res,next) => {
     }
 }
 
-const updateAddress = async (req, res,next) => {
+const updateAddress = async (req, res, next) => {
     try {
         const { userid } = req.session;
         // const user = await userModel.findOne({ _id: userid })
@@ -578,7 +578,7 @@ const updateAddress = async (req, res,next) => {
     }
 }
 
-const deleteAddress = async (req, res,next) => {
+const deleteAddress = async (req, res, next) => {
     try {
         const { userid } = req.session;
         const { addId } = req.body;
@@ -591,7 +591,7 @@ const deleteAddress = async (req, res,next) => {
         next(err)
     }
 }
-const editProfile = async (req, res,next) => {
+const editProfile = async (req, res, next) => {
     try {
         const { userid } = req.session
         let currentPage = 'profile'
@@ -601,7 +601,7 @@ const editProfile = async (req, res,next) => {
         next(err)
     }
 }
-const updateProfile = async (req, res,next) => {
+const updateProfile = async (req, res, next) => {
     try {
         const { userid } = req.session
         const { name, mobile, email } = req.body
@@ -621,7 +621,7 @@ const updateProfile = async (req, res,next) => {
     }
 }
 
-const changePassword = async (req, res,next) => {
+const changePassword = async (req, res, next) => {
     try {
         const { userid } = req.session
         let currentPage = 'profile'
@@ -632,7 +632,7 @@ const changePassword = async (req, res,next) => {
     }
 }
 
-const updatePassword = async (req, res,next) => {
+const updatePassword = async (req, res, next) => {
     try {
         const { userid } = req.session
         const { currentPassword, newPassword, confirmNewPassword } = req.body
@@ -647,7 +647,7 @@ const updatePassword = async (req, res,next) => {
                     { _id: userid },
                     { $set: { password: hashPassword } }
                 )
-                
+
                 res.redirect('/profile')
             } else {
                 req.session.message = "new password and confirm password didin't match"
@@ -664,7 +664,7 @@ const updatePassword = async (req, res,next) => {
 
 }
 
-const lostPassEmailPage = async (req, res,next) => {
+const lostPassEmailPage = async (req, res, next) => {
     try {
         const { message } = req.session
         req.session.message = ''
@@ -675,11 +675,11 @@ const lostPassEmailPage = async (req, res,next) => {
     }
 }
 
-const forgetPassSendOtp = async (req, res,next) => {
+const forgetPassSendOtp = async (req, res, next) => {
     try {
         const { email } = req.body
         const emailExist = await userModel.findOne({ email: email })
-       
+
 
         if (emailExist) {
 
@@ -722,7 +722,7 @@ const forgetPassSendOtp = async (req, res,next) => {
     }
 }
 
-const forgetPassOtpEnterPage = async (req, res,next) => {
+const forgetPassOtpEnterPage = async (req, res, next) => {
     try {
         let { message, otp, user } = req.session
         let currentPage = 'login'
@@ -734,7 +734,7 @@ const forgetPassOtpEnterPage = async (req, res,next) => {
     }
 }
 
-const postForgetPassOtpVerify = async (req, res,next) => {
+const postForgetPassOtpVerify = async (req, res, next) => {
     try {
         const { otp, userOtp, user } = req.body;
         let currentPage = 'login'
@@ -751,7 +751,7 @@ const postForgetPassOtpVerify = async (req, res,next) => {
     }
 }
 
-const updateNewPassword = async (req, res,next) => {
+const updateNewPassword = async (req, res, next) => {
     try {
         const { user, newPassword, confirmPassword } = req.body
         // const userToUpdate = await userModel.findById({_id:user})
@@ -766,7 +766,7 @@ const updateNewPassword = async (req, res,next) => {
 }
 
 
-const loadWhishlist = async (req, res,next) => {
+const loadWhishlist = async (req, res, next) => {
     try {
         const { userid } = req.session
         const user = await userModel.findById({ _id: userid })
@@ -781,7 +781,7 @@ const loadWhishlist = async (req, res,next) => {
     }
 }
 
-const addToWhishlist = async (req, res,next) => {
+const addToWhishlist = async (req, res, next) => {
     try {
         const { userid } = req.session
         const { id } = req.query
@@ -792,7 +792,7 @@ const addToWhishlist = async (req, res,next) => {
                 userId: userid,
                 "items.product_Id": new mongoose.Types.ObjectId(id),
             });
-        
+
             if (findProduct) {
 
                 await whishlistModel.findOneAndUpdate(
@@ -828,13 +828,14 @@ const addToWhishlist = async (req, res,next) => {
             });
             await makeWhishlist.save();
         }
+        res.redirect(`/productDetails?id=${id}&message="Done"`)
 
     } catch (err) {
         next(err)
     }
 }
 
-const deleteFromWishlist = async (req, res,next) => {
+const deleteFromWishlist = async (req, res, next) => {
     try {
         const { userid } = req.session;
         let { product_Id } = req.body;
@@ -854,7 +855,7 @@ const deleteFromWishlist = async (req, res,next) => {
         next(err)
     }
 }
-const cancelOrder = async (req, res,next) => {
+const cancelOrder = async (req, res, next) => {
     try {
         const { orderId, cancelReason } = req.body;
         let status1 = "waiting for approval";

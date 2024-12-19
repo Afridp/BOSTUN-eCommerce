@@ -48,34 +48,41 @@
                                     <div class="card">
 
                                         <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                            <a data-toggle="collapse" data-target="#collapseOne" id="toggleCollapse"
+                                                class="">Categories</a>
                                         </div>
 
-                                        <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                        <div id="collapseOne" class="collapse" data-parent="#accordionExample">
                                             <div class="card-body">
-                                                <div class="shop__sidebar__categories">
-
-                                                    <ul class="category-checkboxes">
-                                                        <li>
-                                                            <label>
+                                                <div class="shop__sidebar__categories"
+                                                    style="padding-top: 6px; border-radius: 8px;">
+                                                    <ul class="category-checkboxes"
+                                                        style="list-style-type: none; padding: 0; margin: 0;">
+                                                        <li style="margin-bottom: 10px;">
+                                                            <label
+                                                                style="display: flex; align-items: center; cursor: pointer; background-color: #ffffff; border-radius: 0px;">
                                                                 <input type="radio" value="All"
-                                                                    class="category-checkbox" name="selectedCategory">
-                                                                All Categories
+                                                                    class="category-checkbox" name="selectedCategory"
+                                                                    style="margin-right: 10px; width: 18px; height: 18px; cursor: pointer;">
+                                                                <span style=" color: #555;">All Categories</span>
                                                             </label>
                                                         </li>
 
                                                         <% for (let category of categories) { %>
-                                                            <li>
-                                                                <label>
+                                                            <li style="margin-bottom: 10px;">
+                                                                <label
+                                                                    style="display: flex; align-items: center; cursor: pointer; background-color: #ffffff; border-radius: 0px;">
                                                                     <input type="radio" value="<%= category._id %>"
                                                                         class="category-checkbox"
-                                                                        name="selectedCategory">
-                                                                    <%= category.name %>
+                                                                        name="selectedCategory"
+                                                                        style="margin-right: 10px; width: 18px; height: 18px; cursor: pointer;">
+                                                                    <span style="color: #555;">
+                                                                        <%= category.name %>
+                                                                    </span>
                                                                 </label>
                                                             </li>
                                                             <% } %>
                                                     </ul>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -85,10 +92,11 @@
 
                                     <div class="card">
                                         <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapseFour">Size</a>
+                                            <a data-toggle="collapse" data-target="#collapseFour" id="toggleCollapse"
+                                                class="">Size</a>
                                         </div>
 
-                                        <div id="collapseFour" class="collapse show" data-parent="#accordionExample">
+                                        <div id="collapseFour" class="collapse" data-parent="#accordionExample">
                                             <div class="card-body">
                                                 <div class="shop__sidebar__size">
 
@@ -130,10 +138,11 @@
 
                                     <div class="card">
                                         <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapseFive">Colors</a>
+                                            <a data-toggle="collapse" data-target="#collapseFive" id="toggleCollapse"
+                                                class="">Colors</a>
                                         </div>
 
-                                        <div id="collapseFive" class="collapse show" data-parent="#accordionExample">
+                                        <div id="collapseFive" class="collapse" data-parent="#accordionExample">
                                             <div class="card-body">
                                                 <div class="shop__sidebar__color">
 
@@ -180,16 +189,20 @@
 
                                     <div class="card">
                                         <div class="card-heading">
-                                            <a data-toggle="collapse" data-target="#collapsePrice">Price Range</a>
+                                            <a data-toggle="collapse" data-target="#collapsePrice" id="toggleCollapse"
+                                                class="">Price Range</a>
                                         </div>
-                                        <div id="collapsePrice" class="collapse show" data-parent="#accordionExample">
+                                        <div id="collapsePrice" class="collapse" data-parent="#accordionExample">
                                             <div class="card-body">
-                                                <div class="shop__sidebar__price">
-                                                    <label for="minPrice">Min Price:</label>
-                                                    <input type="number" id="minPrice" placeholder="Min Price">
+                                                <div class="shop__sidebar__price"
+                                                    style="background-color: #ffffff; padding:0px;">
+                                                    <!-- <label for="minPrice" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Min Price:</label> -->
+                                                    <input type="number" id="minPrice" placeholder="Min Price"
+                                                        style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; transition: border-color 0.3s ease; outline: none;">
                                                     <br>
-                                                    <label for="maxPrice">Max Price:</label>
-                                                    <input type="number" id="maxPrice" placeholder="Max Price">
+                                                    <!-- <label for="maxPrice" style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">Max Price:</label> -->
+                                                    <input type="number" id="maxPrice" placeholder="Max Price"
+                                                        style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 4px; transition: border-color 0.3s ease; outline: none;">
                                                 </div>
                                             </div>
                                         </div>
@@ -288,7 +301,7 @@
 
 
                                         <% for (let i=1 ; i <=totalPages ; i++) { %>
-                                            <a href="#" onclick="pagination('<%= i %>')">
+                                            <a href="#" onclick="pagination('<%= i %>',event)">
                                                 <%= i %>
                                             </a>
                                             <% } %>
@@ -309,11 +322,11 @@
 
                 <script>
 
-   
 
-                    function pagination(pageno) {
 
-                       
+                    function pagination(pageno,e) {
+
+                        e.preventDefault()
                         const selectedCategoryCheckbox = document.querySelector('input[name="selectedCategory"]:checked');
                         const selectedCategories = selectedCategoryCheckbox ? selectedCategoryCheckbox.value : null;
 
@@ -332,7 +345,7 @@
                                 selectedCategories,
                                 selectedSize,
                                 selectedColors,
-                                pageno,minPrice,maxPrice
+                                pageno, minPrice, maxPrice
                             },
                             method: 'post',
                             success: (response) => {
@@ -375,7 +388,7 @@
                         const maxPrice = document.getElementById("maxPrice").value
 
                         const searchInput = document.getElementById('searchInput').value
-                        applyFilters(selectedCategories, selectedSize, selectedColors, searchInput,minPrice,maxPrice)
+                        applyFilters(selectedCategories, selectedSize, selectedColors, searchInput, minPrice, maxPrice)
                     });
 
 
@@ -398,17 +411,17 @@
                         const minPrice = document.getElementById("minPrice").value;
                         const maxPrice = document.getElementById("maxPrice").value
 
-                   
-                    
+
+
 
                         if (selectedCategories || selectedColors.length > 0 || selectedSize.length > 0 || minPrice || maxPrice) {
-                            applyFilters(selectedCategories, selectedSize, selectedColors,null,minPrice,maxPrice);
+                            applyFilters(selectedCategories, selectedSize, selectedColors, null, minPrice, maxPrice);
                         }
                     });
 
 
 
-                    function applyFilters(selectedCategories, selectedSize, selectedColors, searchInput,minPrice,maxPrice) {
+                    function applyFilters(selectedCategories, selectedSize, selectedColors, searchInput, minPrice, maxPrice) {
 
                         $.ajax({
 
@@ -418,7 +431,7 @@
                                 selectedSize,
                                 selectedColors,
                                 searchInput,
-                                minPrice,maxPrice
+                                minPrice, maxPrice
                             },
                             method: 'post',
                             success: (response) => {
@@ -442,4 +455,66 @@
 
 
 
+                </script>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const collapseElement = document.getElementById("collapseOne");
+                        const toggleElement = document.getElementById("toggleCollapse");
+
+                        if (window.innerWidth >= 992) {
+                            // Large devices: Expand by default
+                            collapseElement.classList.add("show");
+                            toggleElement.classList.remove("collapsed");
+                        } else {
+                            // Small devices: Collapse by default
+                            collapseElement.classList.remove("show");
+                            toggleElement.classList.add("collapsed");
+                        }
+                    });
+
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const collapseElement = document.getElementById("collapseFour");
+                        const toggleElement = document.getElementById("toggleCollapse");
+
+                        if (window.innerWidth >= 992) {
+                            // Large devices: Expand by default
+                            collapseElement.classList.add("show");
+                            toggleElement.classList.remove("collapsed");
+                        } else {
+                            // Small devices: Collapse by default
+                            collapseElement.classList.remove("show");
+                            toggleElement.classList.add("collapsed");
+                        }
+                    });
+
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const collapseElement = document.getElementById("collapseFive");
+                        const toggleElement = document.getElementById("toggleCollapse");
+
+                        if (window.innerWidth >= 992) {
+                            // Large devices: Expand by default
+                            collapseElement.classList.add("show");
+                            toggleElement.classList.remove("collapsed");
+                        } else {
+                            // Small devices: Collapse by default
+                            collapseElement.classList.remove("show");
+                            toggleElement.classList.add("collapsed");
+                        }
+                    });
+
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const collapseElement = document.getElementById("collapsePrice");
+                        const toggleElement = document.getElementById("toggleCollapse");
+
+                        if (window.innerWidth >= 992) {
+                            // Large devices: Expand by default
+                            collapseElement.classList.add("show");
+                            toggleElement.classList.remove("collapsed");
+                        } else {
+                            // Small devices: Collapse by default
+                            collapseElement.classList.remove("show");
+                            toggleElement.classList.add("collapsed");
+                        }
+                    });
                 </script>

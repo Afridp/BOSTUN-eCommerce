@@ -4,8 +4,6 @@
 
 
         <style>
-         
-
             /* Change the color when hovering over the anchor tag */
             a.show-more-link:hover {
                 color: #e5de18;
@@ -38,6 +36,38 @@
                 /* Adjust the scale factor as needed for zoom level */
             }
         </style>
+        <style>
+            .product-gallery .nav-tabs {
+                max-height: 400px;
+                /* Limit height on larger screens */
+                flex-wrap: nowrap;
+                /* Prevent wrapping on small screens */
+            }
+
+            @media (max-width: 767px) {
+                .product-gallery .nav-tabs {
+                    flex-direction: row !important;
+                    /* Horizontal scroll on mobile */
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
+
+                .product-gallery .nav-item {
+                    display: inline-block;
+                }
+
+                .product__thumb__pic {
+                    width: 60px;
+                    /* Smaller thumbnails on mobile */
+                    height: 60px;
+                }
+
+                .product__thumb__pic img {
+                    object-fit: cover;
+                }
+            }
+        </style>
+
 
         <!-- Shop Details Section Begin -->
         <section class="shop-details">
@@ -52,45 +82,37 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-
-                        <div class="col-lg-3 col-md-3">
-                            <ul class="nav nav-tabs" role="tablist">
+                    <!-- NOTE - need to add whilisted alert -->
+                    <div class="row product-gallery">
+                        <div class="col-12 col-md-3 order-md-1 order-2 mt-3 mt-md-0">
+                            <ul class="nav nav-tabs flex-md-column overflow-aut" role="tablist">
                                 <% for(let i=0 ; i < product.image.length ; i++) { %>
-                                    <li class="nav-item">
-                                        <a class="nav-link <% if (i === 0) { %> active <% } %>" data-toggle="tab"
-                                            href="#tabs-<%= i+1   %>" role="tab">
-
+                                    <li class="nav-item flex-shrink-0 me-2 me-md-0 mb-md-2">
+                                        <a class="nav-link <%= i === 0 ? 'active' : '' %> d-flex align-items-center"
+                                            data-bs-toggle="tab" href="#tabs-<%= i+1 %>" role="tab">
                                             <div class="product__thumb__pic">
-                                                <img src="/images/<%= product.image[i] %>">
-
-
+                                                <img src="/images/<%= product.image[i] %>" class="img-fluid"
+                                                    alt="Product thumbnail <%= i + 1 %>">
                                             </div>
                                         </a>
                                     </li>
                                     <% } %>
-
-
                             </ul>
                         </div>
 
-
-                        <div class="col-lg-6 col-md-9">
+                        <div class="col-12 col-md-9 order-md-2 order-1">
                             <div class="tab-content">
                                 <% for(let i=0 ; i < product.image.length ; i++) { %>
-                                    <div class="tab-pane <% if (i === 0) { %>active<% } %>" id="tabs-<%= i + 1 %>"
+                                    <div class="tab-pane <%= i === 0 ? 'active' : '' %>" id="tabs-<%= i + 1 %>"
                                         role="tabpanel">
                                         <div class="product__details__pic__item zoomable">
-                                            <img src="/images/<%= product.image[i] %>" alt="">
+                                            <img src="/images/<%= product.image[i] %>" class="img-fluid w-100"
+                                                alt="Product image <%= i + 1 %>">
                                         </div>
                                     </div>
                                     <% } %>
                             </div>
-
                         </div>
-
-
                     </div>
                     <input type="text" name="productId" id="productId" value="<%= product._id %>" hidden>
 
@@ -523,6 +545,32 @@
                         }
                     }
 
+                </script>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Ensure images maintain aspect ratio
+                        const productImages = document.querySelectorAll('.product__details__pic__item img');
+                        productImages.forEach(img => {
+                            img.style.objectFit = 'contain';
+                            img.style.maxHeight = '500px'; // Adjust as needed
+                        });
+
+                        // Optional zoom functionality
+                        const zoomableImages = document.querySelectorAll('.zoomable img');
+                        zoomableImages.forEach(img => {
+                            img.addEventListener('mousemove', function (e) {
+                                const rect = this.getBoundingClientRect();
+                                const x = e.clientX - rect.left;
+                                const y = e.clientY - rect.top;
+                                this.style.transformOrigin = `${x}px ${y}px`;
+                                this.style.transform = 'scale(1.5)';
+                            });
+
+                            img.addEventListener('mouseleave', function () {
+                                this.style.transform = 'scale(1)';
+                            });
+                        });
+                    });
                 </script>
                 <!-- Shop Details Section End -->
 

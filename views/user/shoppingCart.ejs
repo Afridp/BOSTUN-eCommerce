@@ -29,117 +29,110 @@
         <div id="reloadDiv">
             <section class="shopping-cart spad">
                 <div class="container">
+        
                     <div class="row">
                         <div class="col-lg-8">
-                            <% if (cartData && cartData.items) { %>
+                            <% if (cartData && cartData.items && cartData.items.length> 0) { %>
                                 <div class="shopping__cart__table">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Product</th>
-                                                <th>Quantity</th>
-                                                <th>Total</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% cartData.items.forEach((x)=> { %>
-                                                <tr class="cart-item">
-                                                    <td class="product__cart__item">
-                                                        <div class="product__cart__item__pic">
-                                                            <img src="/images/<%= x.product_Id.image[0] %>" alt=""
-                                                                style="height: 100px; width: 100px;">
-                                                        </div>
-                                                        <div class="product__cart__item__text">
-                                                            <h6>
-                                                                <%= x.product_Id.name %>
-                                                            </h6>
-                                                            <% if ( x.product_Id.offer){ var discount = (x.product_Id.price * x.product_Id.offer.percentage / 100).toFixed(0)  } else if ( x.product_Id.category.offer ) {var discount = ( x.product_Id.price * x.product_Id.category.offer.percentage / 100 ).toFixed(0) } %>
-                                                            
-                                                                <% if ( x.product_Id.offer ) { %>
-                                                                    <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%= x.product_Id.price %></del></h6>
-                    
-                                                                    <h5>₹ <%= x.product_Id.price - discount %> </h5>
-                    
-                    
-                                                                <%} else if (x.product_Id.category.offer ) { %>
-                                                                    <h6 ><del style="color: rgba(0, 0, 0, 0.372);">₹ <%= x.product_Id.price %></del></h6>
-                                                                    <h5 >₹ <%= x.product_Id.price - discount %></h5>
-                    
-                                                                    <% } else { %>
-                                                                    <h5>₹ <%= x.product_Id.price %> </h5>
-                                                                <% } %>
-                                                            
-                                                        </div>
-                                                    </td>
-                                                    <td class="quantity__item">
-                                                        <div class="quantity-controls">
-                                                            <button class="quantity-btn minus" type="button"
-                                                                onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', -1 )">-</button>
-                                                            <input class="qty-input" type="text"
-                                                                value="<%= x.quantity %>" readonly>
-                                                            <button class="quantity-btn plus" type="button"
-                                                                onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', 1 )">+</button>
-                                                        </div>
-                                                    </td>
-                                                         <% if (x){ %>   
-                                                            <% var totlAmt = 0 %>
-                                                            <% var Price = 0 %>
-                                                    <% if ( x.product_Id.offer){ 
-                                                         totlAmt = (x.product_Id.price * x.product_Id.offer.percentage / 100).toFixed(0)  * x.quantity
-                                                         Price = x.product_Id.price * x.quantity - totlAmt
-                                                    } else if ( x.product_Id.category.offer ) {
-                                                       
-                                                         totlAmt =  (x.product_Id.price * x.product_Id.category.offer.percentage / 100 ).toFixed(0) * x.quantity 
-                                                         Price = x.product_Id.price * x.quantity - totlAmt
-                                                    } else {
-                                                           Price = x.product_Id.price * x.quantity 
-                                                    } %>
-                                                        <% } %>
-                                                        
-                                                            
-                                                        
-                                                    <td class="cart__price">₹ <%= Price %>
-
-
-
-
-                                                
-                                                    </td>
-                                                    <td class="cart__close">
-                                                        <a href="#" onclick="removeFromCart('<%= x._id %>')"><i
-                                                                class="fa fa-close"></i></a>
-                                                    </td>
+                                    <div class="table-responive">
+                                        <table class="tabl"> 
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Quantity</th>
+                                                    <th>Total</th>
+                                                    <th></th>
                                                 </tr>
-                                                <% }) %>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                <% cartData.items.forEach((x)=> { %>
+                                                    <tr class="cart-item">
+                                                        <td class="product__cart__item">
+                                                            <div class="product__cart__item__pic">
+                                                                <img src="/images/<%= x.product_Id.image[0] %>" alt=""
+                                                                    style="height: 100px; width: 100px;">
+                                                            </div>
+                                                            <div class="product__cart__item__text">
+                                                                <h6>
+                                                                    <%= x.product_Id.name %>
+                                                                </h6>
+                                                                <% var discount=0; var finalPrice=x.product_Id.price *
+                                                                    x.quantity; if (x.product_Id.offer) {
+                                                                    discount=(x.product_Id.price *
+                                                                    x.product_Id.offer.percentage / 100) * x.quantity;
+                                                                    finalPrice=x.product_Id.price * x.quantity - discount; }
+                                                                    else if (x.product_Id.category.offer) {
+                                                                    discount=(x.product_Id.price *
+                                                                    x.product_Id.category.offer.percentage / 100) *
+                                                                    x.quantity; finalPrice=x.product_Id.price * x.quantity -
+                                                                    discount; } %>
+                                                                    <% if (x.product_Id.offer ||
+                                                                        x.product_Id.category.offer) { %>
+                                                                        <h6><del style="color: rgba(0, 0, 0, 0.372);">₹ <%=
+                                                                                    x.product_Id.price * x.quantity %></del>
+                                                                        </h6>
+                                                                        <h5>₹ <%= finalPrice %>
+                                                                        </h5>
+                                                                        <% } else { %>
+                                                                            <h5>₹ <%= finalPrice %>
+                                                                            </h5>
+                                                                            <% } %>
+                                                            </div>
+                                                        </td>
+                                                        <td class="quantity__item">
+                                                            <div class="quantity-controls">
+                                                                <button class="quantity-btn minus" type="button"
+                                                                    onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', -1 )">-</button>
+                                                                <input class="qty-input" type="text"
+                                                                    value="<%= x.quantity %>" readonly>
+                                                                <button class="quantity-btn plus" type="button"
+                                                                    onclick="increaseQuantity('<%= cartData._id %>', '<%= x.product_Id._id %>', 1 )">+</button>
+                                                            </div>
+                                                        </td>
+                                                        <td class="cart__price">₹ <%= finalPrice %>
+                                                        </td>
+                                                        <td class="cart__close">
+                                                            <a href="#" onclick="removeFromCart('<%= x._id %>')"><i
+                                                                    class="fa fa-close"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                              
                                 <% } else { %>
-                                    <h4 class="text-center" style="padding-left: 420px;">No products in cart</h4>
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-6">
-                                            <div class="continue__btn">
-                                                <a href="/shop">Continue Shopping</a>
-                                            </div>
-                                        </div>
+                                    <div class="text-center">
+                                        <img src="user/img/shopping-cart/preview.png" alt="No products in cart"
+                                            style="max-width: 100%; height: auto;">
                                     </div>
                                     <% } %>
                         </div>
+
                         <div class="col-lg-4">
                             <div class="cart__total">
                                 <h6>Cart total</h6>
                                 <ul>
                                     <li>SubTotal <span>₹ <%= originalAmts %></span></li>
-                                    <li>Offer Discounts <span style="color: rgba(235, 7, 7, 0.582);">₹ <%= discountAmt %></span></li>
+                                    <li>Offer Discounts <span style="color: rgba(235, 7, 7, 0.582);">₹ <%= discountAmt
+                                                %></span></li>
 
                                     <li>Total <span style="color: rgba(28, 179, 14, 0.908);">₹ <%= total %></span></li>
                                 </ul>
                                 <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                             </div>
+                            <div class="row">
+                                <div class="col-12 text-center p-4 ">
+                                    <div class="continue__btn">
+                                        <a href="/shop">Continue Shopping</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
+                 
+
                 </div>
             </section>
         </div>
@@ -209,7 +202,7 @@
                         });
                     }
 
-                    
+
                     function increaseQuantity(cartId, productId, count) {
                         $.ajax({
                             url: '/changes',
